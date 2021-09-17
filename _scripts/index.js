@@ -9,6 +9,19 @@ const [, , name, ...args] = process.argv;
 
 const help = (man) => console.log(`USAGE:\n  ${man}\n`);
 
+const buildAll = () => {
+  console.log("mv");
+  fs.readdirSync("./js/plugins/mv/").forEach((n) => {
+    console.log(n);
+    build("mv", n);
+  });
+  console.log("mz");
+  fs.readdirSync("./js/plugins/mz/").forEach((n) => {
+    console.log(n);
+    build("mz", n);
+  });
+};
+
 //
 (() => {
   if (name === "create") {
@@ -28,16 +41,7 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
     build(args[0], args[1]);
   }
   if (name === "build-all") {
-    console.log("mv");
-    fs.readdirSync("./js/plugins/mv/").forEach((n) => {
-      console.log(n);
-      build("mv", n);
-    });
-    console.log("mz");
-    fs.readdirSync("./js/plugins/mz/").forEach((n) => {
-      console.log(n);
-      build("mz", n);
-    });
+    buildAll();
   }
   if (name === "watch") {
     if (!args[0]) {
@@ -62,12 +66,22 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
     console.log("package.json is safe!");
   }
   if (name === "pre-push") {
-    if (!fs.readJSONSync("./package.json").this_is_safe) {
-      throw new Error(
-        "package.json が更新されたままコミットしようとしています！"
-      );
-    }
-    console.log("package.json is safe!");
+    buildAll();
+    ["mv", "mz"].forEach((target) => {
+      const path = `./js/plugins/${target}/`;
+      fs.readdirSync(path).forEach((pluginName) => {
+        const { length } = fs.readdirSync(
+          resolve(path, `./${pluginName}/dist`)
+        );
+        if (length === 0)
+          throw new Error(`${target}/${pluginName} のビルド結果がありません`);
+        if (length > 1)
+          throw new Error(
+            `${target}/${pluginName} のビルド結果が重複しています`
+          );
+      });
+    });
+    console.log("The build is no problem!");
     const before = fs.readFileSync("./pluginList.md", { encoding: "utf8" });
     genList();
     const after = fs.readFileSync("./pluginList.md", { encoding: "utf8" });
