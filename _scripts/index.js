@@ -61,4 +61,19 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
     }
     console.log("package.json is safe!");
   }
+  if (name === "pre-push") {
+    if (!fs.readJSONSync("./package.json").this_is_safe) {
+      throw new Error(
+        "package.json が更新されたままコミットしようとしています！"
+      );
+    }
+    console.log("package.json is safe!");
+    const before = fs.readFileSync("./pluginList.md", { encoding: "utf8" });
+    genList();
+    const after = fs.readFileSync("./pluginList.md", { encoding: "utf8" });
+    if (before !== after) {
+      throw new Error("pluginList.md の変更をコミットしてください！");
+    }
+    console.log("pluginList.md has not changed!");
+  }
 })();
