@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "pre-commit": "node ./_scripts pre-commit"
+  }
+}

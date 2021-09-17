@@ -1,7 +1,7 @@
 {
   "name": "rpg-maker-plugins",
   "version": "1.0.0",
-  "description": "RPG ツクール MV/MZ のプラグインなどのファイルをまとめています。\r 初心者向けのカタログページは準備中・・・",
+  "description": "RPG ツクール MV/MZ のプラグインなどのファイルをまとめています。",
   "main": "index.js",
   "scripts": {
     "create": "node ./_scripts create",
@@ -25,6 +25,8 @@
     "chokidar": "^3.5.2",
     "deepmerge": "^4.2.2",
     "fs-extra": "^10.0.0",
+    "husky": "^7.0.2",
     "prettier": "^2.4.1"
-  }
+  },
+  "this_is_safe": "（これはツクールによって上書きされたかどうかを調べるフラグ）"
 }

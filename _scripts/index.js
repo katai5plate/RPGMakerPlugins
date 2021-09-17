@@ -1,7 +1,9 @@
 const fs = require("fs-extra");
 const chokidar = require("chokidar");
+
 const build = require("./build");
 const { resolve } = require("./utils");
+const genList = require("./gen/list");
 
 const [, , name, ...args] = process.argv;
 
@@ -49,32 +51,14 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
     });
   }
   if (name === "gen-list") {
-    fs.writeFileSync(
-      "./pluginList.md",
-      `# プラグインリスト\n${["mv", "mz"]
-        .map(
-          (target) =>
-            `## ${target}\n${fs
-              .readdirSync(`./js/plugins/${target}/`)
-              .map((name) => ({
-                path: `./js/plugins/${target}/${name}/`,
-                name,
-              }))
-              .map(({ path, name }) =>
-                [
-                  `\n### ${name}`,
-                  `\n\`\`\`\n${fs.readFileSync(
-                    resolve(path, "./src/help.txt"),
-                    {
-                      encoding: "utf8",
-                    }
-                  )}`,
-                  `\n\`\`\`\n- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/${target}/${name}/dist/${name}.js)`,
-                ].join("\n")
-              )
-              .join("\n")}`
-        )
-        .join("\n")}`
-    );
+    genList();
+  }
+  if (name === "pre-commit") {
+    if (!fs.readJSONSync("./package.json").this_is_safe) {
+      throw new Error(
+        "package.json が更新されたままコミットしようとしています！"
+      );
+    }
+    console.log("package.json is safe!");
   }
 })();
