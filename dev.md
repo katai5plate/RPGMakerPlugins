@@ -7,6 +7,10 @@
 - `npm run create [mv|mz] [pluginName]`: プラグインの新規作成
 - `npm run watch [mv|mz] [pluginName]`: プラグイン開発モード
   - ファイルが保存されると自動でビルドが走る。
+- `npm run watch-fm [mv|mz] [pluginName]`: プラグイン開発フラットモード
+  - `plugins/js` に `*.ignore.js` としてビルド結果がコピーされる
+  - プラグイン選択画面でフォルダが使えない MV 用
+- `npm run clean-fm`: watch-fm で散らかったコピーを一掃する
 - `npm run build [mv|mz] [pluginName]`: プラグインのビルド
 - `npm run build-all`: すべてのプラグインを一括ビルド
 - `npm run gen-list`: プラグインリストを自動生成

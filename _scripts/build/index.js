@@ -38,4 +38,5 @@ module.exports = (target, pluginName, { verbose } = {}) => {
   const outputPath = resolve(config.distDir, `${pluginName}.js`);
   fs.writeFileSync(outputPath, result);
   console.log("DONE:", outputPath);
+  return outputPath;
 };

@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const chokidar = require("chokidar");
+const pathLib = require("path");
 
 const build = require("./build");
 const { resolve } = require("./utils");
@@ -53,6 +54,32 @@ const buildAll = () => {
     chokidar.watch(path, { ignored: /\/dist\/.*?\.js/ }).on("change", () => {
       build(args[0], args[1]);
     });
+  }
+  if (name === "watch-fm") {
+    if (!args[0]) {
+      return help("watch [mv|mz] [pluginName]");
+    }
+    if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
+    const path = resolve(`./js/plugins/${args[0]}/${args[1]}/`);
+    console.log("WATCHING...", path);
+    chokidar.watch(path, { ignored: /\/dist\/.*?\.js/ }).on("change", () => {
+      const pluginFilePath = build(args[0], args[1]);
+      const copyTo = `./js/plugins/${
+        pathLib.parse(pluginFilePath).name
+      }.ignore.js`;
+      fs.copyFileSync(pluginFilePath, copyTo);
+      console.log("COPY:", copyTo);
+    });
+  }
+  if (name === "clean-fm") {
+    const dir = "./js/plugins/";
+    fs.readdirSync(dir)
+      .filter((f) => f.match(/\.ignore\.js$/))
+      .forEach((f) => {
+        const path = resolve(dir, `./${f}`);
+        console.log("DELETE:", path);
+        fs.removeSync(path);
+      });
   }
   if (name === "gen-list") {
     genList();
