@@ -1365,6 +1365,8 @@
 
 ########## ここから Node.js 用設定
 
+*.ignore.*
+
 # Logs
 logs
 *.log
