@@ -1,0 +1,26 @@
+{
+  "name": "rpg-maker-plugins",
+  "version": "1.0.0",
+  "description": "RPG ツクール MV/MZ のプラグインなどのファイルをまとめています。\r 初心者向けのカタログページは準備中・・・",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./_scripts build",
+    "build-all": "node ./_scripts build-all",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katai5plate/RPGMakerPlugins.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/katai5plate/RPGMakerPlugins/issues"
+  },
+  "homepage": "https://github.com/katai5plate/RPGMakerPlugins#readme",
+  "dependencies": {
+    "deepmerge": "^4.2.2",
+    "fs-extra": "^10.0.0",
+    "prettier": "^2.4.1"
+  }
+}

@@ -1,0 +1,10 @@
+Open and execute a text file containing a dialog script at any time you want.
+
+How to use
+Add the dialogs folder to the folder containing the index.html of the project. 2.
+Place the text file containing the dialog script in the dialogs folder. 3.
+Insert the plugin command "execute" at the timing you want to execute the dialog script in the command editor.
+
+For more detailed usage and reference, please check the plugin homepage.
+
+Translated with www.DeepL.com/Translator (free version)

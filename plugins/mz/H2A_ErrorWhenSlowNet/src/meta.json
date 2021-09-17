@@ -1,0 +1,36 @@
+{
+  "_license": "MIT",
+  "_version": "3.0.0",
+  "_support": "1.3.2",
+  "plugindesc": "低速回線のプレイを遮断",
+  "params": [
+    {
+      "param": "timeout",
+      "text": "タイムアウト",
+      "desc": "許容する読み込み時間(1秒=1000)",
+      "type": "number",
+      "default": "5000"
+    },
+    {
+      "param": "message",
+      "text": "エラー時",
+      "desc": "タイムアウト時間を過ぎたときに表示するエラーメッセージ",
+      "type": "multiline_string",
+      "default": "快適にプレイしていただくのに必要な\n通信速度を下回っています。\nより高速なインターネット環境でお楽しみください。"
+    }
+  ],
+  "commands": [
+    {
+      "command": "getInitLoadTime",
+      "text": "初回ロード時間を変数に代入",
+      "desc": "ゲーム開始からタイトル画面までにかかった時間を変数に代入します。代入値は 1秒=1000 です。",
+      "...": [
+        {
+          "arg": "id",
+          "type": "variable",
+          "text": "代入する変数"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "_license": "MIT",
+  "_version": "1.0",
+  "_support": "",
+  "plugindesc": "顔グラフィック付き文章にキャラ名を自動挿入します。",
+  "params": [
+    {
+      "param": "Face Template",
+      "type": "struct<ft>[]",
+      "desc": "顔グラフィックの関連付け"
+    },
+    {
+      "param": "Indent",
+      "type": "struct<ind>",
+      "desc": "頭につける半角スペースの数"
+    }
+  ],
+  "structs": {
+    "ft": [
+      {
+        "param": "actor",
+        "desc": "キャラ表示名（数字入力でアクターID指定）",
+        "type": "string",
+        "default": 1
+      },
+      {
+        "param": "face",
+        "desc": "顔グラフィック名",
+        "type": "string"
+      },
+      {
+        "param": "style_color",
+        "desc": "キャラ表示の色番号[ヘッダ,フッタ]",
+        "type": "number[]",
+        "default": [6, 0]
+      },
+      {
+        "param": "style_size",
+        "desc": "キャラ表示のサイズ増減[ヘッダ,フッタ]",
+        "type": "number[]",
+        "default": [0, 0]
+      }
+    ],
+    "ind": [
+      {
+        "param": "template",
+        "desc": "テンプレートのインデント数",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "param": "text",
+        "desc": "メッセージのインデント数",
+        "type": "number",
+        "default": 2
+      }
+    ]
+  }
+}

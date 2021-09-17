@@ -1,0 +1,15 @@
+{
+  "_license": "MIT",
+  "_version": "2.0.0",
+  "_support": "1.3.2",
+  "plugindesc": "フォーカスしてない時にゲームが一時停止しないようにする",
+  "params": [
+    {
+      "param": "whenDebug",
+      "text": "デバッグ時限定",
+      "desc": "エディタでのデバッグ時のみ一時停止を無効化します。",
+      "type": "boolean",
+      "default": "true"
+    }
+  ]
+}

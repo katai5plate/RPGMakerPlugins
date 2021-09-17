@@ -1,0 +1,54 @@
+{
+  "_license": "WTFPL",
+  "_version": "1.0.0",
+  "_support": "1.1.1",
+  "plugindesc": "ピクチャ以外の画像をピクチャとして使用する",
+  "commands": [
+    {
+      "command": "change",
+      "text": "ピクチャ変更",
+      "desc": "ピクチャ以外の画像をピクチャとして表示",
+      "...": [
+        {
+          "arg": "_id",
+          "text": "番号",
+          "desc": "ピクチャ ID",
+          "type": "number",
+          "min": "1",
+          "default": "1"
+        },
+        {
+          "arg": "_name",
+          "text": "画像",
+          "desc": "画像名",
+          "type": "file",
+          "dir": "img"
+        },
+        {
+          "arg": "_index",
+          "text": "インデックス",
+          "desc": "分割番号",
+          "type": "number",
+          "min": "0",
+          "default": "0"
+        },
+        {
+          "arg": "_splitCountX",
+          "text": "横分割",
+          "desc": "幅方向に分割する数 (1: 分割しない)",
+          "type": "number",
+          "min": "1",
+          "default": "1"
+        },
+        {
+          "arg": "_splitCountY",
+          "text": "縦分割",
+          "desc": "高さ方向に分割する数 (1: 分割しない)",
+          "type": "number",
+          "min": "1",
+          "default": "1"
+        }
+      ]
+    }
+  ]
+}

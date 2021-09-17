@@ -1,0 +1,37 @@
+{
+  "_license": "MIT",
+  "_version": "2.0.2",
+  "_support": "1.5.0",
+  "plugindesc": "ゲーム開始時に指定のスイッチをONにし、タイトルをスキップします。",
+  "params": [
+    {
+      "param": "Switch ID",
+      "type": "switch",
+      "desc": "ゲーム開始時にONにするスイッチのID。",
+      "default": 1
+    },
+    {
+      "param": "Skip Title",
+      "type": "boolean",
+      "on": "タイトルスキップ",
+      "off": "なにもしない",
+      "desc": "タイトルをスキップする？",
+      "default": false
+    },
+    {
+      "param": "Load Save",
+      "type": "boolean",
+      "on": "ロードする",
+      "off": "なにもしない",
+      "desc": "タイトルスキップ後、セーブデータをロードする？",
+      "default": false
+    },
+    {
+      "param": "Load Save ID",
+      "type": "number",
+      "desc": "タイトルスキップ後、セーブデータをロードする場合のセーブデータID。",
+      "min": 1,
+      "default": 1
+    }
+  ]
+}

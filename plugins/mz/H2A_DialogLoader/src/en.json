@@ -1,0 +1,53 @@
+{
+  "plugindesc": "Converts a dialog script to a command.",
+  "params": [
+    {
+      "text": "prior execution",
+      "desc": "Dialog script to be executed in advance each time"
+    },
+    {
+      "text": "initial macro",
+      "desc": "Define a macro from a file that will be pre-registered each time. This is the only way to register macro processing that spans multiple lines."
+    }
+  ],
+  "commands": [
+    {
+      "text": "run",
+      "desc": "Open and run the dialog script.",
+      "...": [
+        {
+          "text": "file path",
+          "desc": "Enter the path to the text file containing the dialog script in the dialogs/ folder (no extension required)."
+        },
+        {
+          "text": "Initialize CONFIG or"
+        }
+      ]
+    },
+    {
+      "text": "CONFIG initialization",
+      "desc": "Initializes the CONFIG settings."
+    },
+    {
+      "text": "direct execution",
+      "desc": "Runs the dialog script directly.",
+      "...": [
+        {
+          "text": "dialog script"
+        },
+        {
+          "text": "Initialize CONFIG or"
+        }
+      ]
+    }
+  ],
+  "structs": {
+    "Define": [
+      { "text": "macro definition" },
+      {
+        "text": "file path",
+        "desc": "Enter the path to the text file containing the dialog script in the dialogs/ folder (no extension required)."
+      }
+    ]
+  }
+}

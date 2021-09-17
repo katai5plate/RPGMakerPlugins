@@ -1,0 +1,76 @@
+{
+  "_license": "MIT",
+  "_version": "1.0.1",
+  "_support": "1.2.1",
+  "_languages": ["en"],
+  "plugindesc": "ダイアログスクリプトをコマンドに変換",
+  "params": [
+    {
+      "param": "beforeEach",
+      "text": "事前実行",
+      "desc": "毎回事前に実行されるダイアログスクリプト",
+      "type": "multiline_string"
+    },
+    {
+      "param": "defaultDefine",
+      "text": "初期マクロ",
+      "desc": "毎回事前に登録されるマクロをファイルから定義します。複数行に渡るマクロ処理を登録できる唯一の手段です。",
+      "type": "struct<Define>[]"
+    }
+  ],
+  "commands": [
+    {
+      "command": "exec",
+      "text": "実行",
+      "desc": "ダイアログスクリプトを開いて実行します。",
+      "...": [
+        {
+          "arg": "path",
+          "text": "ファイルパス",
+          "desc": "dialogs/ フォルダ内にあるダイアログスクリプトが書かれたテキストファイルのパスを入力(拡張子不要)",
+          "type": "string"
+        },
+        {
+          "arg": "resetConfig",
+          "text": "CONFIG を初期化するか",
+          "type": "boolean",
+          "default": "false"
+        }
+      ]
+    },
+    {
+      "command": "resetConfig",
+      "text": "CONFIG初期化",
+      "desc": "CONFIG 設定を初期化します。"
+    },
+    {
+      "command": "direct",
+      "text": "直接実行",
+      "desc": "ダイアログスクリプトを直接実行します。",
+      "...": [
+        {
+          "arg": "source",
+          "text": "ダイアログスクリプト",
+          "type": "multiline_string"
+        },
+        {
+          "arg": "resetConfig",
+          "text": "CONFIG を初期化するか",
+          "type": "boolean",
+          "default": "false"
+        }
+      ]
+    }
+  ],
+  "structs": {
+    "Define": [
+      { "param": "name", "text": "マクロ名", "type": "string" },
+      {
+        "param": "path",
+        "text": "ファイルパス",
+        "desc": "dialogs/ フォルダ内にあるダイアログスクリプトが書かれたテキストファイルのパスを入力(拡張子不要)",
+        "type": "string"
+      }
+    ]
+  }
+}

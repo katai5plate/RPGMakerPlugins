@@ -1,0 +1,34 @@
+{
+  "_license": "MIT",
+  "_version": "2.0.0",
+  "_support": "1.3.2",
+  "plugindesc": "タイトルをスキップします",
+  "params": [
+    {
+      "param": "mode",
+      "text": "モード",
+      "desc": "タイトルスキップ時の挙動",
+      "type": "select",
+      "...": [
+        {
+          "option": "オートセーブ含む直前のセーブ ＞ ニューゲーム",
+          "value": "newlast"
+        },
+        {
+          "option": "直前の手動セーブ ＞ オートセーブ ＞ ニューゲーム",
+          "value": "newmanual"
+        },
+        {
+          "option": "オートセーブ ＞ 直前の手動セーブ ＞ ニューゲーム",
+          "value": "newauto"
+        },
+        { "option": "オートセーブ ＞ ニューゲーム", "value": "newautoonly" },
+        { "option": "ニューゲーム", "value": "new" },
+        { "option": "直前のセーブ", "value": "last" },
+        { "option": "直前の手動セーブ", "value": "manual" },
+        { "option": "オートセーブ", "value": "auto" }
+      ],
+      "default": "new"
+    }
+  ]
+}

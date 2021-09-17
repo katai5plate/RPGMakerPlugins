@@ -1,0 +1,39 @@
+{
+  "_license": "MIT",
+  "_version": "3.0.0",
+  "_support": "1.3.2",
+  "plugindesc": "オートセーブと場所移動の挙動を変更",
+  "params": [
+    {
+      "param": "autoSaveMode",
+      "text": "オートセーブ設定",
+      "desc": "場所移動時のオートセーブの挙動を設定します。",
+      "type": "select",
+      "...": [
+        { "option": "いかなる場所移動であっても許可する", "value": "all" },
+        { "option": "同一マップ間移動では禁止する", "value": "nosame" },
+        { "option": "場所移動でのオートセーブを禁止する", "value": "disable" }
+      ],
+      "default": "all"
+    },
+    {
+      "param": "enableAutoSaveAfterBattle",
+      "text": "戦闘終了後のオートセーブ",
+      "desc": "戦闘終了後のオートセーブを許可するかどうかを設定します。",
+      "type": "boolean",
+      "default": "true"
+    },
+    {
+      "param": "disableAutoSaveFlag",
+      "text": "オートセーブ禁止スイッチ",
+      "desc": "ON にしている間、オートセーブを禁止するスイッチを設定します。",
+      "type": "switch",
+      "default": "0"
+    },
+    {
+      "command": "autosave",
+      "text": "オートセーブ",
+      "desc": "オートセーブを行います。"
+    }
+  ]
+}
