@@ -1,12 +1,4 @@
-# 俺用ドキュメント
-
-## TODO
-
-- [ ] プラグインの開発環境を構築する
-  - [ ] 開発環境のルールに沿って過去のプラグインを全バラする
-- [ ] 過去のリポジトリをアーカイブ化してこっちに誘導する
-- [ ] Had2Apps.com にプラグインカタログページを増設する
-  - GitHub API を使ってこのリポジトリを参照する
+# 開発者向け
 
 ## プラグイン開発環境の仕様
 
@@ -48,7 +40,7 @@ Copyright (c) {YEAR} {AUTHOR}
 This software is released under the {LICENSE_NAME} License.
 ```
 
-```json
+```js
 {
   // ライセンステンプレート名（省略の場合はWTFPL）
   "_license": "MIT",
@@ -97,7 +89,15 @@ This software is released under the {LICENSE_NAME} License.
 }
 ```
 
-## memo
+## 俺用 TODO
+
+- [x] プラグインの開発環境を構築する
+  - [x] 開発環境のルールに沿って過去のプラグインを全バラする
+- [x] 過去のリポジトリをアーカイブ化してこっちに誘導する
+- [ ] Had2Apps.com にプラグインカタログページを増設する
+  - GitHub API を使ってこのリポジトリを参照する
+
+## 俺用 memo
 
 ```
 \* @(.*?) (.*?)$
