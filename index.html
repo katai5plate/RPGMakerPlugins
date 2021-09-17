@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+      var path = nw.process.execPath;
+      if (path.match(/RPGMV/)) {
+        location.href = "./index_mv.html";
+      }
+      if (path.match(/RPGMZ/)) {
+        location.href = "./index_mz.html";
+      }
+    </script>
+    <a href="./index_mv.html">MV</a>
+    <a href="./index_mz.html">MZ</a>
+  </body>
+</html>
