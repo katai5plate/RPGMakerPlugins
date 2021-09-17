@@ -1,10 +1,7 @@
 **/Game.rpgproject
 **/game.rmmzproject
 # **/index.html
-
-# ルートディレクトリ以外の package.json
-**/package.json
-!/package.json
+# **/package.json
 
 # audio/bgm
 **/audio/bgm/Battle1.ogg
@@ -1940,6 +1937,9 @@
 ########## プロジェクト固有設定
 
 *.ignore.*
+**/js/src/**/*.js
+**/js/src/**/meta.json
+
 **/data_mv/Actors.json
 **/data_mv/Animations.json
 **/data_mv/Armors.json
@@ -1958,6 +1958,10 @@
 **/img/system/ButtonSet_mv.png
 **/js/main_mv.js
 **/js/libs/pixi_mv.js
+
+# ルートディレクトリ以外の package.json
+**/package.json
+!/package.json
 
 ########## Node.js 用設定
 

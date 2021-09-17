@@ -5,6 +5,7 @@ const pathLib = require("path");
 const build = require("./build");
 const { resolve } = require("./utils");
 const genList = require("./gen/list");
+const coreSpliter = require("./coreSpliter");
 
 const [, , name, ...args] = process.argv;
 
@@ -116,5 +117,9 @@ const buildAll = () => {
       throw new Error("pluginList.md の変更をコミットしてください！");
     }
     console.log("pluginList.md has not changed!");
+  }
+  if (name === "core-split") {
+    coreSpliter();
+    console.log("done");
   }
 })();
