@@ -115,7 +115,7 @@ This software is released under the {LICENSE_NAME} License.
 ## ゲームプロジェクトの配置方法
 
 1. ツクール MV の新規プロジェクトを作る
-2. そのうち、`audio, data, fonts, icon, img, js, movies, Game.rpgproject` を
+2. そのうち、`audio, data, fonts, icon, img, js, movies, Game.rpgproject` を  
    そのままルートディレクトリにコピーする
 3. `data` を `data_mv` にリネームする
 4. `img/system` の中にある `ButtonSet.png` を `ButtonSet_mv.png` にリネームする
@@ -123,7 +123,7 @@ This software is released under the {LICENSE_NAME} License.
 6. `js/libs` の中にある `pixi.js` を `pixi_mv.js` にリネームする
 7. `js/plugins.js` は適当な名前にリネームしてバックアップを取っておく
 8. ツクール MZ の新規プロジェクトを作る
-9. そのうち、`audio, css, data, effects, fonts, icon, js, movies, game.rmmzproject` を
+9. そのうち、`audio, css, data, effects, fonts, icon, js, movies, game.rmmzproject` を  
    そのままルートディレクトリにコピーする（上書きはどっちでもいい）
 
 ## 俺用 TODO
