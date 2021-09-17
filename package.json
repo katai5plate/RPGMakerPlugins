@@ -4,8 +4,10 @@
   "description": "RPG ツクール MV/MZ のプラグインなどのファイルをまとめています。\r 初心者向けのカタログページは準備中・・・",
   "main": "index.js",
   "scripts": {
+    "create": "node ./_scripts create",
     "build": "node ./_scripts build",
     "build-all": "node ./_scripts build-all",
+    "watch": "node ./_scripts watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +21,7 @@
   },
   "homepage": "https://github.com/katai5plate/RPGMakerPlugins#readme",
   "dependencies": {
+    "chokidar": "^3.5.2",
     "deepmerge": "^4.2.2",
     "fs-extra": "^10.0.0",
     "prettier": "^2.4.1"
