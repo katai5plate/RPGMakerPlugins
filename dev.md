@@ -16,6 +16,7 @@
 - `npm run gen-list`: プラグインリストを自動生成
 - `npm run core-split`: コアスクリプトをクラスごとに分割
   - `./js/src` に出力される
+  - VSCode 上で検索する場合は「含めるファイル」に `src/**` と入力する
 
 ### git-hooks
 

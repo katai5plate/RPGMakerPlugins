@@ -8,12 +8,14 @@ RPG ツクール MV/MZ のプラグインなどのファイルをまとめてい
 
 基本的にプラグインに書いてあるライセンスが優先されます。
 
-## バグ報告
+## バグ報告・要望
 
 issues にて報告してください。報告には GitHub のアカウント登録が必要です。
 
 - [報告掲示板](https://github.com/katai5plate/RPGMakerPlugins/issues)
 - [報告フォーム](https://github.com/katai5plate/RPGMakerPlugins/issues/new)
+
+また、作者自身がアイデアをメモするために使うこともあります。
 
 ## 協力者募集中
 
