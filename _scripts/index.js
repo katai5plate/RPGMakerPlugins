@@ -122,4 +122,21 @@ const buildAll = () => {
     coreSpliter();
     console.log("done");
   }
+  if (name === "snap-pg") {
+    if (!args[0]) {
+      return help("snap-pg [get|set] [name]");
+    }
+    if (!["get", "set"].includes(args[0]) || [undefined, ""].includes(args[1]))
+      throw new Error("無効な引数");
+    const filePath = `./js/${args[1]}.snapshot.plugins.js`;
+    const originPath = "./js/plugins.js";
+    if (args[0] === "get") {
+      fs.copySync(originPath, filePath);
+      console.log("CREATE:", originPath, "->", filePath);
+    }
+    if (args[0] === "set") {
+      fs.copySync(filePath, originPath);
+      console.log("OVERWRITE:", filePath, "->", originPath);
+    }
+  }
 })();

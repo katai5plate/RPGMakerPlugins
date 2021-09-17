@@ -12,6 +12,7 @@
     "build-all": "node ./_scripts build-all",
     "gen-list": "node ./_scripts gen-list",
     "core-split": "node ./_scripts core-split",
+    "snap-pg": "node ./_scripts snap-pg",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

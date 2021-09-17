@@ -17,6 +17,8 @@
 - `npm run core-split`: コアスクリプトをクラスごとに分割
   - `./js/src` に出力される
   - VSCode 上で検索する場合は「含めるファイル」に `src/**` と入力する
+- `npm run snap-pg [get|set] [name]`: `js/plugins.js` のスナップショットを撮る
+  - `get` で取得、 `set` で適用。`{name}.snapshot.plugins.js` という名前で保存される
 
 ### git-hooks
 
