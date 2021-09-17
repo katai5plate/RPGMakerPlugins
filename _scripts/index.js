@@ -14,7 +14,7 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
       return help("build [mv|mz] [pluginName]");
     }
     if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
-    const path = `./plugins/${args[0]}/${args[1]}`;
+    const path = `./js/plugins/${args[0]}/${args[1]}`;
     fs.copySync("./_empty", resolve(path, "./src"));
     fs.mkdirp(resolve(path, "./dist"));
   }
@@ -27,12 +27,12 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
   }
   if (name === "build-all") {
     console.log("mv");
-    fs.readdirSync("./plugins/mv/").forEach((n) => {
+    fs.readdirSync("./js/plugins/mv/").forEach((n) => {
       console.log(n);
       build("mv", n);
     });
     console.log("mz");
-    fs.readdirSync("./plugins/mz/").forEach((n) => {
+    fs.readdirSync("./js/plugins/mz/").forEach((n) => {
       console.log(n);
       build("mz", n);
     });
@@ -42,7 +42,7 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
       return help("watch [mv|mz] [pluginName]");
     }
     if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
-    const path = resolve(`./plugins/${args[0]}/${args[1]}/`);
+    const path = resolve(`./js/plugins/${args[0]}/${args[1]}/`);
     console.log("WATCHING...", path);
     chokidar.watch(path, { ignored: /\/dist\/.*?\.js/ }).on("change", () => {
       build(args[0], args[1]);
@@ -55,9 +55,9 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
         .map(
           (target) =>
             `## ${target}\n${fs
-              .readdirSync(`./plugins/${target}/`)
+              .readdirSync(`./js/plugins/${target}/`)
               .map((name) => ({
-                path: `./plugins/${target}/${name}/`,
+                path: `./js/plugins/${target}/${name}/`,
                 name,
               }))
               .map(({ path, name }) =>

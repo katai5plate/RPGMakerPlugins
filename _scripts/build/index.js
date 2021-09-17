@@ -9,7 +9,7 @@ module.exports = (target, pluginName, { verbose } = {}) => {
   const dir = {
     target,
     pluginName,
-    path: `./plugins/${target}/${pluginName}/`,
+    path: `./js/plugins/${target}/${pluginName}/`,
   };
   verbose && console.log(dir);
 
