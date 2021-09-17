@@ -30,7 +30,7 @@ module.exports = (target, pluginName, { verbose } = {}) => {
   });
   verbose && console.log("OK: Format");
 
-  const outputPath = resolve(config.distDir, "bundle.js");
+  const outputPath = resolve(config.distDir, `${pluginName}.js`);
   fs.writeFileSync(outputPath, result);
   console.log("DONE:", outputPath);
 };

@@ -1,11 +1,9 @@
-//=============================================================================
-// H2A_FaceTemplate.js 1.0
-//=============================================================================
-
 /*:
  * @plugindesc 顔グラフィック付き文章にキャラ名を自動挿入します。
- * @author Had2Apps
  *
+ * @target MV
+ * @author Had2Apps
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @param Face Template
  * @type struct<ft>[]
@@ -15,7 +13,6 @@
  * @type struct<ind>
  * @desc 頭につける半角スペースの数
  *
- *
  * @help
  * パラメータに登録された顔グラフィックを使用して文章の表示を行うと、
  * １行目にキャラクターの名前が表示されるようになります。
@@ -23,10 +20,13 @@
  * 最初の１行を占領し、４行目を非表示にするため、
  * これを使用した文章は３行までにしてください。
  *
- */
-
-/*~struct~ft:
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
  *
+ * Version: v1.0
+ *
+ */
+/*~struct~ft:
  * @param actor
  * @desc キャラ表示名（数字入力でアクターID指定）
  * @type string
@@ -47,15 +47,7 @@
  * @default [0,0]
  *
  */
-
-//実装予定：
-// @param index
-// @desc 顔グラフィック番号指定
-// @string number[]
-// @default [0,1,2,3,4,5,6,7]
-
 /*~struct~ind:
- *
  * @param template
  * @desc テンプレートのインデント数
  * @type number
@@ -66,12 +58,11 @@
  * @type number
  * @default 2
  *
- *
  */
-
-var H2A_FaceTemplate = H2A_FaceTemplate || {};
-
+window.H2A_FaceTemplate = H2A_FaceTemplate || {};
 (function () {
+  /*========== ./main.js ==========*/
+
   var param = PluginManager.parameters("H2A_FaceTemplate");
   var pser = function (name) {
     return JSON.parse(

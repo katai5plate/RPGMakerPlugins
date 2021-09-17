@@ -1,8 +1,9 @@
 /*:
- * @target MZ
  * @plugindesc キャラにリージョンを辿って歩かせる
+ *
+ * @target MZ
  * @author Had2Apps
- * @url https://github.com/katai5plate/RPGMZ-Plugins
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @param isStrict
  * @text 厳格モード
@@ -25,135 +26,173 @@
  * @command run
  * @text 実行
  * @desc リージョン ID の道が途切れるまで移動し続けます。
- * @arg regionId
- *  @text リージョン ID
- *  @desc ルート指定に使用するリージョン ID
- *  @type number
- *  @min 1
- *  @default 1
- * @arg characterId
- *  @text イベント ID
- *  @desc 移動する マップイベント ID (主人公: -1)
- *  @type number
- *  @min -1
- *  @default -1
- * @arg initDirection
- *  @text 歩き始める方角
- *  @desc どの方角を正面として歩き始めるかを設定します。
- *  @type select
- *   @option 現在の向き
- *    @value -1
- *   @option 下
- *    @value 2
- *   @option 左
- *    @value 4
- *   @option 右
- *    @value 6
- *   @option 上
- *    @value 8
+ *
+ *   @arg regionId
+ *   @text リージョン ID
+ *   @desc ルート指定に使用するリージョン ID
+ *   @type number
+ *   @min 1
+ *   @default 1
+ *
+ *   @arg characterId
+ *   @text イベント ID
+ *   @desc 移動する マップイベント ID (主人公: -1)
+ *   @type number
+ *   @min -1
  *   @default -1
- * @arg walkSpeed
- *  @text 移動速度
- *  @desc 歩くスピード
- *  @type select
- *   @option 指定しない
- *    @value 0
- *   @option 1: 1/8倍速
- *    @value 1
- *   @option 2: 1/4倍速
- *    @value 2
- *   @option 3: 1/2倍速
- *    @value 3
- *   @option 4: 標準速
- *    @value 4
- *   @option 5: 2倍速
- *    @value 5
- *   @option 6: 4倍速
- *    @value 6
- *  @default 0
- * @arg wait
- *  @text 完了までウェイト
- *  @desc 終端に辿りつくまでウェイトします。
- *  @type boolean
- *  @default true
- * @arg through
- *  @text すり抜ける
- *  @desc すり抜けを ON にします
- *  @type boolean
- *  @default false
- * @arg endSwitch
- *  @text 移動完了スイッチ
- *  @desc スイッチを指定すると、移動が終わったら自動で ON になります。
- *  @type switch
- *  @default 0
- * @arg beforeScripts
- *  @text スクリプト(初動)
- *  @desc (上級者向け機能) 任意の移動スクリプトを実行ルートの始めに追加します
- *  @type string[]
- *  @default []
- * @arg afterScripts
- *  @text スクリプト(末尾)
- *  @desc (上級者向け機能) 任意の移動スクリプトを実行ルートの末尾に追加します
- *  @type string[]
- *  @default []
+ *
+ *   @arg initDirection
+ *   @text 歩き始める方角
+ *   @desc どの方角を正面として歩き始めるかを設定します。
+ *   @type select
+ *
+ *     @option 現在の向き
+ *     @value -1
+ *
+ *     @option 下
+ *     @value 2
+ *
+ *     @option 左
+ *     @value 4
+ *
+ *     @option 右
+ *     @value 6
+ *
+ *     @option 上
+ *     @value 8
+ *
+ *   @default -1
+ *
+ *   @arg walkSpeed
+ *   @text 移動速度
+ *   @desc 歩くスピード
+ *   @type select
+ *
+ *     @option 指定しない
+ *     @value 0
+ *
+ *     @option 1: 1/8倍速
+ *     @value 1
+ *
+ *     @option 2: 1/4倍速
+ *     @value 2
+ *
+ *     @option 3: 1/2倍速
+ *     @value 3
+ *
+ *     @option 4: 標準速
+ *     @value 4
+ *
+ *     @option 5: 2倍速
+ *     @value 5
+ *
+ *     @option 6: 4倍速
+ *     @value 6
+ *
+ *   @default 0
+ *
+ *   @arg wait
+ *   @text 完了までウェイト
+ *   @desc 終端に辿りつくまでウェイトします。
+ *   @type boolean
+ *   @default true
+ *
+ *   @arg through
+ *   @text すり抜ける
+ *   @desc すり抜けを ON にします
+ *   @type boolean
+ *   @default false
+ *
+ *   @arg endSwitch
+ *   @text 移動完了スイッチ
+ *   @desc スイッチを指定すると、移動が終わったら自動で ON になります。
+ *   @type switch
+ *   @default 0
+ *
+ *   @arg beforeScripts
+ *   @text スクリプト(初動)
+ *   @desc (上級者向け機能) 任意の移動スクリプトを実行ルートの始めに追加します
+ *   @type string[]
+ *   @default []
+ *
+ *   @arg afterScripts
+ *   @text スクリプト(末尾)
+ *   @desc (上級者向け機能) 任意の移動スクリプトを実行ルートの末尾に追加します
+ *   @type string[]
+ *   @default []
  *
  * @command script
  * @text 移動スクリプト
  * @desc (上級者向け機能) 移動スクリプトを入力します。
- * @arg characterId
- *  @text イベント ID
- *  @desc 移動する マップイベント ID (主人公: -1)
- *  @type number
- *  @min -1
- *  @default -1
- * @arg walkSpeed
- *  @text 移動速度
- *  @desc 歩くスピード
- *  @type select
- *   @option 指定しない
- *    @value 0
- *   @option 1: 1/8倍速
- *    @value 1
- *   @option 2: 1/4倍速
- *    @value 2
- *   @option 3: 1/2倍速
- *    @value 3
- *   @option 4: 標準速
- *    @value 4
- *   @option 5: 2倍速
- *    @value 5
- *   @option 6: 4倍速
- *    @value 6
- *  @default 0
- * @arg wait
- *  @text 完了までウェイト
- *  @desc 終端に辿りつくまでウェイトします。
- *  @type boolean
- *  @default true
- * @arg through
- *  @text すり抜ける
- *  @desc すり抜けを ON にします
- *  @type boolean
- *  @default false
- * @arg endSwitch
- *  @text 移動完了スイッチ
- *  @desc スイッチを指定すると、移動が終わったら自動で ON になります。
- *  @type switch
- *  @default 0
- * @arg scripts
- *  @text スクリプト
- *  @desc 任意の移動スクリプト
- *  @type string[]
- *  @default []
+ *
+ *   @arg characterId
+ *   @text イベント ID
+ *   @desc 移動する マップイベント ID (主人公: -1)
+ *   @type number
+ *   @min -1
+ *   @default -1
+ *
+ *   @arg walkSpeed
+ *   @text 移動速度
+ *   @desc 歩くスピード
+ *   @type select
+ *
+ *     @option 指定しない
+ *     @value 0
+ *
+ *     @option 1: 1/8倍速
+ *     @value 1
+ *
+ *     @option 2: 1/4倍速
+ *     @value 2
+ *
+ *     @option 3: 1/2倍速
+ *     @value 3
+ *
+ *     @option 4: 標準速
+ *     @value 4
+ *
+ *     @option 5: 2倍速
+ *     @value 5
+ *
+ *     @option 6: 4倍速
+ *     @value 6
+ *
+ *   @default 0
+ *
+ *   @arg wait
+ *   @text 完了までウェイト
+ *   @desc 終端に辿りつくまでウェイトします。
+ *   @type boolean
+ *   @default true
+ *
+ *   @arg through
+ *   @text すり抜ける
+ *   @desc すり抜けを ON にします
+ *   @type boolean
+ *   @default false
+ *
+ *   @arg endSwitch
+ *   @text 移動完了スイッチ
+ *   @desc スイッチを指定すると、移動が終わったら自動で ON になります。
+ *   @type switch
+ *   @default 0
+ *
+ *   @arg scripts
+ *   @text スクリプト
+ *   @desc 任意の移動スクリプト
+ *   @type string[]
+ *   @default []
  *
  * @command wait
  * @text 移動完了まで待つ
  * @desc スイッチが ON になるまでウェイトします。
- * @arg endSwitch
- *  @text 移動完了スイッチ
- *  @desc 「実行」で指定したスイッチ
- *  @type switch
- *  @default 1
+ *
+ *   @arg endSwitch
+ *   @text 移動完了スイッチ
+ *   @desc 「実行」で指定したスイッチ
+ *   @type switch
+ *   @default 1
  *
  * @help
  * キャラクターがリージョンに沿って移動します。
@@ -187,12 +226,12 @@
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * 動作確認済コアバージョン: v1.1.1
- * プラグインバージョン: v1.3.3
- *
+ * Version: v1.3.3
+ * RPG Maker MZ Version: v1.1.1
  */
 
 (() => {
+  /*========== ./main.js ==========*/
   const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
   const { isStrict, enableRandomWalk, addOneStep } =
     PluginManager.parameters(pluginName);
@@ -400,6 +439,8 @@
       },
     ]);
   };
+
+  /*========== ./commands.js ==========*/
 
   PluginManager.registerCommand(pluginName, "run", mainProcess);
 

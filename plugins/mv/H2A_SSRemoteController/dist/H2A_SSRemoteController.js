@@ -1,18 +1,11 @@
-//=============================================================================
-// H2A_SSRemoteController.js
-// by Had2Apps
-// Version: 1.1
-//=============================================================================
-
-var H2APG = H2APG || {};
-
 /*:
  * @plugindesc マップ上のイベントのセルフスイッチをリモコン操作します。
- * @author Had2Apps
  *
+ * @target MV
+ * @author Had2Apps
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @help
- *
  * H2APG.SSRemote(イベントID,"A/B/C/D",true/false/null);
  * H2APG.SSRemote("文字列が含まれるイベント名のイベント","A/B/C/D",true/false/null);
  *
@@ -21,9 +14,16 @@ var H2APG = H2APG || {};
  * このようにすると自分のセルフスイッチを操作できます。
  * H2APG.SSRemote(this._eventId,"A/B/C/D",true/false/null);
  *
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
+ *
+ * Version: v1.1
+ *
  */
 
+var H2APG = H2APG || {};
 (function () {
+  /*========== ./main.js ==========*/
   H2APG.SSRemote = function (a, b, c) {
     var k, x;
     a = a == null ? undefined : a;

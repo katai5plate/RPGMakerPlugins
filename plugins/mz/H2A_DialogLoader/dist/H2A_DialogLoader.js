@@ -1,45 +1,50 @@
 /*:
- * @target MZ
  * @plugindesc ダイアログスクリプトをコマンドに変換
+ *
+ * @target MZ
  * @author Had2Apps
- * @url https://github.com/katai5plate/RPGMZ-Plugins
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @param beforeEach
- *   @text 事前実行
- *   @desc 毎回事前に実行されるダイアログスクリプト
- *   @type multiline_string
+ * @text 事前実行
+ * @desc 毎回事前に実行されるダイアログスクリプト
+ * @type multiline_string
  *
  * @param defaultDefine
- *   @text 初期マクロ
- *   @desc 毎回事前に登録されるマクロをファイルから定義します。複数行に渡るマクロ処理を登録できる唯一の手段です。
- *   @type struct<Define>[]
+ * @text 初期マクロ
+ * @desc 毎回事前に登録されるマクロをファイルから定義します。複数行に渡るマクロ処理を登録できる唯一の手段です。
+ * @type struct<Define>[]
  *
  * @command exec
- *   @text 実行
- *   @desc ダイアログスクリプトを開いて実行します。
+ * @text 実行
+ * @desc ダイアログスクリプトを開いて実行します。
+ *
  *   @arg path
- *     @text ファイルパス
- *     @desc dialogs/ フォルダ内にあるダイアログスクリプトが書かれたテキストファイルのパスを入力(拡張子不要)
- *     @type string
+ *   @text ファイルパス
+ *   @desc dialogs/ フォルダ内にあるダイアログスクリプトが書かれたテキストファイルのパスを入力(拡張子不要)
+ *   @type string
+ *
  *   @arg resetConfig
- *     @text CONFIG を初期化するか
- *     @type boolean
- *     @default false
+ *   @text CONFIG を初期化するか
+ *   @type boolean
+ *   @default false
  *
  * @command resetConfig
- *   @text CONFIG初期化
- *   @desc CONFIG 設定を初期化します。
+ * @text CONFIG初期化
+ * @desc CONFIG 設定を初期化します。
  *
  * @command direct
- *   @text 直接実行
- *   @desc ダイアログスクリプトを直接実行します。
+ * @text 直接実行
+ * @desc ダイアログスクリプトを直接実行します。
+ *
  *   @arg source
- *     @text ダイアログスクリプト
- *     @type multiline_string
+ *   @text ダイアログスクリプト
+ *   @type multiline_string
+ *
  *   @arg resetConfig
- *     @text CONFIG を初期化するか
- *     @type boolean
- *     @default false
+ *   @text CONFIG を初期化するか
+ *   @type boolean
+ *   @default false
  *
  * @help
  * ダイアログスクリプトが書かれたテキストファイルを好きなタイミングで開いて実行します。
@@ -49,14 +54,13 @@
  * 2. dialogs フォルダにダイアログスクリプトが書かれたテキストファイルを置く
  * 3. コマンドエディタでダイアログスクリプトを実行したいタイミングでプラグインコマンド「実行」を挿入
  *
- * ・より詳しい使い方とリファレンス
- * https://github.com/katai5plate/RPGMZ-Plugins/blob/master/plugins/docs/H2A_DialogLoader.md
+ * より詳しい使い方とリファレンスはプラグインのホームページを確認してください。
  *
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * 動作確認済コアバージョン: v1.2.1
- * プラグインバージョン: v1.0.0
+ * Version: v1.0.1
+ * RPG Maker MZ Version: v1.2.1
  */
 /*~struct~Define:
  * @param name
@@ -67,14 +71,89 @@
  * @text ファイルパス
  * @desc dialogs/ フォルダ内にあるダイアログスクリプトが書かれたテキストファイルのパスを入力(拡張子不要)
  * @type string
+ *
  */
-/*
-開発メモ:
-source -> midCode -> commandList
-*/
-
+/*:en
+ * @plugindesc Convert DialogScripts to EventCommands.
+ *
+ * @target MZ
+ * @author Had2Apps
+ * @url https://github.com/katai5plate/RPGMakerPlugins
+ *
+ * @param beforeEach
+ * @text beforeEach
+ * @desc DS to be executed in advance every time
+ * @type multiline_string
+ *
+ * @param defaultDefine
+ * @text defaultDefine
+ * @desc DS file to be defined in advance every time
+ * @type struct<Define>[]
+ *
+ * @command exec
+ * @text run
+ * @desc Run DS
+ *
+ *   @arg path
+ *   @text filePath
+ *   @desc Enter the path to the DS file in the dialogs/ folder (no extension needed)
+ *   @type string
+ *
+ *   @arg resetConfig
+ *   @text Initialize CONFIG?
+ *   @type boolean
+ *   @default false
+ *
+ * @command resetConfig
+ * @text Initialize CONFIG
+ * @desc Initialize CONFIG
+ *
+ * @command direct
+ * @text Direct execute DS
+ * @desc Run DS directly
+ *
+ *   @arg source
+ *   @text DS
+ *   @type multiline_string
+ *
+ *   @arg resetConfig
+ *   @text Initialize CONFIG?
+ *   @type boolean
+ *   @default false
+ *
+ * @help
+ * Open and execute a text file containing a Dialog Script at any time you want.
+ *
+ * How to use
+ * 1. Add the dialogs folder to the folder containing the index.html of the project.
+ * 2. Place the text file containing the dialog script in the dialogs folder.
+ * 3. Insert the plugin command "run" at the timing you want to execute the dialog script in the command editor.
+ *
+ * For more detailed usage and reference, please check the plugin homepage.
+ *
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
+ *
+ * Version: v1.0.1
+ * RPG Maker MZ Version: v1.2.1
+ */
+/*~struct~Define:en
+ * @param name
+ * @text MacroName
+ * @type string
+ *
+ * @param path
+ * @text filePath
+ * @desc Enter the path to the DS file in the dialogs/ folder (no extension needed)
+ * @type string
+ *
+ */
 (() => {
+  /*========== ../../../_templates/utils.js ==========*/
   const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
+
+  /*========== ./gameDialog.js ==========*/
+
   class Game_Dialog {
     constructor() {
       this.loadingFiles = [];
@@ -425,6 +504,8 @@ source -> midCode -> commandList
     }
   }
   window.$gameDialog = new Game_Dialog();
+
+  /*========== ./define.js ==========*/
 
   Game_Interpreter.prototype.updateWait = function () {
     return (

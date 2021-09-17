@@ -14,8 +14,8 @@
           "text": "番号",
           "desc": "ピクチャ ID",
           "type": "number",
-          "min": "1",
-          "default": "1"
+          "min": 1,
+          "default": 1
         },
         {
           "arg": "_name",
@@ -29,24 +29,24 @@
           "text": "インデックス",
           "desc": "分割番号",
           "type": "number",
-          "min": "0",
-          "default": "0"
+          "min": 0,
+          "default": 0
         },
         {
           "arg": "_splitCountX",
           "text": "横分割",
           "desc": "幅方向に分割する数 (1: 分割しない)",
           "type": "number",
-          "min": "1",
-          "default": "1"
+          "min": 1,
+          "default": 1
         },
         {
           "arg": "_splitCountY",
           "text": "縦分割",
           "desc": "高さ方向に分割する数 (1: 分割しない)",
           "type": "number",
-          "min": "1",
-          "default": "1"
+          "min": 1,
+          "default": 1
         }
       ]
     }

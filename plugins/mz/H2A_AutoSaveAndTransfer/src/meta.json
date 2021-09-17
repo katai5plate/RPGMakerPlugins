@@ -21,14 +21,14 @@
       "text": "戦闘終了後のオートセーブ",
       "desc": "戦闘終了後のオートセーブを許可するかどうかを設定します。",
       "type": "boolean",
-      "default": "true"
+      "default": true
     },
     {
       "param": "disableAutoSaveFlag",
       "text": "オートセーブ禁止スイッチ",
       "desc": "ON にしている間、オートセーブを禁止するスイッチを設定します。",
       "type": "switch",
-      "default": "0"
+      "default": 0
     },
     {
       "command": "autosave",

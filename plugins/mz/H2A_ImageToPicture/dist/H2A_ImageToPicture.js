@@ -1,41 +1,47 @@
 /*:
- * @target MZ
  * @plugindesc ピクチャ以外の画像をピクチャとして使用する
+ *
+ * @target MZ
  * @author Had2Apps
- * @url https://github.com/katai5plate/RPGMZ-Plugins
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @command change
  * @text ピクチャ変更
  * @desc ピクチャ以外の画像をピクチャとして表示
- * @arg _id
- *  @text 番号
- *  @desc ピクチャ ID
- *  @type number
- *  @min 1
- *  @default 1
- * @arg _name
- *  @text 画像
- *  @desc 画像名
- *  @type file
- *  @dir img
- * @arg _index
- *  @text インデックス
- *  @desc 分割番号
- *  @type number
- *  @min 0
- *  @default 0
- * @arg _splitCountX
- *  @text 横分割
- *  @desc 幅方向に分割する数 (1: 分割しない)
- *  @type number
- *  @min 1
- *  @default 1
- * @arg _splitCountY
- *  @text 縦分割
- *  @desc 高さ方向に分割する数 (1: 分割しない)
- *  @type number
- *  @min 1
- *  @default 1
+ *
+ *   @arg _id
+ *   @text 番号
+ *   @desc ピクチャ ID
+ *   @type number
+ *   @min 1
+ *   @default 1
+ *
+ *   @arg _name
+ *   @text 画像
+ *   @desc 画像名
+ *   @type file
+ *   @dir img
+ *
+ *   @arg _index
+ *   @text インデックス
+ *   @desc 分割番号
+ *   @type number
+ *   @min 0
+ *   @default 0
+ *
+ *   @arg _splitCountX
+ *   @text 横分割
+ *   @desc 幅方向に分割する数 (1: 分割しない)
+ *   @type number
+ *   @min 1
+ *   @default 1
+ *
+ *   @arg _splitCountY
+ *   @text 縦分割
+ *   @desc 高さ方向に分割する数 (1: 分割しない)
+ *   @type number
+ *   @min 1
+ *   @default 1
  *
  * @help
  * [使い方]
@@ -58,11 +64,12 @@
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * 動作確認済コアバージョン: v1.1.1
- * プラグインバージョン: v1.0.0
- *
+ * Version: v1.0.0
+ * RPG Maker MZ Version: v1.1.1
  */
+
 (() => {
+  /*========== ./main.js ==========*/
   const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
   const {} = PluginManager.parameters(pluginName);
 

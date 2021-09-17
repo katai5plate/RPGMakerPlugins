@@ -9,7 +9,7 @@
       "text": "タイムアウト",
       "desc": "許容する読み込み時間(1秒=1000)",
       "type": "number",
-      "default": "5000"
+      "default": 5000
     },
     {
       "param": "message",

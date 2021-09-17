@@ -9,7 +9,7 @@
       "text": "デバッグ時限定",
       "desc": "エディタでのデバッグ時のみ一時停止を無効化します。",
       "type": "boolean",
-      "default": "true"
+      "default": true
     }
   ]
 }

@@ -1,14 +1,9 @@
-//=============================================================================
-// H2A_SetSwitchOn.js
-// by Had2Apps
-// RPGツクールMV 1.5.0以降にて動作します。
-// Version: 2.0.2
-// License: MIT
-//=============================================================================
-
 /*:
  * @plugindesc ゲーム開始時に指定のスイッチをONにし、タイトルをスキップします。
+ *
+ * @target MV
  * @author Had2Apps
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @param Switch ID
  * @type switch
@@ -44,11 +39,17 @@
  * もしタイトルスキップ関連でもっと高機能なプラグインが必要なら、
  * トリアコンタン氏の AutoLoad.js を使ったほうがいいかもしれません。
  *
+ *
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
+ *
+ * Version: v2.0.2
+ * RPG Maker MV Version: v1.5.0
  */
 
 var H2APG = H2APG || {};
-
 (function () {
+  /*========== ./main.js ==========*/
   //-----------------------------------------------------//
   /* プラグイン名 */
   var PluginName = "H2A_SetSwitchOn";

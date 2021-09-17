@@ -1,3 +1,9 @@
+//: 実装予定 ://
+//: @param index ://
+//: @desc 顔グラフィック番号指定 ://
+//: @string number[] ://
+//: @default [0,1,2,3,4,5,6,7] ://
+
 var param = PluginManager.parameters("H2A_FaceTemplate");
 var pser = function (name) {
   return JSON.parse(

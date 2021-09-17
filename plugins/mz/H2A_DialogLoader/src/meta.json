@@ -34,7 +34,7 @@
           "arg": "resetConfig",
           "text": "CONFIG を初期化するか",
           "type": "boolean",
-          "default": "false"
+          "default": false
         }
       ]
     },
@@ -57,7 +57,7 @@
           "arg": "resetConfig",
           "text": "CONFIG を初期化するか",
           "type": "boolean",
-          "default": "false"
+          "default": false
         }
       ]
     }

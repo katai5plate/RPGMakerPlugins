@@ -1,28 +1,28 @@
-//=============================================================================
-// H2A_UserPerspMes.js
-// by Had2Apps
-// RPGツクールMV 1.5.0以降にて動作します。
-// Version: 1.2
-// License: MIT
-//=============================================================================
-
 /*:
  * @plugindesc メッセージウィンドウの操作や文章表示を改善します。
+ *
+ * @target MV
  * @author Had2Apps
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @param OPERABILITY
  *
  * @param Fast Type
  * @parent OPERABILITY
  * @type select
- * @option 通常通り
- * @value 0
- * @option トリガー入力でページ送り
- * @value 1
- * @option 瞬間表示無効
- * @value 2
- * @option 瞬間表示無効・トリガー入力でページ送り
- * @value 3
+ *
+ *   @option 通常通り
+ *   @value 0
+ *
+ *   @option トリガー入力でページ送り
+ *   @value 1
+ *
+ *   @option 瞬間表示無効
+ *   @value 2
+ *
+ *   @option 瞬間表示無効・トリガー入力でページ送り
+ *   @value 3
+ *
  * @desc メッセージウィンドウの文章の瞬間表示・ページ送りの挙動。
  * @default 0
  *
@@ -42,30 +42,43 @@
  * @param Fast Key
  * @parent OPERABILITY
  * @type select
- * @option なし
- * @value null
- * @option 決定
- * @value ok
- * @option キャンセル
- * @value cancel
- * @option シフト
- * @value shift
- * @option 下
- * @value down
- * @option 左
- * @value left
- * @option 右
- * @value right
- * @option 上
- * @value up
- * @option PageUp
- * @value pageup
- * @option PageDown
- * @value pagedown
- * @option コントロール
- * @value control
- * @option タブ
- * @value tab
+ *
+ *   @option なし
+ *   @value null
+ *
+ *   @option 決定
+ *   @value ok
+ *
+ *   @option キャンセル
+ *   @value cancel
+ *
+ *   @option シフト
+ *   @value shift
+ *
+ *   @option 下
+ *   @value down
+ *
+ *   @option 左
+ *   @value left
+ *
+ *   @option 右
+ *   @value right
+ *
+ *   @option 上
+ *   @value up
+ *
+ *   @option PageUp
+ *   @value pageup
+ *
+ *   @option PageDown
+ *   @value pagedown
+ *
+ *   @option コントロール
+ *   @value control
+ *
+ *   @option タブ
+ *   @value tab
+ *
  * @desc 自動ページ送りを設定したキーを押しっぱなしで出来るようにします。
  * @default null
  *
@@ -178,11 +191,17 @@
  * コモンイベントにそれぞれ登録しておき、
  * 必要なシーンで会話等が始まる直前に呼び出すといった方法がお勧めです。
  *
+ *
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
+ *
+ * Version: v1.2
+ * RPG Maker MV Version: v1.5.0
  */
 
 var H2APG = H2APG || {};
-
 (function () {
+  /*========== ./main.js ==========*/
   //-----------------------------------------------------//
   /* プラグイン名 */
   var PluginName = "H2A_UserPerspMes";

@@ -1,8 +1,41 @@
 /*:
- * @target MZ
  * @plugindesc タイトルをスキップします
+ *
+ * @target MZ
  * @author Had2Apps
- * @url https://github.com/katai5plate/RPGMZ-Plugins
+ * @url https://github.com/katai5plate/RPGMakerPlugins
+ *
+ * @param mode
+ * @text モード
+ * @desc タイトルスキップ時の挙動
+ * @type select
+ *
+ *   @option オートセーブ含む直前のセーブ ＞ ニューゲーム
+ *   @value newlast
+ *
+ *   @option 直前の手動セーブ ＞ オートセーブ ＞ ニューゲーム
+ *   @value newmanual
+ *
+ *   @option オートセーブ ＞ 直前の手動セーブ ＞ ニューゲーム
+ *   @value newauto
+ *
+ *   @option オートセーブ ＞ ニューゲーム
+ *   @value newautoonly
+ *
+ *   @option ニューゲーム
+ *   @value new
+ *
+ *   @option 直前のセーブ
+ *   @value last
+ *
+ *   @option 直前の手動セーブ
+ *   @value manual
+ *
+ *   @option オートセーブ
+ *   @value auto
+ *
+ * @default new
+ *
  * @help
  * タイトルをスキップし、
  * ニューゲームかコンティニューします。
@@ -42,36 +75,15 @@
  * オートセーブされたデータがあればそれがロードされます。
  * 存在しない場合、エラーになります。
  *
- * Copyright (c) 2020 Had2Apps
+ * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * 動作確認済コアバージョン: v1.3.2
- * プラグインバージョン: v2.0.0
- *
- * @param mode
- * @text モード
- * @desc タイトルスキップ時の挙動
- * @type select
- * @option オートセーブ含む直前のセーブ ＞ ニューゲーム
- * @value newlast
- * @option 直前の手動セーブ ＞ オートセーブ ＞ ニューゲーム
- * @value newmanual
- * @option オートセーブ ＞ 直前の手動セーブ ＞ ニューゲーム
- * @value newauto
- * @option オートセーブ ＞ ニューゲーム
- * @value newautoonly
- * @option ニューゲーム
- * @value new
- * @option 直前のセーブ
- * @value last
- * @option 直前の手動セーブ
- * @value manual
- * @option オートセーブ
- * @value auto
- * @default new
+ * Version: v2.0.0
+ * RPG Maker MZ Version: v1.3.2
  */
 
 (() => {
+  /*========== ./main.js ==========*/
   const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
   const { mode } = PluginManager.parameters(pluginName);
 

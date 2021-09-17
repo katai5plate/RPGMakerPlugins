@@ -1,8 +1,9 @@
 /*:
- * @target MZ
  * @plugindesc ツクール側のエラーを日本語化します。
+ *
+ * @target MZ
  * @author Had2Apps
- * @url https://github.com/katai5plate/RPGMZ-Plugins
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @help
  * window.Error を書き換え、特定のエラー文字列を日本語化します。
@@ -13,11 +14,12 @@
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * 動作確認済コアバージョン: v1.3.2
- * プラグインバージョン: v2.0.0
- *
+ * Version: v2.0.0
+ * RPG Maker MZ Version: v1.3.2
  */
+
 (() => {
+  /*========== ./main.js ==========*/
   window.Error = class extends Error {
     constructor() {
       const [errorMessage, ...rest] = arguments;

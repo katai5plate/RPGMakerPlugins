@@ -1,13 +1,11 @@
-//=============================================================================
-// H2A_PictMaster.js v1.1
-//=============================================================================
-
 /*:
  * @plugindesc すべてのピクチャをロードする仕組みを作ります。
+ *
+ * @target MV
  * @author Had2Apps
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @help
- *
  * 動作確認：1.5.2
  *
  * ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
@@ -28,10 +26,17 @@
  * ３．ピクチャをプリロードしたいタイミングで以下のスクリプトコマンドを実行。
  *   H2A_PictMaster.loadAll();
  *
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
+ *
+ * Version: v1.1
+ * RPG Maker MV Version: v1.5.2
  */
 
 var H2A_PictMaster = H2A_PictMaster || {};
+
 (function () {
+  /*========== ./main.js ==========*/
   var fs = require("fs");
   var dir = document.URL.replace("file:///", "").split("index.html")[0];
   var pdir = dir + "img/pictures/";

@@ -1,8 +1,16 @@
 /*:
- * @target MZ
  * @plugindesc フォーカスしてない時にゲームが一時停止しないようにする
+ *
+ * @target MZ
  * @author Had2Apps
- * @url https://github.com/katai5plate/RPGMZ-Plugins
+ * @url https://github.com/katai5plate/RPGMakerPlugins
+ *
+ * @param whenDebug
+ * @text デバッグ時限定
+ * @desc エディタでのデバッグ時のみ一時停止を無効化します。
+ * @type boolean
+ * @default true
+ *
  * @help
  * ツクール MZ から、ゲームをフォーカスしていない時に
  * ゲームが一時停止する仕様になりました。
@@ -12,20 +20,15 @@
  *
  * v2.0.0 から、VSCode 拡張の Live Server に対応しました。
  *
- * Copyright (c) 2020 Had2Apps
- * This plugin is released under the MIT License.
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
  *
- * 動作確認済コアバージョン: v1.3.2
- * プラグインバージョン: v2.0.0
- *
- * @param whenDebug
- * @text デバッグ時限定
- * @desc エディタでのデバッグ時のみ一時停止を無効化します。
- * @type boolean
- * @default true
+ * Version: v2.0.0
+ * RPG Maker MZ Version: v1.3.2
  */
 
 (() => {
+  /*========== ./main.js ==========*/
   const params = PluginManager.parameters(
     document.currentScript.src.match(/^.*\/(.*).js$/)[1]
   );

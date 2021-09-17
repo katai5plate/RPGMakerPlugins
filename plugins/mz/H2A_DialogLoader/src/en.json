@@ -1,52 +1,54 @@
 {
-  "plugindesc": "Converts a dialog script to a command.",
+  "plugindesc": "Convert DialogScripts to EventCommands.",
   "params": [
     {
-      "text": "prior execution",
-      "desc": "Dialog script to be executed in advance each time"
+      "text": "beforeEach",
+      "desc": "DS to be executed in advance every time"
     },
     {
-      "text": "initial macro",
-      "desc": "Define a macro from a file that will be pre-registered each time. This is the only way to register macro processing that spans multiple lines."
+      "text": "defaultDefine",
+      "desc": "DS file to be defined in advance every time"
     }
   ],
   "commands": [
     {
       "text": "run",
-      "desc": "Open and run the dialog script.",
+      "desc": "Run DS",
       "...": [
         {
-          "text": "file path",
-          "desc": "Enter the path to the text file containing the dialog script in the dialogs/ folder (no extension required)."
+          "text": "filePath",
+          "desc": "Enter the path to the DS file in the dialogs/ folder (no extension needed)"
         },
         {
-          "text": "Initialize CONFIG or"
+          "text": "Initialize CONFIG?"
         }
       ]
     },
     {
-      "text": "CONFIG initialization",
-      "desc": "Initializes the CONFIG settings."
+      "command": "resetConfig",
+      "text": "Initialize CONFIG",
+      "desc": "Initialize CONFIG"
     },
     {
-      "text": "direct execution",
-      "desc": "Runs the dialog script directly.",
+      "command": "direct",
+      "text": "Direct execute DS",
+      "desc": "Run DS directly",
       "...": [
         {
-          "text": "dialog script"
+          "text": "DS"
         },
         {
-          "text": "Initialize CONFIG or"
+          "text": "Initialize CONFIG?"
         }
       ]
     }
   ],
   "structs": {
     "Define": [
-      { "text": "macro definition" },
+      { "text": "MacroName" },
       {
-        "text": "file path",
-        "desc": "Enter the path to the text file containing the dialog script in the dialogs/ folder (no extension required)."
+        "text": "filePath",
+        "desc": "Enter the path to the DS file in the dialogs/ folder (no extension needed)"
       }
     ]
   }

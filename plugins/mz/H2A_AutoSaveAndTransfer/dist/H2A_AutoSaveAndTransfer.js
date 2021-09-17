@@ -1,42 +1,24 @@
 /*:
- * @target MZ
  * @plugindesc オートセーブと場所移動の挙動を変更
+ *
+ * @target MZ
  * @author Had2Apps
- * @url https://github.com/katai5plate/RPGMZ-Plugins
- * @help
- * 同一マップ間移動時に、
- * データのロードが発生しないようにします。
- *
- * また、パラメーターで
- * オートセーブに関する挙動を設定できます。
- * その場合、「システム1」のオプションで
- * 「オートセーブを有効化」する必要があります。
- *
- * またプラグインコマンドを使用することで、
- * オートセーブを呼び出すことができます。
- *
- * 注意:
- * 設定の優先度は以下のようになっています。
- * コモンイベントのオートセーブ ＞ 禁止スイッチ ＞ オートセーブ設定
- * 禁止スイッチが ON の状態でもコモンイベントからオートセーブが可能で、
- * 禁止スイッチが ON だとオートセーブ設定が all でもセーブされません。
- *
- * Copyright (c) 2020 Had2Apps
- * This software is released under the MIT License.
- *
- * 動作確認済コアバージョン: v1.3.2
- * プラグインバージョン: v3.0.0
+ * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @param autoSaveMode
  * @text オートセーブ設定
  * @desc 場所移動時のオートセーブの挙動を設定します。
  * @type select
- * @option いかなる場所移動であっても許可する
- * @value all
- * @option 同一マップ間移動では禁止する
- * @value nosame
- * @option 場所移動でのオートセーブを禁止する
- * @value disable
+ *
+ *   @option いかなる場所移動であっても許可する
+ *   @value all
+ *
+ *   @option 同一マップ間移動では禁止する
+ *   @value nosame
+ *
+ *   @option 場所移動でのオートセーブを禁止する
+ *   @value disable
+ *
  * @default all
  *
  * @param enableAutoSaveAfterBattle
@@ -55,8 +37,33 @@
  * @text オートセーブ
  * @desc オートセーブを行います。
  *
+ * @help
+ * 同一マップ間移動時に、
+ * データのロードが発生しないようにします。
+ *
+ * また、パラメーターで
+ * オートセーブに関する挙動を設定できます。
+ * その場合、「システム1」のオプションで
+ * 「オートセーブを有効化」する必要があります。
+ *
+ * またプラグインコマンドを使用することで、
+ * オートセーブを呼び出すことができます。
+ *
+ * 注意:
+ * 設定の優先度は以下のようになっています。
+ * コモンイベントのオートセーブ ＞ 禁止スイッチ ＞ オートセーブ設定
+ * 禁止スイッチが ON の状態でもコモンイベントからオートセーブが可能で、
+ * 禁止スイッチが ON だとオートセーブ設定が all でもセーブされません。
+ *
+ * Copyright (c) 2021 Had2Apps
+ * This software is released under the MIT License.
+ *
+ * Version: v3.0.0
+ * RPG Maker MZ Version: v1.3.2
  */
+
 (() => {
+  /*========== ./main.js ==========*/
   const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
   const { autoSaveMode, enableAutoSaveAfterBattle, disableAutoSaveFlag } =
     PluginManager.parameters(pluginName);

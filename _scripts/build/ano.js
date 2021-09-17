@@ -65,7 +65,7 @@ const f = (config) => {
         ...rest
       } = meta;
       const otherAno = {
-        target: target || targetPlatform,
+        target: (target || targetPlatform).toLocaleUpperCase(),
         author: author || defaultAno.author,
         url: url || defaultAno.url,
       };
