@@ -8,6 +8,7 @@
     "build": "node ./_scripts build",
     "build-all": "node ./_scripts build-all",
     "watch": "node ./_scripts watch",
+    "gen-list": "node ./_scripts gen-list",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

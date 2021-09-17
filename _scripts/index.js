@@ -48,4 +48,30 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
       build(args[0], args[1]);
     });
   }
+  if (name === "gen-list") {
+    fs.writeFileSync(
+      "./pluginList.md",
+      `# プラグインリスト\n${["mv", "mz"].map(
+        (target) =>
+          `## ${target}\n${fs
+            .readdirSync(`./plugins/${target}/`)
+            .map((name) => ({
+              path: `./plugins/${target}/${name}/`,
+              name,
+            }))
+            .map(({ path, name }) =>
+              [
+                `\n### ${name}`,
+                `\n\`\`\`\n${fs
+                  .readFileSync(resolve(path, "./src/help.txt"), {
+                    encoding: "utf8",
+                  })
+                  .replace(/\n/g, "<br/>\n")}`,
+                `\n\`\`\`\n- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/${target}/${name}/dist/${name}.js)`,
+              ].join("\n")
+            )
+            .join("\n")}`
+      )}`
+    );
+  }
 })();
