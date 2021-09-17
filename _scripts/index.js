@@ -67,7 +67,7 @@ const help = (man) => console.log(`USAGE:\n  ${man}\n`);
                     encoding: "utf8",
                   })
                   .replace(/\n/g, "<br/>\n")}`,
-                `\n\`\`\`\n- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/${target}/${name}/dist/${name}.js)`,
+                `\n\`\`\`\n- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/${target}/${name}/dist/${name}.js)`,
               ].join("\n")
             )
             .join("\n")}`

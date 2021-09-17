@@ -11,7 +11,7 @@
 これを使用した文章は３行までにしてください。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_FaceTemplate/dist/H2A_FaceTemplate.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_FaceTemplate/dist/H2A_FaceTemplate.js)
 
 ### H2A_PictMaster
 
@@ -37,7 +37,7 @@
   H2A_PictMaster.loadAll();
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_PictMaster/dist/H2A_PictMaster.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_PictMaster/dist/H2A_PictMaster.js)
 
 ### H2A_SetSwitchOn
 
@@ -52,7 +52,7 @@ Load Save IDに存在しないセーブデータIDを入力しないこと。<br
 
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_SetSwitchOn/dist/H2A_SetSwitchOn.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_SetSwitchOn/dist/H2A_SetSwitchOn.js)
 
 ### H2A_SSRemoteController
 
@@ -66,7 +66,7 @@ H2APG.SSRemote("文字列が含まれるイベント名のイベント","A/B/C/D
 H2APG.SSRemote(this._eventId,"A/B/C/D",true/false/null);
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_SSRemoteController/dist/H2A_SSRemoteController.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_SSRemoteController/dist/H2A_SSRemoteController.js)
 
 ### H2A_UserPerspMes
 
@@ -164,7 +164,7 @@ H2APG.UserPerspMes.defMesDec();<br/>
 
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_UserPerspMes/dist/H2A_UserPerspMes.js),## mz
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mv/H2A_UserPerspMes/dist/H2A_UserPerspMes.js),## mz
 
 ### H2A_AutoSaveAndTransfer
 
@@ -187,7 +187,7 @@ H2APG.UserPerspMes.defMesDec();<br/>
 禁止スイッチが ON だとオートセーブ設定が all でもセーブされません。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_AutoSaveAndTransfer/dist/H2A_AutoSaveAndTransfer.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_AutoSaveAndTransfer/dist/H2A_AutoSaveAndTransfer.js)
 
 ### H2A_DialogLoader
 
@@ -202,7 +202,7 @@ H2APG.UserPerspMes.defMesDec();<br/>
 より詳しい使い方とリファレンスはプラグインのホームページを確認してください。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_DialogLoader/dist/H2A_DialogLoader.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_DialogLoader/dist/H2A_DialogLoader.js)
 
 ### H2A_DontPauseWhenBlur
 
@@ -216,7 +216,7 @@ H2APG.UserPerspMes.defMesDec();<br/>
 v2.0.0 から、VSCode 拡張の Live Server に対応しました。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_DontPauseWhenBlur/dist/H2A_DontPauseWhenBlur.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_DontPauseWhenBlur/dist/H2A_DontPauseWhenBlur.js)
 
 ### H2A_ErrorWhenSlowNet
 
@@ -237,7 +237,7 @@ v2.0.0 から、VSCode 拡張の Live Server に対応しました。
 光ファイバー等の高速回線であれば 500 ミリ秒も可能だと思います。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_ErrorWhenSlowNet/dist/H2A_ErrorWhenSlowNet.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_ErrorWhenSlowNet/dist/H2A_ErrorWhenSlowNet.js)
 
 ### H2A_ImageToPicture
 
@@ -260,7 +260,7 @@ v2.0.0 から、VSCode 拡張の Live Server に対応しました。
 ・すでに表示中のピクチャであっても変更可能です。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_ImageToPicture/dist/H2A_ImageToPicture.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_ImageToPicture/dist/H2A_ImageToPicture.js)
 
 ### H2A_JapaneseErrors
 
@@ -271,7 +271,7 @@ Error を実行するとスタックトレースの先頭行に<br/>
 また、pixi.js などのコアスクリプト以外のエラーメッセージは翻訳されません。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_JapaneseErrors/dist/H2A_JapaneseErrors.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_JapaneseErrors/dist/H2A_JapaneseErrors.js)
 
 ### H2A_RegionWalker
 
@@ -305,7 +305,7 @@ Error を実行するとスタックトレースの先頭行に<br/>
 　そのままゲームが先に進まなくなる可能性があります。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_RegionWalker/dist/H2A_RegionWalker.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_RegionWalker/dist/H2A_RegionWalker.js)
 
 ### H2A_SkipTitle
 
@@ -349,4 +349,4 @@ Error を実行するとスタックトレースの先頭行に<br/>
 存在しない場合、エラーになります。
 
 ```
-- [ダウンロードはこちら](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_SkipTitle/dist/H2A_SkipTitle.js)
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/plugins/mz/H2A_SkipTitle/dist/H2A_SkipTitle.js)
