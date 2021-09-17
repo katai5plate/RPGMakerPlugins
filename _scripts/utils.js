@@ -1,6 +1,5 @@
 const pathLib = require("path");
 const deepmerge = require("deepmerge");
-const { off } = require("process");
 
 module.exports = {
   /**
@@ -54,5 +53,17 @@ module.exports = {
     };
     s(data, 0);
     return r;
+  },
+  /**
+   * エラーが起きるかもしれない処理を実行
+   * @param {()=>any} fn
+   * @returns {any}
+   */
+  tryit: (fn) => {
+    try {
+      return fn();
+    } catch (error) {
+      return new Error(error);
+    }
   },
 };

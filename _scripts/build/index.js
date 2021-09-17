@@ -3,7 +3,7 @@ const prettier = require("prettier");
 
 const buildAno = require("./ano");
 const buildCode = require("./code");
-const { resolve } = require("../utils");
+const { resolve, tryit } = require("../utils");
 
 module.exports = (target, pluginName, { verbose } = {}) => {
   const dir = {
@@ -19,15 +19,20 @@ module.exports = (target, pluginName, { verbose } = {}) => {
     distDir: resolve(dir.path, "dist/"),
   };
 
-  const ano = buildAno(config);
+  const ano = tryit(() => buildAno(config));
+  if (ano instanceof Error) return console.log("FAILED: Annotation ->", ano);
   verbose && console.log("OK: Annotation");
 
-  const code = buildCode(config);
+  const code = tryit(() => buildCode(config));
+  if (code instanceof Error) return console.log("FAILED: Code ->", code);
   verbose && console.log("OK: Code");
 
-  const result = prettier.format([ano, code].join("\n"), {
-    parser: "babel",
-  });
+  const result = tryit(() =>
+    prettier.format([ano, code].join("\n"), {
+      parser: "babel",
+    })
+  );
+  if (result instanceof Error) return console.log("FAILED: Format ->", result);
   verbose && console.log("OK: Format");
 
   const outputPath = resolve(config.distDir, `${pluginName}.js`);
