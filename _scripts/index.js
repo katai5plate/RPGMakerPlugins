@@ -4,7 +4,7 @@ const pathLib = require("path");
 const Diff = require("diff");
 
 const build = require("./build");
-const { resolve, write, read } = require("./utils");
+const { resolve, write, read, diff } = require("./utils");
 const genList = require("./gen/list");
 const coreSpliter = require("./coreSpliter");
 
@@ -122,38 +122,10 @@ const buildAll = () => {
       });
     });
     console.log("The build is no problem!");
-    const before = read("file", "./pluginList.md")
-      .replace(/\r/g, "[CR]")
-      .replace(/\n/g, "[LF]\n");
+    const before = read("file", "./pluginList.md");
     genList();
-    const after = read("file", "./pluginList.md")
-      .replace(/\r/g, "[CR]")
-      .replace(/\n/g, "[LF]\n");
-    if (before !== after) {
-      const diff = Diff.diffChars(before, after);
-      console.log(
-        diff
-          .slice(
-            diff.findIndex((d) => d.added || d.removed),
-            -diff.reverse().findIndex((d) => d.added || d.removed)
-          )
-          .reduce(
-            (p, { added, removed, value }) =>
-              `${p}${
-                added || removed
-                  ? `\n==================== ${
-                      added ? "ADD" : "REM"
-                    } ==============================================================================================================\n|\n${value.replace(
-                      /^/gm,
-                      "| "
-                    )}\n|\n=======================================================================================================================================\n`
-                  : value
-              }`,
-            ""
-          )
-      );
-      throw new Error("pluginList.md の変更をコミットしてください！");
-    }
+    const after = read("file", "./pluginList.md");
+    diff(before, after, "pluginList.md の変更をコミットしてください！");
     console.log("pluginList.md has not changed!");
   }
   if (name === "core-split") {
