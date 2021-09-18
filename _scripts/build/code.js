@@ -2,7 +2,7 @@
 
 const fs = require("fs-extra");
 
-const { resolve } = require("../utils");
+const { resolve, read } = require("../utils");
 
 /**
  * src/*.js からプラグインのソースコードをコンパイル
@@ -11,9 +11,7 @@ const { resolve } = require("../utils");
  */
 const f = (config) => {
   const { srcDir } = config;
-  const baseCode = fs.readFileSync(resolve(srcDir, "./base.js"), {
-    encoding: "utf8",
-  });
+  const baseCode = read("file", resolve(srcDir, "./base.js"));
   const INCLUDE_REGEX = /\/\*\*\*__INCLUDE="(.*?)"__\*\*\*\//;
   const baseIncludeMatches = baseCode
     .match(new RegExp(INCLUDE_REGEX, "g"))

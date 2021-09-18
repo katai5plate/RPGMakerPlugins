@@ -5,7 +5,7 @@ require("colors");
 const Diff = require("diff");
 
 const build = require("./build");
-const { resolve, write } = require("./utils");
+const { resolve, write, read } = require("./utils");
 const genList = require("./gen/list");
 const coreSpliter = require("./coreSpliter");
 
@@ -86,7 +86,7 @@ const buildAll = () => {
   }
   if (name === "protect") {
     const path = resolve(`./package.json`);
-    const origin = fs.readFileSync(path, { encoding: "utf8" });
+    const origin = read("file", path);
     if (!origin.match(/this_is_safe/))
       throw new Error("package.json はすでに書き換わっています！");
     console.log("PROTECT...", path);
@@ -99,7 +99,7 @@ const buildAll = () => {
     genList();
   }
   if (name === "pre-commit") {
-    if (!fs.readJSONSync("./package.json").this_is_safe) {
+    if (!read("json", "./package.json").this_is_safe) {
       throw new Error(
         "package.json が更新されたままコミットしようとしています！"
       );
@@ -123,9 +123,9 @@ const buildAll = () => {
       });
     });
     console.log("The build is no problem!");
-    const before = fs.readFileSync("./pluginList.md", { encoding: "utf8" });
+    const before = read("file", "./pluginList.md");
     genList();
-    const after = fs.readFileSync("./pluginList.md", { encoding: "utf8" });
+    const after = read("file", "./pluginList.md");
     if (before !== after) {
       const diff = Diff.diffChars(before, after);
       diff.forEach((part) => {

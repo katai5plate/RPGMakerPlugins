@@ -2,7 +2,7 @@
 
 const fs = require("fs-extra");
 
-const { resolve, merge, parseSpreadedObj } = require("../utils");
+const { resolve, merge, parseSpreadedObj, read } = require("../utils");
 
 /**
  * meta.json と help.txt をアノテーションコメントに変換する
@@ -11,10 +11,8 @@ const { resolve, merge, parseSpreadedObj } = require("../utils");
  */
 const f = (config) => {
   const { targetPlatform, srcDir } = config;
-  const metaFile = fs.readJSONSync(resolve(srcDir, "./meta.json"));
-  const helpFile = fs.readFileSync(resolve(srcDir, "./help.txt"), {
-    encoding: "utf8",
-  });
+  const metaFile = read("json", resolve(srcDir, "./meta.json"));
+  const helpFile = read("file", resolve(srcDir, "./help.txt"));
 
   const defaultAno = {
     author: "Had2Apps",
@@ -40,16 +38,11 @@ const f = (config) => {
           .join("\n")}\n */`;
       const meta =
         language !== ""
-          ? merge(
-              metaFile,
-              fs.readJSONSync(resolve(srcDir, `./${language}.json`))
-            )
+          ? merge(metaFile, read("json", resolve(srcDir, `./${language}.json`)))
           : metaFile;
       const help =
         language !== ""
-          ? fs.readFileSync(resolve(srcDir, `./${language}.txt`), {
-              encoding: "utf8",
-            })
+          ? read("file", resolve(srcDir, `./${language}.txt`))
           : helpFile;
       const {
         _license,

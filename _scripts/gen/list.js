@@ -1,5 +1,5 @@
 const fs = require("fs-extra");
-const { resolve, write } = require("../utils");
+const { resolve, write, read } = require("../utils");
 
 module.exports = () => {
   write(
@@ -17,9 +17,7 @@ module.exports = () => {
             .map(({ path, name }) =>
               [
                 `\n### ${name}`,
-                `\n\`\`\`\n${fs.readFileSync(resolve(path, "./src/help.txt"), {
-                  encoding: "utf8",
-                })}`,
+                `\n\`\`\`\n${read("file", resolve(path, "./src/help.txt"))}`,
                 `\n\`\`\`\n- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/${target}/${name}/dist/${name}.js)`,
               ].join("\n")
             )
