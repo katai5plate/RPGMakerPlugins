@@ -1,7 +1,6 @@
 const fs = require("fs-extra");
 const chokidar = require("chokidar");
 const pathLib = require("path");
-const Diff = require("diff");
 
 const build = require("./build");
 const { resolve, write, read, diff } = require("./utils");
@@ -125,7 +124,9 @@ const buildAll = () => {
     const before = read("file", "./pluginList.md");
     genList();
     const after = read("file", "./pluginList.md");
-    diff(before, after, "pluginList.md の変更をコミットしてください！");
+    if (diff(before, after)) {
+      throw new Error("pluginList.md の変更をコミットしてください！");
+    }
     console.log("pluginList.md has not changed!");
   }
   if (name === "core-split") {

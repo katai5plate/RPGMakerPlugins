@@ -95,9 +95,9 @@ module.exports = {
    * @param {string} a
    * @param {string} b
    * @param {string} throwMessage
-   * @returns {void|never}
+   * @returns {boolean}
    */
-  diff: (a, b, throwMessage) => {
+  diff: (a, b) => {
     const [before, after] = [a, b].map((x) =>
       x.replace(/\r/g, "→").replace(/\n/g, "↵\n")
     );
@@ -124,7 +124,8 @@ module.exports = {
             ""
           )
       );
-      throw new Error(throwMessage);
+      return true;
     }
+    return false;
   },
 };
