@@ -145,6 +145,11 @@ const buildAll = () => {
           2
         )
       );
+      console.log("======================================");
+      console.log(before);
+      console.log("======================================");
+      console.log(after);
+      console.log("======================================");
       throw new Error("pluginList.md の変更をコミットしてください！");
     }
     console.log("pluginList.md has not changed!");
