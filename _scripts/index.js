@@ -130,8 +130,9 @@ const buildAll = () => {
       const diff = Diff.diffChars(before, after);
       diff.forEach((part) => {
         const color = part.added ? "green" : part.removed ? "red" : "grey";
-        process.stderr.write(part.value[color]);
+        if (color !== "grey") process.stderr.write(part.value[color]);
       });
+      console.log("\n");
       throw new Error("pluginList.md の変更をコミットしてください！");
     }
     console.log("pluginList.md has not changed!");
