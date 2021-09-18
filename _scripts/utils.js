@@ -3,6 +3,7 @@ const pathLib = require("path");
 const deepmerge = require("deepmerge");
 const eol = require("eol");
 const Diff = require("diff");
+const { transform } = require("@babel/core");
 
 module.exports = {
   /**
@@ -128,4 +129,13 @@ module.exports = {
     }
     return false;
   },
+  /**
+   * babel を通す
+   * @param {string} code
+   * @returns {string}
+   */
+  babel: (code) =>
+    transform(code, {
+      presets: ["@babel/preset-env"],
+    }).code,
 };

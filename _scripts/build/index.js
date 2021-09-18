@@ -3,7 +3,7 @@ const prettier = require("prettier");
 
 const buildAno = require("./ano");
 const buildCode = require("./code");
-const { resolve, tryit, write } = require("../utils");
+const { resolve, tryit, write, babel } = require("../utils");
 
 module.exports = (target, pluginName, { verbose } = {}) => {
   const dir = {
@@ -28,7 +28,7 @@ module.exports = (target, pluginName, { verbose } = {}) => {
   verbose && console.log("OK: Code");
 
   const result = tryit(() =>
-    prettier.format([ano, code].join("\n"), {
+    prettier.format(babel([ano, code].join("\n")), {
       parser: "babel",
     })
   );
