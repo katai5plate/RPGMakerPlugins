@@ -36,7 +36,7 @@ module.exports = (target, pluginName, { verbose } = {}) => {
   verbose && console.log("OK: Format");
 
   const outputPath = resolve(config.distDir, `${pluginName}.js`);
-  write("text", outputPath, result);
+  write("file", outputPath, result);
   console.log("DONE:", outputPath);
   return outputPath;
 };

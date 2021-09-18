@@ -89,7 +89,7 @@ const buildAll = () => {
       throw new Error("package.json はすでに書き換わっています！");
     console.log("PROTECT...", path);
     chokidar.watch(path).on("change", () => {
-      write("text", path, origin);
+      write("file", path, origin);
       console.log("REVERT:", path);
     });
   }

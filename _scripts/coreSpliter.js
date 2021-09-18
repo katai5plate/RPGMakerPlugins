@@ -1,7 +1,9 @@
 const fs = require("fs-extra");
+const prettier = require("prettier");
+
+const { read } = require("./utils");
 
 const splitCore = (target) => {
-  const fs = require("fs-extra");
   const delimit =
     "//-----------------------------------------------------------------------------";
   const head = target === "mv" ? "rpg" : "rmmz";
@@ -15,8 +17,7 @@ const splitCore = (target) => {
   ].reduce(
     (p, name) => [
       ...p,
-      ...fs
-        .readFileSync(`./js/${head}_${name}.js`, { encoding: "utf8" })
+      ...read("file", `./js/${head}_${name}.js`)
         .split(delimit)
         .map((code) => ({
           code,
@@ -37,7 +38,10 @@ const splitCore = (target) => {
 
   list.forEach(({ code, filename }) => {
     console.log(filename);
-    fs.outputFileSync(`./js/src/${target}/${filename}.js`, code);
+    fs.outputFileSync(
+      `./js/src/${target}/${filename}.js`,
+      prettier.format(code, { parser: "babel" })
+    );
   });
 
   fs.outputJSONSync(

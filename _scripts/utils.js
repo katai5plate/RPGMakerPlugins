@@ -71,7 +71,7 @@ module.exports = {
   },
   /**
    * 読み
-   * @param {"text"|"json"} mode
+   * @param {"file"|"json"} mode
    * @param {string} path
    * @returns
    */
@@ -81,7 +81,7 @@ module.exports = {
       : fs.readFileSync(path, { encoding: "utf8" }),
   /**
    * 書き
-   * @param {"text"|"json"} mode
+   * @param {"file"|"json"} mode
    * @param {string} path
    * @param {*} data
    * @returns
