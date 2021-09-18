@@ -1939,6 +1939,9 @@
 *.ignore.*
 *.snapshot.*
 
+/_init/**/*.*
+!/_init/**/.gitkeep
+
 **/js/src/**/*.js
 **/js/src/**/meta.json
 

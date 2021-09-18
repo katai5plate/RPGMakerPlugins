@@ -20,6 +20,8 @@
   - VSCode 上で検索する場合は「含めるファイル」に `src/**` と入力する
 - `npm run snap-pg [get|set] [name]`: `js/plugins.js` のスナップショットを撮る
   - `get` で取得、 `set` で適用。`{name}.snapshot.plugins.js` という名前で保存される
+- `npm test`: CI 上で行われるテストが実行される
+- `npm run dev-init`: 開発環境の構築に使う
 
 ### git-hooks
 
@@ -118,19 +120,57 @@ This software is released under the {LICENSE_NAME} License.
 }
 ```
 
-## ゲームプロジェクトの配置方法
+## 開発環境の構築方法
 
-1. ツクール MV の新規プロジェクトを作る
-2. そのうち、`audio, data, fonts, icon, img, js, movies, Game.rpgproject` を  
+- 必要なもの
+  - Git
+  - Node.js
+  - RPG ツクール MZ
+  - RPG ツクール MV
+  - コマンドプロンプトまたは VSCode
+- 必要な知識
+  - Git の使い方
+  - GitHub の使い方
+  - コマンドプロンプトの使い方
+  - VSCode の使い方
+
+1. まずこのリポジトリをクローンする
+2. コマンドプロンプトでプロジェクトを開く
+3. `npm i` を実行
+
+### ゲームプロジェクトの配置方法
+
+#### 自動で行う
+
+1. ツクール MV とツクール MZ それぞれで新規作成プロジェクトを作る
+2. `./_init/mv` に MV のプロジェクトの中身を  
+   `.gitkeep` と同じ場所に `index.html` がある状態になるように置く。
+3. `./_init/mz` に MZ のプロジェクトの中身を  
+   `.gitkeep` と同じ場所に `index.html` がある状態になるように置く。
+4. `npm run dev-init` を実行
+
+#### 手動で行う
+
+1. ツクール MV とツクール MZ それぞれで新規作成プロジェクトを作る
+2. MV のプロジェクトのうち、`audio, data, fonts, icon, img, js, movies, Game.rpgproject` を  
    そのままルートディレクトリにコピーする
 3. `data` を `data_mv` にリネームする
 4. `img/system` の中にある `ButtonSet.png` を `ButtonSet_mv.png` にリネームする
 5. `js` の中にある `main.js` を `main_mv.js` にリネームする
 6. `js/libs` の中にある `pixi.js` を `pixi_mv.js` にリネームする
 7. `js/plugins.js` は適当な名前にリネームしてバックアップを取っておく
-8. ツクール MZ の新規プロジェクトを作る
-9. そのうち、`audio, css, data, effects, fonts, icon, js, movies, game.rmmzproject` を  
+8. MZ のプロジェクトのうち、`audio, css, data, effects, fonts, icon, img, js, movies, game.rmmzproject` を  
    そのままルートディレクトリにコピーする（上書きはどっちでもいい）
+
+### 開発の始め方
+
+詳しい説明は上述の「コマンド」を参照
+
+- エディタを使う際は `npm run protect` を行い、package.json を守る
+- プラグインを新規に作るときは `npm run create` を使う
+- MV プラグインを開発するときは `npm run watch-fm` を使う
+- MZ プラグインを開発するときは `npm run watch` を使う
+- プラグイン設定のバックアップを取りたいときは `npm run snap-pg` を使う
 
 ## 俺用 TODO
 
