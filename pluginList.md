@@ -39,6 +39,20 @@
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mv/H2A_PictMaster/dist/H2A_PictMaster.js)
 
+### H2A_SSRemoteController
+
+```
+H2APG.SSRemote(イベントID,"A/B/C/D",true/false/null);
+H2APG.SSRemote("文字列が含まれるイベント名のイベント","A/B/C/D",true/false/null);
+
+第3引数がnullの場合は反転します。
+
+このようにすると自分のセルフスイッチを操作できます。
+H2APG.SSRemote(this._eventId,"A/B/C/D",true/false/null);
+
+```
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mv/H2A_SSRemoteController/dist/H2A_SSRemoteController.js)
+
 ### H2A_SetSwitchOn
 
 ```
@@ -53,20 +67,6 @@ Load Save IDに存在しないセーブデータIDを入力しないこと。
 
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mv/H2A_SetSwitchOn/dist/H2A_SetSwitchOn.js)
-
-### H2A_SSRemoteController
-
-```
-H2APG.SSRemote(イベントID,"A/B/C/D",true/false/null);
-H2APG.SSRemote("文字列が含まれるイベント名のイベント","A/B/C/D",true/false/null);
-
-第3引数がnullの場合は反転します。
-
-このようにすると自分のセルフスイッチを操作できます。
-H2APG.SSRemote(this._eventId,"A/B/C/D",true/false/null);
-
-```
-- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mv/H2A_SSRemoteController/dist/H2A_SSRemoteController.js)
 
 ### H2A_UserPerspMes
 

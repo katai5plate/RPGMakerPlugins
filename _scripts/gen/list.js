@@ -10,6 +10,7 @@ module.exports = () => {
         (target) =>
           `## ${target}\n${fs
             .readdirSync(`./js/plugins/${target}/`)
+            .sort()
             .map((name) => ({
               path: `./js/plugins/${target}/${name}/`,
               name,
