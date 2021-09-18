@@ -40,6 +40,13 @@
             src: "../data_mv/" + databaseFile.src,
           };
         });
+        var _DataManager_loadDataFile = DataManager.loadDataFile;
+        DataManager.loadDataFile = function (name, src) {
+          return _DataManager_loadDataFile.apply(this, [
+            name,
+            "../data_mv/" + src,
+          ]);
+        };
         // img/system/ButtonSet を img/system/ButtonSet_mv に差し替える
         var _ImageManager_reserveSystem = ImageManager.reserveSystem;
         ImageManager.reserveSystem = function (filename, hue, reservationId) {

@@ -6,6 +6,7 @@ const build = require("./build");
 const { resolve, write, read, diff } = require("./utils");
 const genList = require("./gen/list");
 const coreSpliter = require("./coreSpliter");
+const spawn = require("cross-spawn");
 
 const [, , name, ...args] = process.argv;
 
@@ -21,6 +22,18 @@ const buildAll = () => {
   fs.readdirSync("./js/plugins/mz/").forEach((n) => {
     console.log(n);
     build("mz", n);
+  });
+};
+
+const protect = () => {
+  const path = resolve(`./package.json`);
+  const origin = read("file", path);
+  if (!origin.match(/this_is_safe/))
+    throw new Error("package.json はすでに書き換わっています！");
+  console.log("PROTECT...", path);
+  chokidar.watch(path).on("change", () => {
+    write("file", path, origin);
+    console.log("REVERT:", path);
   });
 };
 
@@ -83,15 +96,27 @@ const buildAll = () => {
       });
   }
   if (name === "protect") {
-    const path = resolve(`./package.json`);
-    const origin = read("file", path);
-    if (!origin.match(/this_is_safe/))
-      throw new Error("package.json はすでに書き換わっています！");
-    console.log("PROTECT...", path);
-    chokidar.watch(path).on("change", () => {
-      write("file", path, origin);
-      console.log("REVERT:", path);
+    protect();
+  }
+  if (name === "dev") {
+    if (!args[0]) {
+      return help("dev [mv|mz]");
+    }
+    if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
+    // data をコピー
+    fs.copySync(`./data_${args[0]}`, "./data");
+    const path = "./data/";
+    chokidar.watch(path).on("change", (file) => {
+      const baseName = pathLib.basename(file);
+      fs.copyFile(`./data/${baseName}`, `./data_${args[0]}/${baseName}`);
+      console.log("UPDATE:", baseName, "->", `./data_${args[0]}`);
     });
+    // package.json 防御
+    protect();
+    // ツクール起動
+    spawn.sync(
+      `./${args[0] === "mv" ? "Game.rpgproject" : "game.rmmzproject"}`
+    );
   }
   if (name === "gen-list") {
     genList();

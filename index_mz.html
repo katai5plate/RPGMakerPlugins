@@ -15,5 +15,32 @@
   </head>
   <body style="background-color: black">
     <script type="text/javascript" src="js/main.js"></script>
+    <script>
+      const injection = () => {
+        // data/ を data_mz/ に差し替える
+        DataManager._databaseFiles = DataManager._databaseFiles.map(function (
+          databaseFile
+        ) {
+          return {
+            name: databaseFile.name,
+            src: "../data_mz/" + databaseFile.src,
+          };
+        });
+        const _DataManager_loadDataFile = DataManager.loadDataFile;
+        DataManager.loadDataFile = function (name, src) {
+          return _DataManager_loadDataFile.apply(this, [
+            name,
+            "../data_mz/" + src,
+          ]);
+        };
+      };
+      const i = setInterval(() => {
+        if (window.$plugins) {
+          console.log("LOADED!");
+          injection();
+          clearInterval(i);
+        }
+      }, 10);
+    </script>
   </body>
 </html>

@@ -9,6 +9,7 @@
     "watch-fm": "node ./_scripts watch-fm",
     "clean-fm": "node ./_scripts clean-fm",
     "protect": "node ./_scripts protect",
+    "dev": "node ./_scripts dev",
     "build": "node ./_scripts build",
     "build-all": "node ./_scripts build-all",
     "gen-list": "node ./_scripts gen-list",
@@ -19,6 +20,7 @@
     "init:mv-copy": "cpx \"./_init/mv/{audio,data,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/Game.rpgproject\" ./",
     "init:mv-rename": "shx mv ./data ./data_mv && shx mv ./img/system/ButtonSet.png ./img/system/ButtonSet_mv.png && shx mv ./js/main.js ./js/main_mv.js && shx mv ./js/libs/pixi.js ./js/libs/pixi_mv.js",
     "init:mz-copy": "cpx \"./_init/mz/{audio,css,data,effects,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/game.rmmzproject\" ./",
+    "init:mz-rename": "shx mv ./data ./data_mz",
     "init:run-scripts": "npm run core-split"
   },
   "repository": {
@@ -34,6 +36,7 @@
   "dependencies": {
     "chokidar": "^3.5.2",
     "cpx": "^1.5.0",
+    "cross-spawn": "^7.0.3",
     "deepmerge": "^4.2.2",
     "diff": "^5.0.0",
     "eol": "^0.9.1",
