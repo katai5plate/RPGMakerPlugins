@@ -8,6 +8,7 @@ const build = require("./build");
 const { resolve, write, read } = require("./utils");
 const genList = require("./gen/list");
 const coreSpliter = require("./coreSpliter");
+const f = require("./build/ano");
 
 const [, , name, ...args] = process.argv;
 
@@ -137,7 +138,13 @@ const buildAll = () => {
       //   if (color !== "grey") process.stderr.write(part.value[color]);
       // });
       // console.log("\n");
-      console.log(JSON.stringify(diff, null, 2));
+      console.log(
+        JSON.stringify(
+          diff.filter((d) => d.added || d.removed),
+          null,
+          2
+        )
+      );
       throw new Error("pluginList.md の変更をコミットしてください！");
     }
     console.log("pluginList.md has not changed!");
