@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 const chokidar = require("chokidar");
 const pathLib = require("path");
-require("colors");
+// require("colors");
 const Diff = require("diff");
 
 const build = require("./build");
@@ -132,11 +132,12 @@ const buildAll = () => {
       .replace(/\n/g, "[LF]\n");
     if (before !== after) {
       const diff = Diff.diffChars(before, after);
-      diff.forEach((part) => {
-        const color = part.added ? "green" : part.removed ? "red" : "grey";
-        if (color !== "grey") process.stderr.write(part.value[color]);
-      });
-      console.log("\n");
+      // diff.forEach((part) => {
+      //   const color = part.added ? "green" : part.removed ? "red" : "grey";
+      //   if (color !== "grey") process.stderr.write(part.value[color]);
+      // });
+      // console.log("\n");
+      console.log(diff);
       throw new Error("pluginList.md の変更をコミットしてください！");
     }
     console.log("pluginList.md has not changed!");
