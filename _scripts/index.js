@@ -1,14 +1,12 @@
 const fs = require("fs-extra");
 const chokidar = require("chokidar");
 const pathLib = require("path");
-// require("colors");
 const Diff = require("diff");
 
 const build = require("./build");
 const { resolve, write, read } = require("./utils");
 const genList = require("./gen/list");
 const coreSpliter = require("./coreSpliter");
-const f = require("./build/ano");
 
 const [, , name, ...args] = process.argv;
 
@@ -133,23 +131,19 @@ const buildAll = () => {
       .replace(/\n/g, "[LF]\n");
     if (before !== after) {
       const diff = Diff.diffChars(before, after);
-      // diff.forEach((part) => {
-      //   const color = part.added ? "green" : part.removed ? "red" : "grey";
-      //   if (color !== "grey") process.stderr.write(part.value[color]);
-      // });
-      // console.log("\n");
       console.log(
-        JSON.stringify(
-          diff.filter((d) => d.added || d.removed),
-          null,
-          2
+        diff.reduce(
+          (p, { added, removed, value }) =>
+            `${p}${
+              added || removed
+                ? `\n==================== ${
+                    added ? "ADD" : "REM"
+                  } ====================\n\n${value}\n\n=============================================\n`
+                : value
+            }`,
+          ""
         )
       );
-      console.log("======================================");
-      console.log(before);
-      console.log("======================================");
-      console.log(after);
-      console.log("======================================");
       throw new Error("pluginList.md の変更をコミットしてください！");
     }
     console.log("pluginList.md has not changed!");
