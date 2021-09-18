@@ -8,6 +8,7 @@
     "watch": "node ./_scripts watch",
     "watch-fm": "node ./_scripts watch-fm",
     "clean-fm": "node ./_scripts clean-fm",
+    "protect": "node ./_scripts protect",
     "build": "node ./_scripts build",
     "build-all": "node ./_scripts build-all",
     "gen-list": "node ./_scripts gen-list",

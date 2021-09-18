@@ -82,6 +82,17 @@ const buildAll = () => {
         fs.removeSync(path);
       });
   }
+  if (name === "protect") {
+    const path = resolve(`./package.json`);
+    const origin = fs.readFileSync(path, { encoding: "utf8" });
+    if (!origin.match(/this_is_safe/))
+      throw new Error("package.json はすでに書き換わっています！");
+    console.log("PROTECT...", path);
+    chokidar.watch(path).on("change", () => {
+      fs.writeFileSync(path, origin);
+      console.log("REVERT:", path);
+    });
+  }
   if (name === "gen-list") {
     genList();
   }
