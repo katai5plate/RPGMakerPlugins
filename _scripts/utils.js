@@ -3,6 +3,7 @@ const pathLib = require("path");
 const deepmerge = require("deepmerge");
 const eol = require("eol");
 const Diff = require("diff");
+const prettier = require("prettier");
 const { transform } = require("@babel/core");
 
 module.exports = {
@@ -130,12 +131,18 @@ module.exports = {
     return false;
   },
   /**
-   * babel を通す
+   * コードをフォーマットする
    * @param {string} code
+   * @param {boolean} enableBabel
    * @returns {string}
    */
-  babel: (code) =>
-    transform(code, {
-      presets: ["@babel/preset-env"],
-    }).code,
+  formatCode: (code, enableBabel = false) =>
+    prettier.format(
+      enableBabel
+        ? transform(code, {
+            presets: ["@babel/preset-env"],
+          }).code
+        : code,
+      { parser: "babel" }
+    ),
 };

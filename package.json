@@ -16,7 +16,7 @@
     "core-split": "node ./_scripts core-split",
     "snap-pg": "node ./_scripts snap-pg",
     "test": "node ./_scripts/ci && node ./_scripts pre-commit && node ./_scripts pre-push",
-    "dev-init": "npm-run-all -s init:*\"",
+    "dev-init": "npm-run-all -s init:*",
     "init:mv-copy": "cpx \"./_init/mv/{audio,data,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/Game.rpgproject\" ./",
     "init:mv-rename": "shx mv ./data ./data_mv && shx mv ./img/system/ButtonSet.png ./img/system/ButtonSet_mv.png && shx mv ./js/main.js ./js/main_mv.js && shx mv ./js/libs/pixi.js ./js/libs/pixi_mv.js",
     "init:mz-copy": "cpx \"./_init/mz/{audio,css,data,effects,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/game.rmmzproject\" ./",

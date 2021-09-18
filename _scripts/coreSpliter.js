@@ -1,7 +1,6 @@
 const fs = require("fs-extra");
-const prettier = require("prettier");
 
-const { read } = require("./utils");
+const { read, formatCode } = require("./utils");
 
 const splitCore = (target) => {
   const delimit =
@@ -38,10 +37,7 @@ const splitCore = (target) => {
 
   list.forEach(({ code, filename }) => {
     console.log(filename);
-    fs.outputFileSync(
-      `./js/src/${target}/${filename}.js`,
-      prettier.format(code, { parser: "babel" })
-    );
+    fs.outputFileSync(`./js/src/${target}/${filename}.js`, formatCode(code));
   });
 
   fs.outputJSONSync(

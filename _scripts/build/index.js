@@ -1,9 +1,6 @@
-const fs = require("fs-extra");
-const prettier = require("prettier");
-
 const buildAno = require("./ano");
 const buildCode = require("./code");
-const { resolve, tryit, write, babel } = require("../utils");
+const { resolve, tryit, write, formatCode } = require("../utils");
 
 module.exports = (target, pluginName, { verbose } = {}) => {
   const dir = {
@@ -27,11 +24,7 @@ module.exports = (target, pluginName, { verbose } = {}) => {
   if (code instanceof Error) return console.log("FAILED: Code ->", code);
   verbose && console.log("OK: Code");
 
-  const result = tryit(() =>
-    prettier.format(babel([ano, code].join("\n")), {
-      parser: "babel",
-    })
-  );
+  const result = tryit(() => formatCode([ano, code].join("\n")));
   if (result instanceof Error) return console.log("FAILED: Format ->", result);
   verbose && console.log("OK: Format");
 
