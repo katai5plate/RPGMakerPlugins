@@ -14,7 +14,7 @@
     "gen-list": "node ./_scripts gen-list",
     "core-split": "node ./_scripts core-split",
     "snap-pg": "node ./_scripts snap-pg",
-    "test": "node ./_scripts pre-commit && node ./_scripts pre-push"
+    "test": "node ./_scripts/ci && node ./_scripts pre-commit && node ./_scripts pre-push"
   },
   "repository": {
     "type": "git",
