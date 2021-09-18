@@ -1,8 +1,9 @@
 const fs = require("fs-extra");
-const { resolve } = require("../utils");
+const { resolve, write } = require("../utils");
 
 module.exports = () => {
-  fs.writeFileSync(
+  write(
+    "text",
     "./pluginList.md",
     `# プラグインリスト\n${["mv", "mz"]
       .map(

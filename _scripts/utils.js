@@ -1,5 +1,7 @@
+const fs = require("fs-extra");
 const pathLib = require("path");
 const deepmerge = require("deepmerge");
+const eol = require("eol");
 
 module.exports = {
   /**
@@ -66,4 +68,25 @@ module.exports = {
       return new Error(error);
     }
   },
+  /**
+   * 読み
+   * @param {"text"|"json"} mode
+   * @param {string} path
+   * @returns
+   */
+  read: (mode, path) =>
+    mode === "json"
+      ? fs.readJSONSync(path)
+      : fs.readFileSync(path, { encoding: "utf8" }),
+  /**
+   * 書き
+   * @param {"text"|"json"} mode
+   * @param {string} path
+   * @param {*} data
+   * @returns
+   */
+  write: (mode, path, data) =>
+    mode === "json"
+      ? fs.writeFileSync(path, eol.lf(JSON.stringify(data, null, 2)))
+      : fs.writeFileSync(path, eol.lf(data)),
 };

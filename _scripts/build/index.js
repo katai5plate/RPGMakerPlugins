@@ -3,7 +3,7 @@ const prettier = require("prettier");
 
 const buildAno = require("./ano");
 const buildCode = require("./code");
-const { resolve, tryit } = require("../utils");
+const { resolve, tryit, write } = require("../utils");
 
 module.exports = (target, pluginName, { verbose } = {}) => {
   const dir = {
@@ -36,7 +36,7 @@ module.exports = (target, pluginName, { verbose } = {}) => {
   verbose && console.log("OK: Format");
 
   const outputPath = resolve(config.distDir, `${pluginName}.js`);
-  fs.writeFileSync(outputPath, result);
+  write("text", outputPath, result);
   console.log("DONE:", outputPath);
   return outputPath;
 };

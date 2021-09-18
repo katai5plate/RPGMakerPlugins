@@ -5,7 +5,7 @@ require("colors");
 const Diff = require("diff");
 
 const build = require("./build");
-const { resolve } = require("./utils");
+const { resolve, write } = require("./utils");
 const genList = require("./gen/list");
 const coreSpliter = require("./coreSpliter");
 
@@ -91,7 +91,7 @@ const buildAll = () => {
       throw new Error("package.json はすでに書き換わっています！");
     console.log("PROTECT...", path);
     chokidar.watch(path).on("change", () => {
-      fs.writeFileSync(path, origin);
+      write("text", path, origin);
       console.log("REVERT:", path);
     });
   }
