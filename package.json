@@ -2,7 +2,7 @@
   "name": "rpg-maker-plugins",
   "version": "1.0.0",
   "description": "RPG ツクール MV/MZ のプラグインなどのファイルをまとめています。",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "create": "node ./_scripts create",
     "watch": "node ./_scripts watch",
@@ -17,7 +17,7 @@
     "test": "node ./_scripts/ci && node ./_scripts pre-commit && node ./_scripts pre-push",
     "dev-init": "npm-run-all -s init:*\"",
     "init:mv-copy": "cpx \"./_init/mv/{audio,data,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/Game.rpgproject\" ./",
-    "init:mv-rename": "shx mv ./data ./data_mv && shx mv ./img/system/ButtonSet.png ./img/system/ButtonSet_mv.png && shx mv ./js/main.js ./js/main_mv.js",
+    "init:mv-rename": "shx mv ./data ./data_mv && shx mv ./img/system/ButtonSet.png ./img/system/ButtonSet_mv.png && shx mv ./js/main.js ./js/main_mv.js && shx mv ./js/libs/pixi.js ./js/libs/pixi_mv.js",
     "init:mz-copy": "cpx \"./_init/mz/{audio,css,data,effects,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/game.rmmzproject\" ./",
     "init:run-scripts": "npm run core-split"
   },
@@ -46,6 +46,16 @@
   },
   "devDependencies": {
     "simple-git-hooks": "^2.6.1"
+  },
+  "chromium-args": "--force-color-profile=srgb",
+  "js-flags": "--expose-gc",
+  "window": {
+    "title": "Game",
+    "width": 816,
+    "height": 624,
+    "position": "center",
+    "toolbar": false,
+    "icon": "icon/icon.png"
   },
   "this_is_safe": "（これはツクールによって上書きされたかどうかを調べるフラグ）"
 }
