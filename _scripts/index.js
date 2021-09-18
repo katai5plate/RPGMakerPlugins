@@ -127,7 +127,7 @@ const buildAll = () => {
     genList();
     const after = fs.readFileSync("./pluginList.md", { encoding: "utf8" });
     if (before !== after) {
-      const diff = Diff.diffChars(one, other);
+      const diff = Diff.diffChars(before, after);
       diff.forEach((part) => {
         const color = part.added ? "green" : part.removed ? "red" : "grey";
         process.stderr.write(part.value[color]);
