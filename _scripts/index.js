@@ -137,7 +137,7 @@ const buildAll = () => {
       //   if (color !== "grey") process.stderr.write(part.value[color]);
       // });
       // console.log("\n");
-      console.log(diff);
+      console.log(JSON.stringify(diff, null, 2));
       throw new Error("pluginList.md の変更をコミットしてください！");
     }
     console.log("pluginList.md has not changed!");
