@@ -11,12 +11,15 @@
   - `plugins/js` に `*.ignore.js` としてビルド結果がコピーされる
   - プラグイン選択画面でフォルダが使えない MV 用
 - `npm run clean-fm`: watch-fm で散らかったコピーを一掃する
+- `npm run protect`: エディタによって `package.json` が書き換えられるのを防ぐ
 - `npm run build [mv|mz] [pluginName]`: プラグインのビルド
 - `npm run build-all`: すべてのプラグインを一括ビルド
 - `npm run gen-list`: プラグインリストを自動生成
 - `npm run core-split`: コアスクリプトをクラスごとに分割
   - `./js/src` に出力される
   - VSCode 上で検索する場合は「含めるファイル」に `src/**` と入力する
+- `npm run snap-pg [get|set] [name]`: `js/plugins.js` のスナップショットを撮る
+  - `get` で取得、 `set` で適用。`{name}.snapshot.plugins.js` という名前で保存される
 
 ### git-hooks
 

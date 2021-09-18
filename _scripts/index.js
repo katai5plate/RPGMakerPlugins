@@ -82,6 +82,17 @@ const buildAll = () => {
         fs.removeSync(path);
       });
   }
+  if (name === "protect") {
+    const path = resolve(`./package.json`);
+    const origin = fs.readFileSync(path, { encoding: "utf8" });
+    if (!origin.match(/this_is_safe/))
+      throw new Error("package.json はすでに書き換わっています！");
+    console.log("PROTECT...", path);
+    chokidar.watch(path).on("change", () => {
+      fs.writeFileSync(path, origin);
+      console.log("REVERT:", path);
+    });
+  }
   if (name === "gen-list") {
     genList();
   }
@@ -121,5 +132,22 @@ const buildAll = () => {
   if (name === "core-split") {
     coreSpliter();
     console.log("done");
+  }
+  if (name === "snap-pg") {
+    if (!args[0]) {
+      return help("snap-pg [get|set] [name]");
+    }
+    if (!["get", "set"].includes(args[0]) || [undefined, ""].includes(args[1]))
+      throw new Error("無効な引数");
+    const filePath = `./js/${args[1]}.snapshot.plugins.js`;
+    const originPath = "./js/plugins.js";
+    if (args[0] === "get") {
+      fs.copySync(originPath, filePath);
+      console.log("CREATE:", originPath, "->", filePath);
+    }
+    if (args[0] === "set") {
+      fs.copySync(filePath, originPath);
+      console.log("OVERWRITE:", filePath, "->", originPath);
+    }
   }
 })();

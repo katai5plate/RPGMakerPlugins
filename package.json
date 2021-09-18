@@ -8,10 +8,12 @@
     "watch": "node ./_scripts watch",
     "watch-fm": "node ./_scripts watch-fm",
     "clean-fm": "node ./_scripts clean-fm",
+    "protect": "node ./_scripts protect",
     "build": "node ./_scripts build",
     "build-all": "node ./_scripts build-all",
     "gen-list": "node ./_scripts gen-list",
     "core-split": "node ./_scripts core-split",
+    "snap-pg": "node ./_scripts snap-pg",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
