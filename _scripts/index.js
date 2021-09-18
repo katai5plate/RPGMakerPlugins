@@ -123,9 +123,13 @@ const buildAll = () => {
       });
     });
     console.log("The build is no problem!");
-    const before = read("file", "./pluginList.md");
+    const before = read("file", "./pluginList.md")
+      .replace(/\r/g, "[CR]")
+      .replace(/\n/g, "[LF]\n");
     genList();
-    const after = read("file", "./pluginList.md");
+    const after = read("file", "./pluginList.md")
+      .replace(/\r/g, "[CR]")
+      .replace(/\n/g, "[LF]\n");
     if (before !== after) {
       const diff = Diff.diffChars(before, after);
       diff.forEach((part) => {
