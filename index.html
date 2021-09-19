@@ -2,12 +2,16 @@
 <html>
   <body>
     <script>
-      var path = nw.process.execPath;
-      if (path.match(/RPGMV/)) {
-        location.href = "./index_mv.html";
-      }
-      if (path.match(/RPGMZ/)) {
-        location.href = "./index_mz.html";
+      try {
+        var path = nw.process.execPath;
+        if (path.match(/RPGMV/)) {
+          location.href = "./index_mv.html";
+        }
+        if (path.match(/RPGMZ/)) {
+          location.href = "./index_mz.html";
+        }
+      } catch (e) {
+        location.href = "./plugins.json";
       }
     </script>
     <a href="./index_mv.html">MV</a>

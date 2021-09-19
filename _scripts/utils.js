@@ -83,15 +83,20 @@ module.exports = {
       : fs.readFileSync(path, { encoding: "utf8" }),
   /**
    * 書き
-   * @param {"file"|"json"} mode
+   * @param {"file"|"json"|"json-minify"} mode
    * @param {string} path
    * @param {*} data
    * @returns
    */
-  write: (mode, path, data) =>
-    mode === "json"
-      ? fs.writeFileSync(path, eol.lf(JSON.stringify(data, null, 2)))
-      : fs.writeFileSync(path, eol.lf(data)),
+  write: (mode, path, data) => {
+    switch (mode) {
+      case "json":
+        return fs.writeFileSync(path, eol.lf(JSON.stringify(data, null, 2)));
+      case "json-minify":
+        return fs.writeFileSync(path, eol.lf(JSON.stringify(data)));
+    }
+    return fs.writeFileSync(path, eol.lf(data));
+  },
   /**
    * 比較する
    * @param {string} a

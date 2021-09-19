@@ -9,9 +9,11 @@ const coreSpliter = require("./coreSpliter");
 const { resolve, write, read } = require("./utils");
 
 const genList = require("./gen/list");
+const genApi = require("./gen/api");
 
 const diffPackageJson = require("./test/diff/packageJson");
 const diffPluginList = require("./test/diff/pluginList");
+const diffApi = require("./test/diff/api");
 
 const [, , name, ...args] = process.argv;
 
@@ -113,12 +115,16 @@ const protect = () => {
   if (name === "gen-list") {
     genList();
   }
+  if (name === "gen-api") {
+    genApi();
+  }
   if (name === "pre-commit") {
     diffPackageJson();
   }
   if (name === "pre-push") {
     buildAll({ thenTest: true });
     diffPluginList();
+    diffApi();
   }
   if (name === "core-split") {
     coreSpliter();
