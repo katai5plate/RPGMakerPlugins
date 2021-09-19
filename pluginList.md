@@ -200,7 +200,8 @@ H2APG.UserPerspMes.defMesDec();
 2. dialogs フォルダにダイアログスクリプトが書かれたテキストファイルを置く
 3. コマンドエディタでダイアログスクリプトを実行したいタイミングでプラグインコマンド「実行」を挿入
 
-より詳しい使い方とリファレンスはプラグインのホームページを確認してください。
+より詳しい使い方とリファレンス:
+https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_DialogLoader/README.md
 
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_DialogLoader/dist/H2A_DialogLoader.js)

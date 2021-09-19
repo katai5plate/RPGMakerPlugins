@@ -5,4 +5,5 @@ How to use
 2. Place the text file containing the dialog script in the dialogs folder. 
 3. Insert the plugin command "run" at the timing you want to execute the dialog script in the command editor.
 
-For more detailed usage and reference, please check the plugin homepage.
+For more detailed usage and reference:
+https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_DialogLoader/README.md

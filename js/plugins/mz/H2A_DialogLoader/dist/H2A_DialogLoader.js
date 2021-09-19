@@ -54,12 +54,13 @@
  * 2. dialogs フォルダにダイアログスクリプトが書かれたテキストファイルを置く
  * 3. コマンドエディタでダイアログスクリプトを実行したいタイミングでプラグインコマンド「実行」を挿入
  *
- * より詳しい使い方とリファレンスはプラグインのホームページを確認してください。
+ * より詳しい使い方とリファレンス:
+ * https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_DialogLoader/README.md
  *
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: v1.0.1
+ * Version: v1.0.2
  * RPG Maker MZ Version: v1.2.1
  */
 /*~struct~Define:
@@ -129,12 +130,13 @@
  * 2. Place the text file containing the dialog script in the dialogs folder.
  * 3. Insert the plugin command "run" at the timing you want to execute the dialog script in the command editor.
  *
- * For more detailed usage and reference, please check the plugin homepage.
+ * For more detailed usage and reference:
+ * https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_DialogLoader/README.md
  *
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: v1.0.1
+ * Version: v1.0.2
  * RPG Maker MZ Version: v1.2.1
  */
 /*~struct~Define:en
