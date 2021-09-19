@@ -3,7 +3,7 @@ const build = require("./build");
 const testBuildResult = require("./test/buildResult");
 const { diff, read } = require("./utils");
 
-module.exports = ({ thenTest }) => {
+module.exports = ({ thenTest } = {}) => {
   const result = ["mv", "mz"].reduce(
     (p, target) => [
       ...p,
