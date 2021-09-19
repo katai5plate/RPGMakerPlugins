@@ -19,6 +19,7 @@
 - `npm run build [mv|mz] [pluginName]`: プラグインのビルド
 - `npm run build-all`: すべてのプラグインを一括ビルド
 - `npm run gen-list`: プラグインリストを自動生成
+- `npm run gen-api`: カタログページ用の JSON ファイルを出力する
 - `npm run core-split`: コアスクリプトをクラスごとに分割
   - `./js/src` に出力される
   - VSCode 上で検索する場合は「含めるファイル」に `src/**` と入力する
@@ -26,6 +27,7 @@
   - `get` で取得、 `set` で適用。`{name}.snapshot.plugins.js` という名前で保存される
 - `npm test`: CI 上で行われるテストが実行される
 - `npm run dev-init`: 開発環境の構築に使う
+- `npm run serve`: ポート 3333 でサーバーを立てる
 
 ### git-hooks
 
