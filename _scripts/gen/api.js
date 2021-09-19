@@ -21,6 +21,7 @@ module.exports = () => {
             _languages: languages,
           } = read("json", `${pluginPath}/${SRC_DIR_NAME}/meta.json`);
           const help = read("file", `${pluginPath}/${SRC_DIR_NAME}/help.txt`);
+          const meta = read("json", `${pluginPath}/${SRC_DIR_NAME}/meta.json`);
           return [
             ...pp,
             {
@@ -38,6 +39,7 @@ module.exports = () => {
                 support,
                 languages,
                 help,
+                meta,
               },
             },
           ];
