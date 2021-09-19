@@ -129,7 +129,7 @@ const protect = () => {
   if (name === "update") {
     buildAll();
     genList();
-    genAPi();
+    genApi();
   }
   if (name === "core-split") {
     coreSpliter();
