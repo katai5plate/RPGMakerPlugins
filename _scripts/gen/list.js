@@ -1,5 +1,4 @@
-const fs = require("fs-extra");
-const { resolve, write, read } = require("../utils");
+const { resolve, write, read, readdir } = require("../utils");
 
 module.exports = () => {
   write(
@@ -8,9 +7,7 @@ module.exports = () => {
     `# プラグインリスト\n${["mv", "mz"]
       .map(
         (target) =>
-          `## ${target}\n${fs
-            .readdirSync(`./js/plugins/${target}/`)
-            .sort()
+          `## ${target}\n${readdir(`./js/plugins/${target}/`)
             .map((name) => ({
               path: `./js/plugins/${target}/${name}/`,
               name,

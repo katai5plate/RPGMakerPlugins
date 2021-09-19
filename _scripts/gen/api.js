@@ -1,5 +1,4 @@
-const fs = require("fs-extra");
-const { write, read } = require("../utils");
+const { write, read, readdir } = require("../utils");
 
 module.exports = () => {
   const baseUrl = "js/plugins";
@@ -12,7 +11,7 @@ module.exports = () => {
       const targetPath = `./${baseUrl}/${target}`;
       return [
         ...p,
-        ...fs.readdirSync(targetPath).reduce((pp, pluginName) => {
+        ...readdir(targetPath).reduce((pp, pluginName) => {
           const pluginPath = `${targetPath}/${pluginName}`;
           const {
             plugindesc,
@@ -27,9 +26,10 @@ module.exports = () => {
             {
               target,
               pluginName,
-              src: fs
-                .readdirSync(`${pluginPath}/${SRC_DIR_NAME}`)
-                .reduce((ppp, srcFile) => [...ppp, srcFile], []),
+              src: readdir(`${pluginPath}/${SRC_DIR_NAME}`).reduce(
+                (ppp, srcFile) => [...ppp, srcFile],
+                []
+              ),
               dist: `${pluginName}.js`,
               data: {
                 plugindesc,

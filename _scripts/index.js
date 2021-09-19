@@ -6,7 +6,7 @@ const spawn = require("cross-spawn");
 const build = require("./build");
 const buildAll = require("./buildAll");
 const coreSpliter = require("./coreSpliter");
-const { resolve, write, read } = require("./utils");
+const { resolve, write, read, readdir } = require("./utils");
 
 const genList = require("./gen/list");
 const genApi = require("./gen/api");
@@ -81,7 +81,7 @@ const protect = () => {
   }
   if (name === "clean-fm") {
     const dir = "./js/plugins/";
-    fs.readdirSync(dir)
+    readdir(dir)
       .filter((f) => f.match(/\.ignore\.js$/))
       .forEach((f) => {
         const path = resolve(dir, `./${f}`);

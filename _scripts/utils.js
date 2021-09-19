@@ -98,6 +98,12 @@ module.exports = {
     return fs.writeFileSync(path, eol.lf(data));
   },
   /**
+   * ディレクトリ内のファイル一覧を出力
+   * @param {string} path
+   * @returns {string[]}
+   */
+  readdir: (path) => fs.readdirSync(path).sort(),
+  /**
    * 比較する
    * @param {string} a
    * @param {string} b
