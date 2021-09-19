@@ -1,29 +1,21 @@
 const fs = require("fs-extra");
-const chokidar = require("chokidar");
 const pathLib = require("path");
+const chokidar = require("chokidar");
+const spawn = require("cross-spawn");
 
 const build = require("./build");
-const { resolve, write, read, diff } = require("./utils");
-const genList = require("./gen/list");
+const buildAll = require("./buildAll");
 const coreSpliter = require("./coreSpliter");
-const spawn = require("cross-spawn");
+const { resolve, write, read } = require("./utils");
+
+const genList = require("./gen/list");
+
+const diffPackageJson = require("./test/diff/packageJson");
+const diffPluginList = require("./test/diff/pluginList");
 
 const [, , name, ...args] = process.argv;
 
 const help = (man) => console.log(`USAGE:\n  ${man}\n`);
-
-const buildAll = () => {
-  console.log("mv");
-  fs.readdirSync("./js/plugins/mv/").forEach((n) => {
-    console.log(n);
-    build("mv", n);
-  });
-  console.log("mz");
-  fs.readdirSync("./js/plugins/mz/").forEach((n) => {
-    console.log(n);
-    build("mz", n);
-  });
-};
 
 const protect = () => {
   const path = resolve(`./package.json`);
@@ -122,37 +114,11 @@ const protect = () => {
     genList();
   }
   if (name === "pre-commit") {
-    if (!read("json", "./package.json").this_is_safe) {
-      throw new Error(
-        "package.json が更新されたままコミットしようとしています！"
-      );
-    }
-    console.log("package.json is safe!");
+    diffPackageJson();
   }
   if (name === "pre-push") {
-    buildAll();
-    ["mv", "mz"].forEach((target) => {
-      const path = `./js/plugins/${target}/`;
-      fs.readdirSync(path).forEach((pluginName) => {
-        const { length } = fs.readdirSync(
-          resolve(path, `./${pluginName}/dist`)
-        );
-        if (length === 0)
-          throw new Error(`${target}/${pluginName} のビルド結果がありません`);
-        if (length > 1)
-          throw new Error(
-            `${target}/${pluginName} のビルド結果が重複しています`
-          );
-      });
-    });
-    console.log("The build is no problem!");
-    const before = read("file", "./pluginList.md");
-    genList();
-    const after = read("file", "./pluginList.md");
-    if (diff(before, after)) {
-      throw new Error("pluginList.md の変更をコミットしてください！");
-    }
-    console.log("pluginList.md has not changed!");
+    buildAll({ thenTest: true });
+    diffPluginList();
   }
   if (name === "core-split") {
     coreSpliter();
