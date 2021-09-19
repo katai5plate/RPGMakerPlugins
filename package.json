@@ -10,6 +10,7 @@
     "clean-fm": "node ./_scripts clean-fm",
     "protect": "node ./_scripts protect",
     "dev": "node ./_scripts dev",
+    "update": "node ./_scripts update",
     "build": "node ./_scripts build",
     "build-all": "node ./_scripts build-all",
     "gen-list": "node ./_scripts gen-list",

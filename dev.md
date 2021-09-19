@@ -16,6 +16,7 @@
   - さらにエディタのせいで `./package.json` が書き換えられるのを防いでくれる
     - 個別で使いたい場合は `npm run protect`
   - エディタも開く
+- `npm run update`: 変更後にするべきビルド処理を一括実行
 - `npm run build [mv|mz] [pluginName]`: プラグインのビルド
 - `npm run build-all`: すべてのプラグインを一括ビルド
 - `npm run gen-list`: プラグインリストを自動生成

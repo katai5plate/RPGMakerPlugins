@@ -126,6 +126,11 @@ const protect = () => {
     diffPluginList();
     diffApi();
   }
+  if (name === "update") {
+    buildAll();
+    genList();
+    genAPi();
+  }
   if (name === "core-split") {
     coreSpliter();
     console.log("done");
