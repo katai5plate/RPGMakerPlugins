@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const pathLib = require("path");
 const deepmerge = require("deepmerge");
 const eol = require("eol");
-const Diff = require("diff");
+// const Diff = require("diff");
 const prettier = require("prettier");
 const { transform } = require("@babel/core");
 
@@ -104,28 +104,28 @@ module.exports = {
       x.replace(/\r/g, "→").replace(/\n/g, "↵\n")
     );
     if (before !== after) {
-      const diff = Diff.diffChars(before, after);
-      console.log(
-        diff
-          .slice(
-            diff.findIndex((d) => d.added || d.removed),
-            -diff.reverse().findIndex((d) => d.added || d.removed)
-          )
-          .reduce(
-            (p, { added, removed, value }) =>
-              `${p}${
-                added || removed
-                  ? `\n==================== ${
-                      added ? "ADD" : "REM"
-                    } ==============================================================================================================\n|\n${value.replace(
-                      /^/gm,
-                      "| "
-                    )}\n|\n=======================================================================================================================================\n`
-                  : value
-              }`,
-            ""
-          )
-      );
+      // const diff = Diff.diffChars(before, after);
+      // console.log(
+      //   diff
+      //     .slice(
+      //       diff.findIndex((d) => d.added || d.removed),
+      //       -diff.reverse().findIndex((d) => d.added || d.removed)
+      //     )
+      //     .reduce(
+      //       (p, { added, removed, value }) =>
+      //         `${p}${
+      //           added || removed
+      //             ? `\n==================== ${
+      //                 added ? "ADD" : "REM"
+      //               } ==============================================================================================================\n|\n${value.replace(
+      //                 /^/gm,
+      //                 "| "
+      //               )}\n|\n=======================================================================================================================================\n`
+      //             : value
+      //         }`,
+      //       ""
+      //     )
+      // );
       return true;
     }
     return false;
