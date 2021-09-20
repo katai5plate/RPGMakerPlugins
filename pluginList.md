@@ -1,18 +1,6 @@
 # プラグインリスト
 ## mv
 
-### H2A_FaceTemplate
-
-```
-パラメータに登録された顔グラフィックを使用して文章の表示を行うと、
-１行目にキャラクターの名前が表示されるようになります。
-
-最初の１行を占領し、４行目を非表示にするため、
-これを使用した文章は３行までにしてください。
-
-```
-- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mv/H2A_FaceTemplate/dist/H2A_FaceTemplate.js)
-
 ### H2A_PictMaster
 
 ```
