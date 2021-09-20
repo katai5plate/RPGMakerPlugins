@@ -5,6 +5,7 @@ const spawn = require("cross-spawn");
 
 const build = require("./build");
 const buildAll = require("./buildAll");
+const watch = require("./watch");
 const coreSpliter = require("./coreSpliter");
 const { resolve, write, read, readdir } = require("./utils");
 
@@ -57,32 +58,19 @@ const protect = () => {
       return help("watch [mv|mz] [pluginName]");
     }
     if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
-    const path = resolve(`./js/plugins/${args[0]}/${args[1]}/`);
-    console.log("WATCHING...", path);
-    chokidar.watch(path, { ignored: /\/dist\/.*?\.js/ }).on("change", () => {
-      build(args[0], args[1]);
-    });
+    watch(args[0], args[1]);
   }
   if (name === "watch-fm") {
     if (!args[0]) {
       return help("watch [mv|mz] [pluginName]");
     }
     if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
-    const path = resolve(`./js/plugins/${args[0]}/${args[1]}/`);
-    console.log("WATCHING...", path);
-    chokidar.watch(path, { ignored: /\/dist\/.*?\.js/ }).on("change", () => {
-      const pluginFilePath = build(args[0], args[1]);
-      const copyTo = `./js/plugins/${
-        pathLib.parse(pluginFilePath).name
-      }.ignore.js`;
-      fs.copyFileSync(pluginFilePath, copyTo);
-      console.log("COPY:", copyTo);
-    });
+    watch(args[0], args[1], { flatMode: true });
   }
   if (name === "clean-fm") {
     const dir = "./js/plugins/";
     readdir(dir)
-      .filter((f) => f.match(/\.ignore\.js$/))
+      .filter((f) => f.match(/_ignore\.js$/))
       .forEach((f) => {
         const path = resolve(dir, `./${f}`);
         console.log("DELETE:", path);
@@ -94,7 +82,7 @@ const protect = () => {
   }
   if (name === "dev") {
     if (!args[0]) {
-      return help("dev [mv|mz]");
+      return help("dev [mv|mz] (pluginName)");
     }
     if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
     // data をコピー
@@ -107,10 +95,14 @@ const protect = () => {
     });
     // package.json 防御
     protect();
-    // ツクール起動
-    spawn.sync(
-      `./${args[0] === "mv" ? "Game.rpgproject" : "game.rmmzproject"}`
-    );
+    // // ツクール起動
+    // spawn.sync(
+    //   `./${args[0] === "mv" ? "Game.rpgproject" : "game.rmmzproject"}`
+    // );
+    // watch
+    if (args[1]) {
+      watch(args[0], args[1], { flatMode: args[0] === "mv" });
+    }
   }
   if (name === "gen-list") {
     genList();

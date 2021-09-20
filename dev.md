@@ -11,11 +11,12 @@
   - `plugins/js` に `*.ignore.js` としてビルド結果がコピーされる
   - プラグイン選択画面でフォルダが使えない MV 用
 - `npm run clean-fm`: watch-fm で散らかったコピーを一掃する
-- `npm run dev [mv|mz]`: MV/MZ それぞれのエディタでプロジェクトの編集をできるようにする
+- `npm run dev [mv|mz] (pluginName)`: MV/MZ それぞれのエディタでプロジェクトの編集をできるようにする
   - `./data` が変更されると `./data_mv`, `./data_mz` に変更が保存される
   - さらにエディタのせいで `./package.json` が書き換えられるのを防いでくれる
     - 個別で使いたい場合は `npm run protect`
-  - エディタも開く
+  - ~~エディタも開く~~ 開かないことにした。
+  - プラグイン名も指定した場合は `watch`, `watch-fm` も起動する
 - `npm run update`: 変更後にするべきビルド処理を一括実行
 - `npm run build [mv|mz] [pluginName]`: プラグインのビルド
 - `npm run build-all`: すべてのプラグインを一括ビルド
