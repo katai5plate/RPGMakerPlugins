@@ -2,7 +2,9 @@
 
 RPG ツクール MV/MZ のプラグインなどのファイルをまとめています。
 
-- [プラグインリストはこちら](https://had2apps.com/mvzp)
+[公開中のプラグインリストはこちら](https://had2apps.com/mvzp)
+
+[サポート終了したプラグインはこちら](./js/plugins/_trush/)
 
 ## ライセンス
 
