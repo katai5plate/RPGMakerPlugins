@@ -17,8 +17,8 @@
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: v1.1
- *
+ * Version: v1.2.0
+ * RPG Maker MV Version: v1.6.2
  */
 
 var H2APG = H2APG || {};

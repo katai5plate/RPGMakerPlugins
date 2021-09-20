@@ -1,6 +1,6 @@
 {
   "_license": "WTFPL",
-  "_version": "1.1",
-  "_support": "",
+  "_version": "1.2.0",
+  "_support": "1.6.2",
   "plugindesc": "マップ上のイベントのセルフスイッチをリモコン操作します。"
 }

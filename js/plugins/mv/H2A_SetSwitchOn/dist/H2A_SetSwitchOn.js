@@ -43,8 +43,8 @@
  * Copyright (c) 2021 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: v2.0.2
- * RPG Maker MV Version: v1.5.0
+ * Version: v2.0.3
+ * RPG Maker MV Version: v1.6.2
  */
 
 var H2APG = H2APG || {};
@@ -52,7 +52,7 @@ var H2APG = H2APG || {};
   /*========== ./main.js ==========*/
   //-----------------------------------------------------//
   /* プラグイン名 */
-  var PluginName = "H2A_SetSwitchOn";
+  var PluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
   /* 固有オブジェクト名 */
   H2APG.SetSwitchOn = {};
   //-----------------------------------------------------//

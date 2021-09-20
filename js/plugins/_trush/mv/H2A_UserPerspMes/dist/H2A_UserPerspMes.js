@@ -204,7 +204,7 @@ var H2APG = H2APG || {};
   /*========== ./main.js ==========*/
   //-----------------------------------------------------//
   /* プラグイン名 */
-  var PluginName = "H2A_UserPerspMes";
+  var PluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
   /* 固有オブジェクト名 */
   H2APG.UserPerspMes = {};
   //-----------------------------------------------------//
