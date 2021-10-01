@@ -249,22 +249,20 @@
         this.onDragEnd();
       }
       const m = new P(TouchInput.x, TouchInput.y);
-      const d = this.#dragPosition;
-      const z = new P(m.x - d.x, m.y - d.y);
-      // if (c.left < a.left) z.x = a.left;
-      // if (c.right > a.right) z.x = a.right - c.width - 100;
-      // if (c.top < a.top) z.y = a.top;
-      // if (c.bottom > a.bottom) z.y = a.bottom;
-      // if (a.containsRect(c)) {
+      const z = new P(m.x - this.#dragPosition.x, m.y - this.#dragPosition.y);
       this.position.set(z.x, z.y);
       const a = this.#draggableArea;
       const c = this.#globalCollision;
-      if (c.left <= a.left) this.position.set(a.left - (c.x - this.x), this.y);
-      if (a.right <= c.right)
-        this.position.set(a.right - c.width - (c.x - this.x), this.y);
-      if (c.top <= a.top) this.position.set(this.x, a.top - (c.y - this.y));
-      if (a.bottom <= c.bottom)
-        this.position.set(this.x, a.bottom - c.height - (c.y - this.y));
+      if (c.left <= a.left) {
+        this.x = a.left - (c.x - this.x);
+      } else if (a.right <= c.right) {
+        this.x = a.right - c.width - (c.x - this.x);
+      }
+      if (c.top <= a.top) {
+        this.y = a.top - (c.y - this.y);
+      } else if (a.bottom <= c.bottom) {
+        this.y = a.bottom - c.height - (c.y - this.y);
+      }
     }
     update() {
       this.updateTouch();
