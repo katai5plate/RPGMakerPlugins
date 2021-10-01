@@ -1,0 +1,40 @@
+{
+  "_license": "MIT",
+  "_version": "0.0.1",
+  "_support": "1.3.3",
+  "plugindesc": "",
+  "commands": [
+    {
+      "command": "setup",
+      "text": "ピクチャ設定",
+      "...": [
+        {
+          "arg": "_pictureName",
+          "text": "ファイル名",
+          "type": "file",
+          "dir": "img/pictures"
+        },
+        {
+          "arg": "_aliasName",
+          "text": "エイリアス名",
+          "desc": "省略した場合はファイル名が設定されます",
+          "type": "string"
+        },
+        {
+          "arg": "_collision",
+          "text": "当たり判定",
+          "desc": "省略した場合は画像サイズがそのまま設定されます",
+          "type": "struct<Rect>"
+        }
+      ]
+    }
+  ],
+  "structs": {
+    "Rect": [
+      { "param": "_x", "type": "number" },
+      { "param": "_y", "type": "number" },
+      { "param": "_width", "type": "number" },
+      { "param": "_height", "type": "number" }
+    ]
+  }
+}
