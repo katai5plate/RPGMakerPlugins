@@ -21,20 +21,50 @@
           "type": "string"
         },
         {
+          "arg": "_position",
+          "text": "左上位置",
+          "desc": "省略禁止",
+          "type": "struct<P>",
+          "default": { "_x": 0, "_y": 0 }
+        },
+        {
           "arg": "_collision",
           "text": "当たり判定",
           "desc": "省略した場合は画像サイズがそのまま設定されます",
-          "type": "struct<Rect>"
+          "type": "struct<R>"
+        },
+        {
+          "arg": "_dragConfig",
+          "text": "ドラッグ設定",
+          "desc": "省略禁止",
+          "type": "struct<DragConfig>",
+          "default": {
+            "_isEnable": false,
+            "_draggableArea": {
+              "_x": -1000,
+              "_y": -1000,
+              "_width": 3000,
+              "_height": 3000
+            }
+          }
         }
       ]
     }
   ],
   "structs": {
-    "Rect": [
+    "P": [
+      { "param": "_x", "type": "number" },
+      { "param": "_y", "type": "number" }
+    ],
+    "R": [
       { "param": "_x", "type": "number" },
       { "param": "_y", "type": "number" },
       { "param": "_width", "type": "number" },
       { "param": "_height", "type": "number" }
+    ],
+    "DragConfig": [
+      { "param": "_isEnable", "type": "boolean" },
+      { "param": "_draggableArea", "type": "struct<R>" }
     ]
   }
 }

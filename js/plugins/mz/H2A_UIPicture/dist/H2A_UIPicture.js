@@ -18,10 +18,22 @@
  *   @desc 省略した場合はファイル名が設定されます
  *   @type string
  *
+ *   @arg _position
+ *   @text 左上位置
+ *   @desc 省略禁止
+ *   @type struct<P>
+ *   @default {"_x":0,"_y":0}
+ *
  *   @arg _collision
  *   @text 当たり判定
  *   @desc 省略した場合は画像サイズがそのまま設定されます
- *   @type struct<Rect>
+ *   @type struct<R>
+ *
+ *   @arg _dragConfig
+ *   @text ドラッグ設定
+ *   @desc 省略禁止
+ *   @type struct<DragConfig>
+ *   @default {"_isEnable":false,"_draggableArea":{"_x":-1000,"_y":-1000,"_width":3000,"_height":3000}}
  *
  * @help
  *
@@ -32,7 +44,15 @@
  * Version: v0.0.1
  * RPG Maker MZ Version: v1.3.3
  */
-/*~struct~Rect:ja
+/*~struct~P:ja
+ * @param _x
+ * @type number
+ *
+ * @param _y
+ * @type number
+ *
+ */
+/*~struct~R:ja
  * @param _x
  * @type number
  *
@@ -44,6 +64,14 @@
  *
  * @param _height
  * @type number
+ *
+ */
+/*~struct~DragConfig:ja
+ * @param _isEnable
+ * @type boolean
+ *
+ * @param _draggableArea
+ * @type struct<R>
  *
  */
 (() => {
@@ -108,15 +136,6 @@
     this.stroke();
   };
 
-  // class Table extends PIXI.Container {
-  //   constructor() {
-  //     super();
-  //     SceneManager._scene._table = this;
-  //     SceneManager._scene.addChild(SceneManager._scene._table);
-  //   }
-  // }
-  // window.Table = Table;
-
   class P extends PIXI.Point {
     constructor(x, y) {
       super(x, y);
@@ -171,18 +190,21 @@
     #isDraggable = true;
     /** @type {R} */
     #draggableArea = new R();
-    constructor({ pictureName, aliasName, collision }) {
+    constructor({ pictureName, aliasName, position, collision, dragConfig }) {
       super();
       const texture = PIXI.Texture.from(`/img/pictures/${pictureName}.png`);
       texture.baseTexture.addListener("loaded", () => {
         this.texture = texture;
+        this.#collision = new R(this.x, this.y, this.width, this.height);
         this.initialize();
       });
       this.#aliasName = aliasName;
-      console.log(collision);
-      this.#collision = collision;
-      this.#isDraggable = true;
-      this.#draggableArea = new R(0, 0, 720, 528);
+      this.#collision = collision || new R();
+      this.position.set(position.x, position.y);
+      this.#isDraggable = !!dragConfig.isEnable;
+      this.#draggableArea =
+        dragConfig.draggableArea ||
+        new R(0, 0, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
     }
     #connectToTable() {
       if (!SceneManager._scene?._table) {
@@ -235,12 +257,7 @@
       }
     }
     onDragEnd() {
-      // const a = this.#draggableArea;
-      // const c = this.#globalCollision;
-      // if (a.right <= c.right) {
-      //   console.log(a.right, c.width);
-      //   this.position.set(a.right - c.width - (c.x - this.x), this.y);
-      // }
+      //
     }
     updateDrag() {
       if (!this.#isDraggable || !this.#isDragging) return;
@@ -309,19 +326,34 @@
   window.Button = Button;
 
   PluginManager.registerCommand(pluginName, "setup", (params) => {
-    const { _pictureName, _aliasName, _collision } = parse(params);
-    console.log(_collision);
-    const [pictureName, aliasName, collision] = [
+    const data = parse(params);
+    const { _pictureName, _aliasName, _position, _collision, _dragConfig } =
+      data;
+    console.log(data);
+    const [pictureName, aliasName, position, collision, dragConfig] = [
       _pictureName,
-      _aliasName,
-      new R(
-        _collision._x,
-        _collision._y,
-        _collision._width,
-        _collision._height
-      ),
+      _aliasName || _pictureName,
+      new P(_position._x, _position.y),
+      _collision &&
+        new R(
+          _collision._x,
+          _collision._y,
+          _collision._width,
+          _collision._height
+        ),
+      {
+        isEnable: !!_dragConfig?._isEnable,
+        draggableArea: _dragConfig._draggableArea
+          ? new R(
+              _dragConfig._draggableArea._x,
+              _dragConfig._draggableArea._y,
+              _dragConfig._draggableArea._width,
+              _dragConfig._draggableArea._height
+            )
+          : new R(),
+      },
     ];
-    new Button({ pictureName, aliasName, collision });
+    new Button({ pictureName, aliasName, position, collision, dragConfig });
   });
 
   Scene_Map.prototype.processMapTouch = () => {};
