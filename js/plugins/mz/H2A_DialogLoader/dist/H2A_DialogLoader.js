@@ -1,4 +1,4 @@
-/*:
+/*:ja
  * @plugindesc ダイアログスクリプトをコマンドに変換
  *
  * @target MZ
@@ -63,7 +63,7 @@
  * Version: v1.0.2
  * RPG Maker MZ Version: v1.2.1
  */
-/*~struct~Define:
+/*~struct~Define:ja
  * @param name
  * @text マクロ名
  * @type string

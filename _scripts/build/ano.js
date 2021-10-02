@@ -31,7 +31,7 @@ const f = (config) => {
   const result = languages
     .map((language) => {
       const commentGroup = (body, header = "", language = "") =>
-        `/*${header}:${language}\n${body
+        `/*${header}:${language || "ja"}\n${body
           .join("\n")
           .split("\n")
           .map((x) => ` * ${x}`)
