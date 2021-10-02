@@ -113,9 +113,7 @@ class Button extends PIXI.Sprite {
     this.#collision = collision || new R();
     this.position.set(position.x, position.y);
     this.#isDraggable = !!dragConfig.isEnable;
-    this.#draggableArea =
-      dragConfig.draggableArea ||
-      new R(0, 0, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+    this.#draggableArea = dragConfig.draggableArea;
   }
   #connectToTable() {
     if (!SceneManager._scene?._table) {
@@ -171,6 +169,7 @@ class Button extends PIXI.Sprite {
     //
   }
   updateDrag() {
+    // FIXME: _position._x を 0 以外にすると draggableArea の左上座標がズレる
     if (!this.#isDraggable || !this.#isDragging) return;
     if (!TouchInput.isPressed() || (this.#isHovered && !this.#isPressed)) {
       this.#isDragging = false;
@@ -208,6 +207,7 @@ class Button extends PIXI.Sprite {
       ),
       console.log({
         draggableArea: this.#draggableArea,
+        collision: this.#collision,
         globalCollision: this.#globalCollision,
       }));
   }
@@ -260,7 +260,7 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
             _dragConfig._draggableArea._width,
             _dragConfig._draggableArea._height
           )
-        : new R(),
+        : new R(0, 0, Graphics.boxWidth, Graphics.boxHeight),
     },
   ];
   new Button({ pictureName, aliasName, position, collision, dragConfig });

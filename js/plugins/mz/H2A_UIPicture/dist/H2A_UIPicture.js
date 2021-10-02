@@ -33,7 +33,7 @@
  *   @text ドラッグ設定
  *   @desc 省略禁止
  *   @type struct<DragConfig>
- *   @default {"_isEnable":false,"_draggableArea":{"_x":-1000,"_y":-1000,"_width":3000,"_height":3000}}
+ *   @default {"_isEnable":false}
  *
  * @help
  *
@@ -202,9 +202,7 @@
       this.#collision = collision || new R();
       this.position.set(position.x, position.y);
       this.#isDraggable = !!dragConfig.isEnable;
-      this.#draggableArea =
-        dragConfig.draggableArea ||
-        new R(0, 0, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+      this.#draggableArea = dragConfig.draggableArea;
     }
     #connectToTable() {
       if (!SceneManager._scene?._table) {
@@ -260,6 +258,7 @@
       //
     }
     updateDrag() {
+      // FIXME: _position._x を 0 以外にすると draggableArea の左上座標がズレる
       if (!this.#isDraggable || !this.#isDragging) return;
       if (!TouchInput.isPressed() || (this.#isHovered && !this.#isPressed)) {
         this.#isDragging = false;
@@ -297,6 +296,7 @@
         ),
         console.log({
           draggableArea: this.#draggableArea,
+          collision: this.#collision,
           globalCollision: this.#globalCollision,
         }));
     }
@@ -350,7 +350,7 @@
               _dragConfig._draggableArea._width,
               _dragConfig._draggableArea._height
             )
-          : new R(),
+          : new R(0, 0, Graphics.boxWidth, Graphics.boxHeight),
       },
     ];
     new Button({ pictureName, aliasName, position, collision, dragConfig });

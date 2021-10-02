@@ -39,13 +39,7 @@
           "desc": "省略禁止",
           "type": "struct<DragConfig>",
           "default": {
-            "_isEnable": false,
-            "_draggableArea": {
-              "_x": -1000,
-              "_y": -1000,
-              "_width": 3000,
-              "_height": 3000
-            }
+            "_isEnable": false
           }
         }
       ]
