@@ -1,4 +1,4 @@
-/*:
+/*:ja
  * @plugindesc ツクール側のエラーを日本語化します。
  *
  * @target MZ

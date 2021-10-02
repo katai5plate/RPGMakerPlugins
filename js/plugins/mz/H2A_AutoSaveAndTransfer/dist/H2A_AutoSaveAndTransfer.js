@@ -1,4 +1,4 @@
-/*:
+/*:ja
  * @plugindesc オートセーブと場所移動の挙動を変更
  *
  * @target MZ

@@ -1,4 +1,4 @@
-/*:
+/*:ja
  * @plugindesc キャラにリージョンを辿って歩かせる
  *
  * @target MZ

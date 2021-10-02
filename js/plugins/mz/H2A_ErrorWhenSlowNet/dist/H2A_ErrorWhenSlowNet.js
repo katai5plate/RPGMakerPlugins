@@ -1,4 +1,4 @@
-/*:
+/*:ja
  * @plugindesc 低速回線のプレイを遮断
  *
  * @target MZ

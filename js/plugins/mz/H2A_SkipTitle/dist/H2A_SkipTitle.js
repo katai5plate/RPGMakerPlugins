@@ -1,4 +1,4 @@
-/*:
+/*:ja
  * @plugindesc タイトルをスキップします
  *
  * @target MZ

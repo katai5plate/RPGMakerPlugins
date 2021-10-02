@@ -1,4 +1,4 @@
-/*:
+/*:ja
  * @plugindesc
  *
  * @target MZ
@@ -32,7 +32,7 @@
  * Version: v0.0.1
  * RPG Maker MZ Version: v1.3.3
  */
-/*~struct~Rect:
+/*~struct~Rect:ja
  * @param _x
  * @type number
  *
