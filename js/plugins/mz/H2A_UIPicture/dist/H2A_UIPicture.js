@@ -91,6 +91,22 @@
       })
     );
 
+  /*========== ../../../_templates/debug.js ==========*/
+  const debugLog = (
+    logs = [],
+    groupName = `${Date.now()}`,
+    enableTrace = false
+  ) => {
+    console.group(groupName);
+    for (let log of logs) console.log(...log);
+    if (enableTrace) {
+      console.groupCollapsed("trace");
+      console.trace();
+      console.groupEnd();
+    }
+    console.groupEnd();
+  };
+
   /*========== ./main.js ==========*/
 
   /**
@@ -195,14 +211,18 @@
       const texture = PIXI.Texture.from(`/img/pictures/${pictureName}.png`);
       texture.baseTexture.addListener("loaded", () => {
         this.texture = texture;
-        this.#collision = new R(this.x, this.y, this.width, this.height);
+        this.#collision =
+          collision ||
+          // 画像全体を設定するので XY がゼロになる
+          new R(0, 0, this.width, this.height);
         this.initialize();
       });
       this.#aliasName = aliasName;
-      this.#collision = collision || new R();
-      this.position.set(position.x, position.y);
+      this.x = position.x;
+      this.y = position.y;
       this.#isDraggable = !!dragConfig.isEnable;
       this.#draggableArea = dragConfig.draggableArea;
+      console.log(this.x, this.y, this.#draggableArea.x, this.#draggableArea.y);
     }
     #connectToTable() {
       if (!SceneManager._scene?._table) {
@@ -258,47 +278,48 @@
       //
     }
     updateDrag() {
-      // FIXME: _position._x を 0 以外にすると draggableArea の左上座標がズレる
       if (!this.#isDraggable || !this.#isDragging) return;
       if (!TouchInput.isPressed() || (this.#isHovered && !this.#isPressed)) {
         this.#isDragging = false;
         this.onDragEnd();
       }
-      const m = new P(TouchInput.x, TouchInput.y);
-      const z = new P(m.x - this.#dragPosition.x, m.y - this.#dragPosition.y);
-      this.position.set(z.x, z.y);
-      const a = this.#draggableArea;
-      const c = this.#globalCollision;
-      if (c.left <= a.left) {
-        this.x = a.left - (c.x - this.x);
-      } else if (a.right <= c.right) {
-        this.x = a.right - c.width - (c.x - this.x);
+      const z = new P(
+        TouchInput.x - this.#dragPosition.x,
+        TouchInput.y - this.#dragPosition.y
+      );
+      const area = this.#draggableArea;
+      const gcol = this.#globalCollision;
+      const col = this.#collision;
+      const lt = new P(col.x, col.y);
+      const rb = new P(col.x + col.width, col.y + col.height);
+      if (z.x + lt.x <= area.left) {
+        this.x = area.left - lt.x;
+      } else if (area.right <= z.x + rb.x) {
+        this.x = area.right - rb.x;
+      } else {
+        this.x = z.x;
       }
-      if (c.top <= a.top) {
-        this.y = a.top - (c.y - this.y);
-      } else if (a.bottom <= c.bottom) {
-        this.y = a.bottom - c.height - (c.y - this.y);
+      if (z.y + lt.y <= area.top) {
+        this.y = area.top - lt.y;
+      } else if (area.bottom <= z.y + rb.y) {
+        this.y = area.bottom - rb.y;
+      } else {
+        this.y = z.y;
       }
+      debugLog([
+        ["ZZZZ", z.x, z.y],
+        ["this", this.x, this.y],
+        ["area", area.x, area.y, area.width, area.height],
+        ["lcol", col.x, col.y, col.width, col.height],
+        ["gcol", gcol.x, gcol.y, gcol.width, gcol.height],
+        ["lt", lt.x, lt.y],
+        ["rb", rb.x, rb.y],
+        [area.x + area.width, area.right],
+      ]);
     }
     update() {
       this.updateTouch();
       this.updateDrag();
-      Input.isTriggered("ok") &&
-        (console.log(
-          "T:%s\nH:%s P:%s D:%s\nH:%s P:%s M:%s",
-          this.isBeingTouched,
-          this.#isHovered,
-          this.#isPressed,
-          this.#isDragging,
-          TouchInput.isHovered(),
-          TouchInput.isPressed(),
-          TouchInput.isMoved()
-        ),
-        console.log({
-          draggableArea: this.#draggableArea,
-          collision: this.#collision,
-          globalCollision: this.#globalCollision,
-        }));
     }
     onMouseOver() {
       console.log("-[->]");
@@ -311,6 +332,11 @@
         this.#isDragging = true;
         const m = this.mousePosition;
         this.#dragPosition = new P(m.x - this.x, m.y - this.y);
+        console.log(
+          "update dragPos",
+          this.#dragPosition.x,
+          this.#dragPosition.y
+        );
       }
       console.log("press");
     }
