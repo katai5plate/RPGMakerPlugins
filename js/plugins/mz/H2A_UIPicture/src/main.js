@@ -276,4 +276,12 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
   new Button({ pictureName, aliasName, position, collision, dragConfig });
 });
 
-Scene_Map.prototype.processMapTouch = () => {};
+const processMapTouch = Scene_Map.prototype.processMapTouch;
+Scene_Map.prototype.processMapTouch = function () {
+  if (SceneManager._scene?._table) {
+    if (SceneManager._scene._table.children.find((b) => b.isBeingTouched)) {
+      return;
+    }
+  }
+  processMapTouch.apply(this, arguments);
+};
