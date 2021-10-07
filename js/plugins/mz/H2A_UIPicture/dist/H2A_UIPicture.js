@@ -222,7 +222,6 @@
       this.y = position.y;
       this.#isDraggable = !!dragConfig.isEnable;
       this.#draggableArea = dragConfig.draggableArea;
-      console.log({ position });
     }
     #connectToTable() {
       if (!SceneManager._scene?._table) {
@@ -284,38 +283,25 @@
         this.onDragEnd();
       }
       const z = new P(
-        TouchInput.x - this.#dragPosition.x,
-        TouchInput.y - this.#dragPosition.y
+        this.mousePosition.x - this.#dragPosition.x,
+        this.mousePosition.y - this.#dragPosition.y
       );
       const area = this.#draggableArea;
-      const gcol = this.#globalCollision;
       const col = this.#collision;
-      const lt = new P(col.x, col.y);
-      const rb = new P(col.x + col.width, col.y + col.height);
-      if (z.x + lt.x <= area.left) {
-        this.x = area.left - lt.x;
-      } else if (area.right <= z.x + rb.x) {
-        this.x = area.right - rb.x;
+      if (z.x + col.left <= area.left) {
+        this.x = area.left - col.left;
+      } else if (area.right <= z.x + col.right) {
+        this.x = area.right - col.right;
       } else {
         this.x = z.x;
       }
-      if (z.y + lt.y <= area.top) {
-        this.y = area.top - lt.y;
-      } else if (area.bottom <= z.y + rb.y) {
-        this.y = area.bottom - rb.y;
+      if (z.y + col.top <= area.top) {
+        this.y = area.top - col.top;
+      } else if (area.bottom <= z.y + col.bottom) {
+        this.y = area.bottom - col.bottom;
       } else {
         this.y = z.y;
       }
-      debugLog([
-        ["ZZZZ", z.x, z.y],
-        ["this", this.x, this.y],
-        ["area", area.x, area.y, area.width, area.height],
-        ["lcol", col.x, col.y, col.width, col.height],
-        ["gcol", gcol.x, gcol.y, gcol.width, gcol.height],
-        ["lt", lt.x, lt.y],
-        ["rb", rb.x, rb.y],
-        [area.x + area.width, area.right],
-      ]);
     }
     update() {
       this.updateTouch();
@@ -325,7 +311,7 @@
       console.log("-[->]");
     }
     onMouseOut() {
-      console.log("OUT", TouchInput.isMoved());
+      console.log("OUT");
     }
     onMousePress() {
       if (this.#isDraggable) {
