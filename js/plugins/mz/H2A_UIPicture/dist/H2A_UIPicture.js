@@ -18,6 +18,11 @@
  *   @desc 省略した場合はファイル名が設定されます
  *   @type string
  *
+ *   @arg _labelText
+ *   @text ラベル文字列
+ *   @desc
+ *   @type string
+ *
  *   @arg _position
  *   @text 左上位置
  *   @desc 省略禁止
@@ -204,6 +209,40 @@
     }
   }
 
+  class CanvasSprite extends PIXI.Sprite {
+    #context;
+    constructor(width, height) {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      super(new PIXI.Texture(new PIXI.BaseTexture.from(canvas)));
+      this.#context = canvas.getContext("2d");
+    }
+    get ctx() {
+      return this.#context;
+    }
+  }
+
+  class ButtonLabel extends CanvasSprite {
+    constructor(width, height, text) {
+      super(width, height);
+      const x = width / 2;
+      const y = height / 2;
+      this.ctx.textAlign = "center";
+      this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
+      this.ctx.textBaseline = "middle";
+      // outline
+      this.ctx.strokeStyle = "black";
+      this.ctx.lineWidth = 3;
+      this.ctx.lineJoin = "round";
+      this.ctx.strokeText(text, x, y);
+      // body
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText(text, x, y);
+      this.texture.update();
+    }
+  }
+
   class Button extends PIXI.Sprite {
     /** @type {string} */
     #aliasName;
@@ -221,7 +260,18 @@
     #isDraggable = true;
     /** @type {R} */
     #draggableArea = new R();
-    constructor({ pictureName, aliasName, position, collision, dragConfig }) {
+    /** @type {ButtonLabel} */
+    labelSprite;
+    /** @type {string} */
+    #labelText = "";
+    constructor({
+      pictureName,
+      aliasName,
+      labelText,
+      position,
+      collision,
+      dragConfig,
+    }) {
       super();
       const texture = PIXI.Texture.from(`/img/pictures/${pictureName}.png`);
       texture.baseTexture.addListener("loaded", () => {
@@ -231,8 +281,16 @@
           // 画像全体を設定するので XY がゼロになる
           new R(0, 0, this.width, this.height);
         this.initialize();
+        this.labelSprite = new ButtonLabel(
+          this.width,
+          this.height,
+          this.#labelText
+        );
+        this.addChild(this.labelSprite);
+        console.log(this.labelSprite);
       });
       this.#aliasName = aliasName;
+      this.#labelText = labelText;
       this.x = position.x;
       this.y = position.y;
       this.#isDraggable = !!dragConfig.isEnable;
@@ -318,12 +376,16 @@
         this.y = z.y;
       }
     }
+    updateLabel() {
+      //
+    }
     /** @param {Button} nextButton */
     update(nextButton) {
       if (!nextButton?.isHovered) {
         this.updateTouch();
         this.updateDrag();
       }
+      this.updateLabel();
     }
     onMouseOver() {
       console.log("-[->]");
@@ -357,20 +419,28 @@
 
   PluginManager.registerCommand(pluginName, "setup", (params) => {
     const data = parse(params);
-    const { _pictureName, _aliasName, _position, _collision, _dragConfig } =
-      data;
-    const [pictureName, aliasName, position, collision, dragConfig] = [
+    const {
       _pictureName,
-      _aliasName || _pictureName,
-      new P(_position._x, _position._y),
-      _collision &&
+      _aliasName,
+      _labelText,
+      _position,
+      _collision,
+      _dragConfig,
+    } = data;
+    new Button({
+      pictureName: _pictureName,
+      aliasName: _aliasName || _pictureName,
+      labelText: _labelText || "",
+      position: new P(_position._x, _position._y),
+      collision:
+        _collision &&
         new R(
           _collision._x,
           _collision._y,
           _collision._width,
           _collision._height
         ),
-      {
+      dragConfig: {
         isEnable: !!_dragConfig?._isEnable,
         draggableArea: _dragConfig._draggableArea
           ? new R(
@@ -381,8 +451,7 @@
             )
           : new R(0, 0, Graphics.boxWidth, Graphics.boxHeight),
       },
-    ];
-    new Button({ pictureName, aliasName, position, collision, dragConfig });
+    });
   });
 
   const processMapTouch = Scene_Map.prototype.processMapTouch;

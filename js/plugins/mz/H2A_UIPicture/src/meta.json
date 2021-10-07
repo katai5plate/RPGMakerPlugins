@@ -21,6 +21,12 @@
           "type": "string"
         },
         {
+          "arg": "_labelText",
+          "text": "ラベル文字列",
+          "desc": "",
+          "type": "string"
+        },
+        {
           "arg": "_position",
           "text": "左上位置",
           "desc": "省略禁止",
