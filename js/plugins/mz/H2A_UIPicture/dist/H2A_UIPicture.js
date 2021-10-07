@@ -222,7 +222,7 @@
       this.y = position.y;
       this.#isDraggable = !!dragConfig.isEnable;
       this.#draggableArea = dragConfig.draggableArea;
-      console.log(this.x, this.y, this.#draggableArea.x, this.#draggableArea.y);
+      console.log({ position });
     }
     #connectToTable() {
       if (!SceneManager._scene?._table) {
@@ -355,11 +355,10 @@
     const data = parse(params);
     const { _pictureName, _aliasName, _position, _collision, _dragConfig } =
       data;
-    console.log(data);
     const [pictureName, aliasName, position, collision, dragConfig] = [
       _pictureName,
       _aliasName || _pictureName,
-      new P(_position._x, _position.y),
+      new P(_position._x, _position._y),
       _collision &&
         new R(
           _collision._x,
