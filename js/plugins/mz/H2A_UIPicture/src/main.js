@@ -85,17 +85,32 @@ class R extends PIXI.Rectangle {
   }
 }
 
+class Table extends PIXI.Container {
+  constructor() {
+    super();
+  }
+  update() {
+    for (let index = 0; index < this.children.length; index++) {
+      const child = this.children[index];
+      // 重なり判定対策のため、update に次回の要素を送る
+      const next =
+        index === this.children.length - 1 ? null : this.children[index + 1];
+      child.update && child.update(next);
+    }
+  }
+}
+
 class Button extends PIXI.Sprite {
   /** @type {string} */
   #aliasName;
   /** @type {R} */
   #collision;
   /** @type {boolean} */
-  #isPressed = false;
+  isPressed = false;
   /** @type {boolean} */
-  #isHovered = false;
+  isHovered = false;
   /** @type {boolean} */
-  #isDragging = false;
+  isDragging = false;
   /** @type {P} */
   #dragPosition = new P();
   /** @type {boolean} */
@@ -121,7 +136,7 @@ class Button extends PIXI.Sprite {
   }
   #connectToTable() {
     if (!SceneManager._scene?._table) {
-      SceneManager._scene._table = new Sprite();
+      SceneManager._scene._table = new Table();
       SceneManager._scene._table.name = "H2A_UIPicture";
       SceneManager._scene.addChild(SceneManager._scene._table);
     }
@@ -147,35 +162,35 @@ class Button extends PIXI.Sprite {
       // 画面上
       if (this.isBeingTouched) {
         // 判定内
-        if (!this.#isHovered && TouchInput.isHovered()) {
-          this.#isHovered = true;
+        if (!this.isHovered && TouchInput.isHovered()) {
+          this.isHovered = true;
           this.onMouseOver();
         }
         if (TouchInput.isTriggered()) {
-          this.#isPressed = true;
+          this.isPressed = true;
           this.onMousePress();
         }
       } else {
         // 判定外
-        if (this.#isHovered) this.onMouseOut();
-        (this.#isPressed = false), (this.#isHovered = false);
+        if (this.isHovered) this.onMouseOut();
+        (this.isPressed = false), (this.isHovered = false);
       }
-      if (this.#isPressed && TouchInput.isReleased()) {
-        this.#isPressed = false;
+      if (this.isPressed && TouchInput.isReleased()) {
+        this.isPressed = false;
         this.onMouseRelease();
       }
     } else {
       // 画面外
-      (this.#isPressed = false), (this.#isHovered = false);
+      (this.isPressed = false), (this.isHovered = false);
     }
   }
   onDragEnd() {
     //
   }
   updateDrag() {
-    if (!this.#isDraggable || !this.#isDragging) return;
-    if (!TouchInput.isPressed() || (this.#isHovered && !this.#isPressed)) {
-      this.#isDragging = false;
+    if (!this.#isDraggable || !this.isDragging) return;
+    if (!TouchInput.isPressed() || (this.isHovered && !this.isPressed)) {
+      this.isDragging = false;
       this.onDragEnd();
     }
     const z = new P(
@@ -199,9 +214,12 @@ class Button extends PIXI.Sprite {
       this.y = z.y;
     }
   }
-  update() {
-    this.updateTouch();
-    this.updateDrag();
+  /** @param {Button} nextButton */
+  update(nextButton) {
+    if (!nextButton?.isHovered) {
+      this.updateTouch();
+      this.updateDrag();
+    }
   }
   onMouseOver() {
     console.log("-[->]");
@@ -211,7 +229,7 @@ class Button extends PIXI.Sprite {
   }
   onMousePress() {
     if (this.#isDraggable) {
-      this.#isDragging = true;
+      this.isDragging = true;
       const m = this.mousePosition;
       this.#dragPosition = new P(m.x - this.x, m.y - this.y);
       console.log("update dragPos", this.#dragPosition.x, this.#dragPosition.y);
@@ -221,7 +239,7 @@ class Button extends PIXI.Sprite {
   onMouseRelease() {
     console.log("release");
     if (this.#isDraggable) {
-      this.#isDragging = false;
+      this.isDragging = false;
       this.onDragEnd();
     }
   }
