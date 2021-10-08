@@ -1885,7 +1885,7 @@
 **/data/CommonEvents.json
 **/data/Enemies.json
 **/data/Items.json
-**/data/Map001.json
+**/data/Map[0-9][0-9][0-9].json
 **/data/MapInfos.json
 **/data/Skills.json
 **/data/States.json
@@ -1953,7 +1953,7 @@
 **/data_m[vz]/CommonEvents.json
 **/data_m[vz]/Enemies.json
 **/data_m[vz]/Items.json
-**/data_m[vz]/Map001.json
+**/data_m[vz]/Map[0-9][0-9][0-9].json
 **/data_m[vz]/MapInfos.json
 **/data_m[vz]/Skills.json
 **/data_m[vz]/States.json
