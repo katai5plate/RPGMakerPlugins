@@ -1946,6 +1946,8 @@
 **/js/src/**/*.js
 **/js/src/**/meta.json
 
+**/js/plugins_m[vz].js
+
 **/data_m[vz]/Actors.json
 **/data_m[vz]/Animations.json
 **/data_m[vz]/Armors.json

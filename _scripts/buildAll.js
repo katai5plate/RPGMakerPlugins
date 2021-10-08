@@ -2,8 +2,8 @@ const build = require("./build");
 const testBuildResult = require("./test/buildResult");
 const { diff, read, readdir } = require("./utils");
 
-module.exports = ({ thenTest } = {}) => {
-  const result = ["mv", "mz"].reduce(
+module.exports = ({ thenTest, target } = {}) => {
+  const result = (target || ["mv", "mz"]).reduce(
     (p, target) => [
       ...p,
       ...readdir(`./js/plugins/${target}/`).reduce((pp, pluginName) => {

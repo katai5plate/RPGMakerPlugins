@@ -9,7 +9,8 @@
     "watch-fm": "node ./_scripts watch-fm",
     "clean-fm": "node ./_scripts clean-fm",
     "protect": "node ./_scripts protect",
-    "dev": "node ./_scripts dev",
+    "dev-mv": "node ./_scripts dev-mv",
+    "dev-mz": "node ./_scripts dev-mz",
     "update": "node ./_scripts update",
     "build": "node ./_scripts build",
     "build-all": "node ./_scripts build-all",
@@ -21,9 +22,9 @@
     "serve": "node serve",
     "dev-init": "npm-run-all -s init:*",
     "init:mv-copy": "cpx \"./_init/mv/{audio,data,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/Game.rpgproject\" ./",
-    "init:mv-rename": "shx mv ./data ./data_mv && shx mv ./img/system/ButtonSet.png ./img/system/ButtonSet_mv.png && shx mv ./js/main.js ./js/main_mv.js && shx mv ./js/libs/pixi.js ./js/libs/pixi_mv.js",
+    "init:mv-rename": "shx mv ./data ./data_mv && shx mv ./img/system/ButtonSet.png ./img/system/ButtonSet_mv.png && shx mv ./js/main.js ./js/main_mv.js && shx mv ./js/plugins.js ./js/plugins_mv.js && shx mv ./js/libs/pixi.js ./js/libs/pixi_mv.js",
     "init:mz-copy": "cpx \"./_init/mz/{audio,css,data,effects,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/game.rmmzproject\" ./",
-    "init:mz-rename": "shx mv ./data ./data_mz",
+    "init:mz-rename": "shx mv ./data ./data_mz && shx mv ./js/plugins.js ./js/plugins_mz.js",
     "init:run-scripts": "npm run core-split"
   },
   "repository": {
