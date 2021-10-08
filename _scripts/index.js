@@ -20,6 +20,24 @@ const [, , name, ...args] = process.argv;
 
 const help = (man) => console.log(`USAGE:\n  ${man}\n`);
 
+const watchData = (target, onUpdate) => {
+  // data をコピー
+  fs.copySync(`./data_${target}`, "./data");
+  try {
+    fs.copySync(`./js/plugins_${target}.js`, "./js/plugins.js");
+  } catch {
+    fs.copySync(`./js/${target}.plugins.js`, "./js/plugins.js");
+  }
+  console.log("RESTORED: ./data/* ./js/plugins.js");
+  // 変更を監視
+  chokidar.watch(["./package.json"]).on("all", () => {
+    fs.copySync("./data", `./data_${target}`);
+    fs.copySync("./js/plugins.js", `./js/plugins_${target}.js`);
+    console.log(`BACKUPED: ./data_mz/* ./js/plugins_${target}.js`);
+    onUpdate();
+  });
+};
+
 const protect = () => {
   const path = resolve(`./package.json`);
   const origin = read("file", path);
@@ -80,29 +98,23 @@ const protect = () => {
   if (name === "protect") {
     protect();
   }
-  if (name === "dev") {
+  if (name === "dev-mv") {
     if (!args[0]) {
-      return help("dev [mv|mz] (pluginName)");
+      return help("dev-mv [pluginName]");
     }
-    if (!["mv", "mz"].includes(args[0])) throw new Error("無効なターゲット");
-    // data をコピー
-    fs.copySync(`./data_${args[0]}`, "./data");
-    const path = "./data/";
-    chokidar.watch(path).on("change", (file) => {
-      const baseName = pathLib.basename(file);
-      fs.copyFile(`./data/${baseName}`, `./data_${args[0]}/${baseName}`);
-      console.log("UPDATE:", baseName, "->", `./data_${args[0]}`);
-    });
-    // package.json 防御
+    if (!args[0]) throw new Error("無効な名称");
+    watchData("mv");
     protect();
-    // // ツクール起動
-    // spawn.sync(
-    //   `./${args[0] === "mv" ? "Game.rpgproject" : "game.rmmzproject"}`
-    // );
     // watch
-    if (args[1]) {
-      watch(args[0], args[1], { flatMode: args[0] === "mv" });
-    }
+    watch("mv", args[1], { flatMode: true });
+  }
+  if (name === "dev-mz") {
+    watchData("mz", () => {
+      console.log("BUILDING...");
+      buildAll({ target: ["mz"] });
+      console.log("BUILD-COMPLETED");
+    });
+    protect();
   }
   if (name === "gen-list") {
     genList();
