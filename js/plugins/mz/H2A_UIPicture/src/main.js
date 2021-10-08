@@ -2,6 +2,7 @@
 /// <reference path="../../../../src/mz/core/Bitmap.js"/>
 /// <reference path="../../../../src/mz/core/Sprite.js"/>
 /// <reference path="../../../../src/mz/core/TouchInput.js"/>
+/// <reference path="../../../../src/mz/core/ColorFilter.js"/>
 /// <reference path="../../../../src/mz/sprites/Sprite_Clickable.js"/>
 /// <reference path="./types.js"/>
 /// <reference path="../../../_templates/debug.js"/>
@@ -155,6 +156,8 @@ class Button extends PIXI.Sprite {
   labelSprite;
   /** @type {string} */
   #labelText = "";
+  /** @type {ColorFilter} */
+  #color;
   constructor({
     pictureName,
     aliasName,
@@ -186,6 +189,8 @@ class Button extends PIXI.Sprite {
     this.y = position.y;
     this.#isDraggable = !!dragConfig.isEnable;
     this.#draggableArea = dragConfig.draggableArea;
+    this.#color = new ColorFilter();
+    this.filters = [this.#color];
   }
   #connectToTable() {
     if (!SceneManager._scene?._table) {
@@ -267,16 +272,25 @@ class Button extends PIXI.Sprite {
       this.y = z.y;
     }
   }
-  updateLabel() {
-    //
+  /** @param {Button|null} nextButton */
+  updateColor(nextButton) {
+    if (nextButton?.isHovered) {
+      this.#color.setBlendColor([0, 0, 0, 0]);
+    } else if (this.isDragging || this.isPressed) {
+      this.#color.setBlendColor([0, 0, 0, 63]);
+    } else if (this.isHovered) {
+      this.#color.setBlendColor([255, 255, 255, 63]);
+    } else {
+      this.#color.setBlendColor([0, 0, 0, 0]);
+    }
   }
-  /** @param {Button} nextButton */
+  /** @param {Button|null} nextButton */
   update(nextButton) {
     if (!nextButton?.isHovered) {
       this.updateTouch();
       this.updateDrag();
     }
-    this.updateLabel();
+    this.updateColor(nextButton);
   }
   onMouseOver() {
     console.log("-[->]");
