@@ -3,8 +3,7 @@
 /// <reference path="../../../../src/mz/core/Sprite.js"/>
 /// <reference path="../../../../src/mz/core/TouchInput.js"/>
 /// <reference path="../../../../src/mz/core/ColorFilter.js"/>
-/// <reference path="../../../../src/mz/sprites/Sprite_Clickable.js"/>
-/// <reference path="./types.js"/>
+/// <reference path="../../../_types/mz/index.js"/>
 /// <reference path="../../../_templates/debug.js"/>
 
 /**
