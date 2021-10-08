@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Class Type Converter</h1>
+    <textarea id="content"></textarea>
+    <script>
+      const content = document.getElementById("content");
+      content.onchange = () => {
+        const code = content.value;
+        const extendName = code.match(/Object.create\((.*?)\.prototype/)?.[1];
+        const className =
+          code.match(/^function ([A-Z][a-zA-Z0-9_]+)\(\) \{\n/m)?.[1] ||
+          code.match(/^function ([A-Z][a-zA-Z0-9_]+)\(\) \{\r\n/m)?.[1] ||
+          code.match("@namespace (JsExtensions)")?.[1];
+        const methods = code
+          .match(/^.*?= function \((.|\n)*?\)/gm)
+          ?.map((x) => {
+            const methodPath = x.match(/^(\S+?)\s=/)[1];
+            const args = x.match(/\(((.|\n)*?)\)/m)[1].split(", ");
+            return `${
+              methodPath.includes(".prototype.") ? "public" : "static"
+            } ${methodPath.match(/\.([^.]*?)$/)[1]}(${
+              args[0] ? `${args.join(": unknown, ")}: unknown` : ""
+            }): unknown;`;
+          });
+        const getset = code
+          .match(/^.*?defineProperty\(.*?"(.*?)",(.|\n)*?\}\);/gm)
+          ?.map((x) => {
+            const name = x.match(/defineProperty.*?"(.*?)"/)[1];
+            const path = x.match(/defineProperty\((.*?),/)[1];
+            const setArgs = x.match(/set:.*?\(((.|\n)*?)\)/m)?.[1].split(", ");
+            const withSet = !!x.match(/set:/);
+            const head = path.includes(".prototype") ? "public" : "static";
+            return withSet
+              ? `${head} get ${name}(): unknown\n${head} ${
+                  setArgs?.[0]
+                    ? `set ${name}(${
+                        setArgs[0]
+                          ? `${setArgs.join(": unknown, ")}: unknown`
+                          : ""
+                      })`
+                    : ""
+                }`
+              : `${head} readonly ${name}: unknown`;
+          });
+        const members = code
+          .match(/\S*?\.\S*? = (?!function)\S+?($|;)/gm)
+          ?.sort()
+          .map((x) => {
+            const path = x.match(/^(\S.*?)\s=/)[1];
+            const parent = path.match(/^([^.]*?)\./)[1];
+            const name = path.match(/\.([^.]*?)$/)[1];
+            const content = x.match(/=(.*?)$/)[1];
+            const inClass = parent === className;
+            const isMember = parent === "this";
+            const inPrototype = path.includes(".prototype");
+            return inClass || isMember
+              ? `${
+                  inClass
+                    ? inPrototype
+                      ? "// "
+                      : "static"
+                    : parent === "this"
+                    ? "public"
+                    : "// "
+                } ${name}: unknown // ${content}`
+              : "";
+          })
+          .filter(Boolean);
+
+        content.value = `class ${className}${
+          extendName ? ` extends ${extendName}` : ""
+        } {\n${["", ...methods, "", ...getset, "", ...members].join("\n")}\n}`;
+      };
+    </script>
+  </body>
+</html>
