@@ -74,9 +74,16 @@
           })
           .filter(Boolean);
 
-        content.value = `class ${className}${
+        content.value = `export declare class ${className}${
           extendName ? ` extends ${extendName}` : ""
-        } {\n${["", ...methods, "", ...getset, "", ...members].join("\n")}\n}`;
+        } {\n${[
+          "",
+          ...(methods || []),
+          "",
+          ...(getset || []),
+          "",
+          ...(members || []),
+        ].join("\n")}\n}`;
       };
     </script>
   </body>
