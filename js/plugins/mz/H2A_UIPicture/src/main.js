@@ -238,6 +238,10 @@ class Button extends PIXI.Sprite {
   /** @param {Button|null} nextButton */
   update(nextButton) {
     if (!nextButton?.isHovered) {
+      if (this.isDragging === nextButton?.isDragging) {
+        this.isPressed = false;
+        this.isDragging = false;
+      }
       this.updateTouch();
       this.updateDrag();
     }
