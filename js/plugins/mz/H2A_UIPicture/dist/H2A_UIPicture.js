@@ -112,13 +112,8 @@
     console.groupEnd();
   };
 
-  /*========== ./main.js ==========*/
+  /*========== ./extension.js ==========*/
 
-  /**
-   * 文字列のサイズを調べる
-   * @param {string} text 文字列
-   * @returns {{width:number,height:number}} サイズ
-   */
   CanvasRenderingContext2D.prototype.getTextSize = function (text) {
     const measure = this.measureText(text);
     return {
@@ -127,12 +122,6 @@
         measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
     };
   };
-  /**
-   * 動的表示ログ
-   * @param {string} value 値
-   * @param {number} x 座標
-   * @param {number} y 座標
-   */
   CanvasRenderingContext2D.prototype.log = function (value, x = 0, y = 0) {
     const fillStyle = this.fillStyle;
     this.fillStyle = "#fff";
@@ -143,13 +132,6 @@
     });
     this.fillStyle = fillStyle;
   };
-  /**
-   * シンプル直線
-   * @param {number} ax 座標
-   * @param {number} ay 座標
-   * @param {number} bx 座標
-   * @param {number} by 座標
-   */
   CanvasRenderingContext2D.prototype.line = function (ax, ay, bx, by) {
     this.beginPath();
     this.moveTo(ax, ay);
@@ -157,12 +139,19 @@
     this.stroke();
   };
 
+  /*========== ./main.js ==========*/
+  //@ts-check
+
+  /** @typedef {import("pixi.js").Point} Point */
+  /** @typedef {import("pixi.js").Rectangle} Rectangle */
+  /** @typedef {import("../../../_types/mz/index.js").ColorFilter} ColorFilter */
+
   class P extends PIXI.Point {
     constructor(x, y) {
       super(x, y);
     }
-    /** @param {import("pixi.js").Rectangle} rect */
-    contains(rect) {
+    /** @param {Rectangle} rect */
+    hit(rect) {
       return (
         rect.left <= this.x &&
         this.x <= rect.right &&
@@ -176,8 +165,8 @@
     constructor(x, y, w, h) {
       super(x, y, w, h);
     }
-    /** @param {import("pixi.js").Point} point */
-    contains(point) {
+    /** @param {Point} point */
+    hit(point) {
       return (
         this.left <= point.x &&
         point.x <= this.right &&
@@ -185,7 +174,7 @@
         point.y <= this.bottom
       );
     }
-    /** @param {import("pixi.js").Rectangle} rect */
+    /** @param {Rectangle} rect */
     containsRect(rect) {
       return (
         Math.abs(this.x - rect.x) < this.width / 2 + rect.width / 2 &&
@@ -204,6 +193,7 @@
         // 重なり判定対策のため、update に次回の要素を送る
         const next =
           index === this.children.length - 1 ? null : this.children[index + 1];
+        //@ts-expect-error
         child.update && child.update(next);
       }
     }
@@ -211,11 +201,16 @@
 
   class CanvasSprite extends PIXI.Sprite {
     #context;
+    /**
+     * @param {number} width
+     * @param {number} height
+     */
+    //@ts-ignore
     constructor(width, height) {
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      super(new PIXI.Texture(new PIXI.BaseTexture.from(canvas)));
+      super(new PIXI.Texture(PIXI.BaseTexture.from(canvas)));
       this.#context = canvas.getContext("2d");
     }
     get ctx() {
@@ -321,7 +316,7 @@
       return new R(this.x + c.x, this.y + c.y, c.width, c.height);
     }
     get isBeingTouched() {
-      return this.#globalCollision.contains(this.mousePosition);
+      return this.#globalCollision.hit(this.mousePosition);
     }
     updateTouch() {
       if (this.worldVisible) {
@@ -427,8 +422,6 @@
       }
     }
   }
-
-  window.Button = Button;
 
   PluginManager.registerCommand(pluginName, "setup", (params) => {
     const data = parse(params);

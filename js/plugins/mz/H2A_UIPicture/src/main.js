@@ -1,55 +1,24 @@
+//@ts-check
+
 /// <reference path="../../../_types/mz/index.js"/>
 /// <reference path="../../../_templates/utils.js"/>
 /// <reference path="../../../_templates/debug.js"/>
+/// <reference path="./type.ts"/>
 
-/**
- * 文字列のサイズを調べる
- * @param {string} text 文字列
- * @returns {{width:number,height:number}} サイズ
- */
-CanvasRenderingContext2D.prototype.getTextSize = function (text) {
-  const measure = this.measureText(text);
-  return {
-    width: measure.width,
-    height: measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
-  };
-};
-/**
- * 動的表示ログ
- * @param {string} value 値
- * @param {number} x 座標
- * @param {number} y 座標
- */
-CanvasRenderingContext2D.prototype.log = function (value, x = 0, y = 0) {
-  const fillStyle = this.fillStyle;
-  this.fillStyle = "#fff";
-  const text = JSON.stringify(value, null, 2);
-  text.split("\n").forEach((line, i) => {
-    const { height } = this.getTextSize("あ");
-    this.fillText(line, x, y + height * i);
-  });
-  this.fillStyle = fillStyle;
-};
-/**
- * シンプル直線
- * @param {number} ax 座標
- * @param {number} ay 座標
- * @param {number} bx 座標
- * @param {number} by 座標
- */
-CanvasRenderingContext2D.prototype.line = function (ax, ay, bx, by) {
-  this.beginPath();
-  this.moveTo(ax, ay);
-  this.lineTo(bx, by);
-  this.stroke();
-};
+/** @typedef {import("pixi.js").Point} Point */
+/** @typedef {import("pixi.js").Rectangle} Rectangle */
+/** @typedef {import("../../../_types/mz/index.js").ColorFilter} ColorFilter */
 
 class P extends PIXI.Point {
+  /**
+   * @param {ConstructorParameters<typeof PIXI.Point>[0]} [x]
+   * @param {ConstructorParameters<typeof PIXI.Point>[1]} [y]
+   */
   constructor(x, y) {
     super(x, y);
   }
-  /** @param {import("pixi.js").Rectangle} rect */
-  contains(rect) {
+  /** @param {Rectangle} rect */
+  hit(rect) {
     return (
       rect.left <= this.x &&
       this.x <= rect.right &&
@@ -60,11 +29,17 @@ class P extends PIXI.Point {
 }
 
 class R extends PIXI.Rectangle {
+  /**
+   * @param {ConstructorParameters<typeof PIXI.Rectangle>[0]} [x]
+   * @param {ConstructorParameters<typeof PIXI.Rectangle>[1]} [y]
+   * @param {ConstructorParameters<typeof PIXI.Rectangle>[2]} [w]
+   * @param {ConstructorParameters<typeof PIXI.Rectangle>[3]} [h]
+   */
   constructor(x, y, w, h) {
     super(x, y, w, h);
   }
-  /** @param {import("pixi.js").Point} point */
-  contains(point) {
+  /** @param {Point} point */
+  hit(point) {
     return (
       this.left <= point.x &&
       point.x <= this.right &&
@@ -72,7 +47,7 @@ class R extends PIXI.Rectangle {
       point.y <= this.bottom
     );
   }
-  /** @param {import("pixi.js").Rectangle} rect */
+  /** @param {Rectangle} rect */
   containsRect(rect) {
     return (
       Math.abs(this.x - rect.x) < this.width / 2 + rect.width / 2 &&
@@ -81,7 +56,14 @@ class R extends PIXI.Rectangle {
   }
 }
 
+class UIPictureState {
+  /** @type {Table} */
+  static table = null;
+}
+
 class Table extends PIXI.Container {
+  /** @type {Button[]} */
+  children = [];
   constructor() {
     super();
   }
@@ -98,11 +80,16 @@ class Table extends PIXI.Container {
 
 class CanvasSprite extends PIXI.Sprite {
   #context;
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
   constructor(width, height) {
+    super();
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    super(new PIXI.Texture(new PIXI.BaseTexture.from(canvas)));
+    this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
     this.#context = canvas.getContext("2d");
   }
   get ctx() {
@@ -188,12 +175,16 @@ class Button extends PIXI.Sprite {
     this.filters = [this.#color];
   }
   #connectToTable() {
-    if (!SceneManager._scene?._table) {
-      SceneManager._scene._table = new Table();
-      SceneManager._scene._table.name = "H2A_UIPicture";
-      SceneManager._scene.addChild(SceneManager._scene._table);
+    if (!UIPictureState.table) {
+      UIPictureState.table = new Table();
     }
-    SceneManager._scene._table.addChild(this);
+    const tableIndex = SceneManager._scene.children.indexOf(
+      UIPictureState.table
+    );
+    if (tableIndex !== -1) {
+      SceneManager._scene.addChild(UIPictureState.table);
+    }
+    UIPictureState.table.addChild(this);
   }
   initialize() {
     this.#connectToTable();
@@ -208,7 +199,7 @@ class Button extends PIXI.Sprite {
     return new R(this.x + c.x, this.y + c.y, c.width, c.height);
   }
   get isBeingTouched() {
-    return this.#globalCollision.contains(this.mousePosition);
+    return this.#globalCollision.hit(this.mousePosition);
   }
   updateTouch() {
     if (this.worldVisible) {
@@ -311,8 +302,6 @@ class Button extends PIXI.Sprite {
   }
 }
 
-window.Button = Button;
-
 PluginManager.registerCommand(pluginName, "setup", (params) => {
   const data = parse(params);
   const {
@@ -350,12 +339,10 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
   });
 });
 
-const processMapTouch = Scene_Map.prototype.processMapTouch;
-Scene_Map.prototype.processMapTouch = function () {
-  if (SceneManager._scene?._table) {
-    if (SceneManager._scene._table.children.find((b) => b.isBeingTouched)) {
-      return;
-    }
-  }
-  processMapTouch.apply(this, arguments);
+const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
+Scene_Map.prototype.isMapTouchOk = function () {
+  return (
+    isMapTouchOk.apply(this, arguments) &&
+    !!UIPictureState?.table.children.find((b) => b.isBeingTouched)
+  );
 };
