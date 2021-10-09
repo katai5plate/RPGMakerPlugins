@@ -493,7 +493,7 @@
   Scene_Map.prototype.isMapTouchOk = function () {
     return (
       isMapTouchOk.apply(this, arguments) &&
-      !!UIPictureState?.table?.children.find((b) => b.isBeingTouched)
+      !UIPictureState?.table?.children.find((b) => b.isBeingTouched)
     );
   };
 })();
