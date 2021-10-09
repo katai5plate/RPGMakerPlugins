@@ -8,6 +8,7 @@ export declare class TouchInput {
   static isLongPressed(): boolean;
   static isCancelled(): boolean;
   static isMoved(): boolean;
+  static isHovered(): boolean;
   static isReleased(): boolean;
   static _setupEventHandlers(): void;
   static _onMouseDown(event: MouseEvent): void;

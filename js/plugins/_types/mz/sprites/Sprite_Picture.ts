@@ -1,5 +1,4 @@
-import { Game_Picture } from "../objects/Game_Picture";
-import { Sprite_Clickable } from "./Sprite_Clickable";
+import { Game_Picture, Sprite_Clickable } from "..";
 
 export declare class Sprite_Picture extends Sprite_Clickable {
   constructor(pictureId: number);

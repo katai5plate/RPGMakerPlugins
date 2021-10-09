@@ -1,4 +1,4 @@
-import { Sprite } from "../core/Sprite";
+import { Sprite } from "..";
 
 export declare class Sprite_Clickable extends Sprite {
   constructor();

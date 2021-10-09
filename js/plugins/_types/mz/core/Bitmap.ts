@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { LoadEventListener } from "../other";
-import { Stage } from "./Stage";
+import { Stage } from "..";
 
 export declare class Bitmap {
   constructor(width: number, height: number);

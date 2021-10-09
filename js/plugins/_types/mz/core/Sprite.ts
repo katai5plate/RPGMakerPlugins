@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
 import { BlendColor, ColorTone } from "../other";
-import { Bitmap } from "./Bitmap";
-import { ColorFilter } from "./ColorFilter";
+import { Bitmap, ColorFilter } from "..";
 
 export declare class Sprite extends PIXI.Sprite {
   constructor(bitmap: Bitmap);
