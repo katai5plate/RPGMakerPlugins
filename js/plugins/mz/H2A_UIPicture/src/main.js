@@ -42,12 +42,14 @@ class CanvasSprite extends PIXI.Sprite {
    * @param {number} width
    * @param {number} height
    */
+  //@ts-ignore
   constructor(width, height) {
-    super();
+    // super();
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
+    // this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
+    super(new PIXI.Texture(PIXI.BaseTexture.from(canvas)));
     this.#context = canvas.getContext("2d");
   }
   get ctx() {
@@ -144,7 +146,7 @@ class Button extends PIXI.Sprite {
     const tableIndex = SceneManager._scene.children.indexOf(
       UIPictureState.table
     );
-    if (tableIndex !== -1) {
+    if (tableIndex === -1) {
       SceneManager._scene.addChild(UIPictureState.table);
     }
     UIPictureState.table.addChild(this);
@@ -306,6 +308,6 @@ const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
 Scene_Map.prototype.isMapTouchOk = function () {
   return (
     isMapTouchOk.apply(this, arguments) &&
-    !!UIPictureState?.table.children.find((b) => b.isBeingTouched)
+    !!UIPictureState?.table?.children.find((b) => b.isBeingTouched)
   );
 };

@@ -139,14 +139,15 @@
     this.stroke();
   };
 
-  /*========== ./main.js ==========*/
-  //@ts-check
-
+  /*========== ./calc.js ==========*/
   /** @typedef {import("pixi.js").Point} Point */
   /** @typedef {import("pixi.js").Rectangle} Rectangle */
-  /** @typedef {import("../../../_types/mz/index.js").ColorFilter} ColorFilter */
 
   class P extends PIXI.Point {
+    /**
+     * @param {ConstructorParameters<typeof PIXI.Point>[0]} [x]
+     * @param {ConstructorParameters<typeof PIXI.Point>[1]} [y]
+     */
     constructor(x, y) {
       super(x, y);
     }
@@ -162,6 +163,12 @@
   }
 
   class R extends PIXI.Rectangle {
+    /**
+     * @param {ConstructorParameters<typeof PIXI.Rectangle>[0]} [x]
+     * @param {ConstructorParameters<typeof PIXI.Rectangle>[1]} [y]
+     * @param {ConstructorParameters<typeof PIXI.Rectangle>[2]} [w]
+     * @param {ConstructorParameters<typeof PIXI.Rectangle>[3]} [h]
+     */
     constructor(x, y, w, h) {
       super(x, y, w, h);
     }
@@ -183,7 +190,19 @@
     }
   }
 
+  /*========== ./main.js ==========*/
+  //@ts-check
+
+  /** @typedef {import("../../../_types/mz/index.js").ColorFilter} ColorFilter */
+
+  class UIPictureState {
+    /** @type {Table} */
+    static table = null;
+  }
+
   class Table extends PIXI.Container {
+    /** @type {Button[]} */
+    children = [];
     constructor() {
       super();
     }
@@ -193,7 +212,6 @@
         // 重なり判定対策のため、update に次回の要素を送る
         const next =
           index === this.children.length - 1 ? null : this.children[index + 1];
-        //@ts-expect-error
         child.update && child.update(next);
       }
     }
@@ -207,9 +225,11 @@
      */
     //@ts-ignore
     constructor(width, height) {
+      // super();
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
+      // this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
       super(new PIXI.Texture(PIXI.BaseTexture.from(canvas)));
       this.#context = canvas.getContext("2d");
     }
@@ -219,6 +239,11 @@
   }
 
   class ButtonLabel extends CanvasSprite {
+    /**
+     * @param {ConstructorParameters<typeof CanvasSprite>[0]} width
+     * @param {ConstructorParameters<typeof CanvasSprite>[1]} height
+     * @param {string} text
+     */
     constructor(width, height, text) {
       super(width, height);
       const x = width / 2;
@@ -296,12 +321,16 @@
       this.filters = [this.#color];
     }
     #connectToTable() {
-      if (!SceneManager._scene?._table) {
-        SceneManager._scene._table = new Table();
-        SceneManager._scene._table.name = "H2A_UIPicture";
-        SceneManager._scene.addChild(SceneManager._scene._table);
+      if (!UIPictureState.table) {
+        UIPictureState.table = new Table();
       }
-      SceneManager._scene._table.addChild(this);
+      const tableIndex = SceneManager._scene.children.indexOf(
+        UIPictureState.table
+      );
+      if (tableIndex === -1) {
+        SceneManager._scene.addChild(UIPictureState.table);
+      }
+      UIPictureState.table.addChild(this);
     }
     initialize() {
       this.#connectToTable();
@@ -460,13 +489,11 @@
     });
   });
 
-  const processMapTouch = Scene_Map.prototype.processMapTouch;
-  Scene_Map.prototype.processMapTouch = function () {
-    if (SceneManager._scene?._table) {
-      if (SceneManager._scene._table.children.find((b) => b.isBeingTouched)) {
-        return;
-      }
-    }
-    processMapTouch.apply(this, arguments);
+  const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
+  Scene_Map.prototype.isMapTouchOk = function () {
+    return (
+      isMapTouchOk.apply(this, arguments) &&
+      !!UIPictureState?.table?.children.find((b) => b.isBeingTouched)
+    );
   };
 })();
