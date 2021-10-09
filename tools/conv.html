@@ -19,9 +19,8 @@
           code.match(/^function ([A-Z][a-zA-Z0-9_]+)\(\) \{\r\n/m)?.[1] ||
           code.match("@namespace (JsExtensions)")?.[1];
         const methods = code
-          .match(/^\S*?= function \((.|\n)*?\)/gm)
+          .match(/^.*?= function \((.|\n)*?\)/gm)
           ?.map((x) => {
-            console.log(x);
             const methodPath = x.match(/^(\S+?)\s=/)[1];
             const args = x.match(/\(((.|\n)*?)\)/m)[1].split(", ");
             return `${
@@ -85,6 +84,7 @@
           "",
           ...(members || []),
         ].join("\n")}\n}`;
+        console.log({ methods, getset, members });
       };
     </script>
   </body>
