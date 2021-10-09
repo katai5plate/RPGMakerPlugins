@@ -30,12 +30,26 @@ const watchData = (target, onUpdate) => {
   }
   console.log("RESTORED: ./data/* ./js/plugins.js");
   // 変更を監視
-  chokidar.watch(["./package.json"]).on("all", () => {
-    fs.copySync("./data", `./data_${target}`);
-    fs.copySync("./js/plugins.js", `./js/plugins_${target}.js`);
-    console.log(`BACKUPED: ./data_mz/* ./js/plugins_${target}.js`);
-    onUpdate();
-  });
+  const getSecond = () => (Date.now() / 1000) | 0;
+  let date;
+  chokidar
+    .watch([
+      "./package.json",
+      ...fs
+        .readdirSync(`./js/plugins/${target}/`)
+        .map((pluginName) => `./js/plugins/${target}/${pluginName}/src`),
+      "./js/plugins/_templates/",
+    ])
+    .on("all", (f) => {
+      const now = (Date.now() / 1000) | 0;
+      if (date !== now) {
+        fs.copySync("./data", `./data_${target}`);
+        fs.copySync("./js/plugins.js", `./js/plugins_${target}.js`);
+        console.log(`BACKUPED: ./data_mz/* ./js/plugins_${target}.js`);
+        onUpdate();
+        date = getSecond();
+      }
+    });
 };
 
 const protect = () => {
