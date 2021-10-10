@@ -1,5 +1,5 @@
 import { Tileset } from "../other";
-import { Spriteset_Base, Sprite_Balloon, Sprite_Character } from "..";
+import { Spriteset_Base, Sprite_Balloon, Sprite_Character, Tilemap } from "..";
 
 export declare class Spriteset_Map extends Spriteset_Base {
   constructor();
@@ -29,7 +29,7 @@ export declare class Spriteset_Map extends Spriteset_Base {
   public _balloonSprites: Sprite_Balloon[];
   public _characterSprites: Sprite_Character[];
   public z: number;
-  public _effectsContainer: unknown; //  tilemap;
+  public _effectsContainer: unknown; // FIXME: tilemap;
   public _parallaxName: string;
   public _tilemap: Tilemap;
   public flags: number[];

@@ -4,7 +4,7 @@ export declare class Sprite_Balloon extends Sprite {
   constructor();
   public initMembers(): void;
   public loadBitmap(): void;
-  public setup(targetSprite: unknown, balloonId: number): void; // target は敵キャラも含む？
+  public setup(targetSprite: unknown, balloonId: number): void; // FIXME: target は敵キャラも含む？
   public update(): void;
   public updatePosition(): void;
   public updateFrame(): void;
@@ -15,6 +15,6 @@ export declare class Sprite_Balloon extends Sprite {
 
   public _balloonId: number;
   public _duration: number;
-  public _target: unknown; // target は敵キャラも含む？
+  public _target: unknown; // FIXME: target は敵キャラも含む？
   public z: number;
 }

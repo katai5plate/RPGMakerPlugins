@@ -45,7 +45,7 @@ export declare class Tilemap extends PIXI.Container {
   public _isTableTile(tileId: number): boolean;
   public _isOverpassPosition(): boolean;
   public _sortChildren(): void;
-  public _compareChildOrder(a: unknown, b: unknown): number; // sort
+  public _compareChildOrder(a: any, b: any): number;
   static isVisibleTile(tileId: number): boolean;
   static isAutotile(tileId: number): boolean;
   static getAutotileKind(tileId: number): number;

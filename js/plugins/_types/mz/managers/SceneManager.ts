@@ -1,5 +1,5 @@
 import { Bitmap } from "..";
-import { Scene_Base } from "../scenes/Scene_Base";
+import { BasicScenes } from "../other";
 
 export declare class SceneManager {
   constructor();
@@ -54,10 +54,10 @@ export declare class SceneManager {
   static _backgroundBitmap: Bitmap;
   static _elapsedTime: number;
   static _exiting: boolean;
-  static _nextScene: Scene_Base; //  Scene
+  static _nextScene: BasicScenes;
   static _previousClass: Function;
-  static _previousScene: Scene_Base; //  Scene
-  static _scene: Scene_Base; //  Scene
+  static _previousScene: BasicScenes;
+  static _scene: BasicScenes;
   static _smoothDeltaTime: number;
   static _stack: Function[];
 }

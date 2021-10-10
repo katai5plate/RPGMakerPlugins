@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { Spriteset_Map } from "..";
 
 export declare class Scene_Map extends Scene_Message {
   constructor();

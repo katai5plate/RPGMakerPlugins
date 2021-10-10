@@ -22,16 +22,17 @@ export declare class Spriteset_Base extends Sprite {
   public processAnimationRequests(): void;
   public createAnimation(request: unknown): void;
   public isMVAnimation(animation: Animation): boolean;
-  public makeTargetSprites(targets: unknown): Sprite; // target は戦闘アニメ対象？
+  public makeTargetSprites(targets: unknown): Sprite; // FIXME: target は戦闘アニメ対象？
   public lastAnimationSprite(): Sprite_Animation;
   public isAnimationForEach(animation: Animation): boolean;
   public animationBaseDelay(): number;
   public animationNextDelay(): number;
-  public animationShouldMirror(target: unknown): boolean; // target は戦闘アニメ対象？
+  public animationShouldMirror(target: unknown): boolean; // FIXME: target は戦闘アニメ対象？
   public removeAnimation(sprite: unknown): void;
   public removeAllAnimations(): void;
   public isAnimationPlaying(): boolean;
 
   public _animationSprites: Sprite_Animation[];
   public filters: PIXI.Filter[];
+  public _pictureContainer: Sprite;
 }
