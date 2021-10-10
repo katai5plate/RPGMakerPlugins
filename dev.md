@@ -54,8 +54,13 @@
 
 ### `index.js` の書き方
 
-- INCLUDE 先の `/// <reference` 行はビルド時は省略される
-- INCLUDE 先で `//: コメント ://` というようにコメントを書くと、ビルド時省略される
+- INCLUDE 先で特定の書き方をした行は省略される
+  - `/// <reference`
+  - `//: コメント ://`
+  - `import ""; /***__HIDDEN__***/`
+  - `import I from ""; /***__HIDDEN__***/`
+  - `import * as I from ""; /***__HIDDEN__***/`
+  - `//@ts-check` `//@ts-expect-error` `//@ts-ignore` `//@ts-nocheck`
 
 ```js
 (function () {
