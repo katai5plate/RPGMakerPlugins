@@ -3,7 +3,7 @@ import { BlendColor, ColorTone } from "../other";
 import { Bitmap, ColorFilter } from "..";
 
 export declare class Sprite extends PIXI.Sprite {
-  constructor(bitmap: Bitmap);
+  constructor(bitmap?: Bitmap);
   public destroy(): void;
   public update(): void;
   public hide(): void;

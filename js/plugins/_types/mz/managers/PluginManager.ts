@@ -1,4 +1,4 @@
-import { AnyObject, Plugin } from "../other";
+import { AnyObject, AnyThisType, Plugin } from "../other";
 
 export declare class PluginManager {
   static setup(plugins: Plugin[]): void;
@@ -15,7 +15,7 @@ export declare class PluginManager {
     func: Function
   ): void;
   static callCommand(
-    self: unknown, // this
+    self: AnyThisType,
     pluginName: string,
     commandName: string,
     args: unknown

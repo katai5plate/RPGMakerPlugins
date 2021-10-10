@@ -53,7 +53,7 @@ export declare class Graphics {
   static _createEffekseerContext(): void;
 
   static readonly app: PIXI.Application;
-  static readonly effekseer: unknown; //  effekseer
+  static readonly effekseer: unknown; // FIXME: effekseer
   static get width(): number;
   static set width(value: number);
   static get height(): number;
@@ -70,7 +70,7 @@ export declare class Graphics {
   static webkitFilter: string;
   static zIndex: number;
   static _defaultScale: number;
-  static _effekseer: unknown; //  effekseer.createContext();
+  static _effekseer: unknown; // FIXME: effekseer.createContext();
   static _errorPrinter: HTMLDivElement;
   static innerHTML: string;
   static _fpsCounter: FPSCounter;
@@ -84,6 +84,7 @@ export declare class Graphics {
   static boxHeight: number;
   static boxWidth: number;
   static frameCount: number;
+  static FPSCounter: { new (): FPSCounter };
 }
 
 declare class FPSCounter {
