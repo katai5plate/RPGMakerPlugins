@@ -9,6 +9,7 @@ const { Graphics } = require("./core/Graphics");
 const { Input } = require("./core/Input");
 const { Sprite } = require("./core/Sprite");
 const { Stage } = require("./core/Stage");
+const { Tilemap } = require("./core/Tilemap");
 const { TouchInput } = require("./core/TouchInput");
 const { Window } = require("./core/Window");
 globalThis.Bitmap = Bitmap;
@@ -17,6 +18,7 @@ globalThis.Graphics = Graphics;
 globalThis.Input = Input;
 globalThis.Sprite = Sprite;
 globalThis.Stage = Stage;
+globalThis.Tilemap = Tilemap;
 globalThis.TouchInput = TouchInput;
 globalThis.Window = Window;
 export {
@@ -26,9 +28,9 @@ export {
   Input,
   Sprite,
   Stage,
+  Tilemap,
   TouchInput,
   Window,
-  //
 };
 
 // managers
@@ -43,11 +45,17 @@ export {
 };
 
 // objects
+const { Game_Character } = require("./objects/Game_Character");
+const { Game_CharacterBase } = require("./objects/Game_CharacterBase");
 const { Game_Picture } = require("./objects/Game_Picture");
 const { Game_System } = require("./objects/Game_System");
+globalThis.Game_Character = Game_Character;
+globalThis.Game_CharacterBase = Game_CharacterBase;
 globalThis.Game_Picture = Game_Picture;
 globalThis.Game_System = Game_System;
 export {
+  Game_Character,
+  Game_CharacterBase,
   Game_Picture,
   Game_System,
   //
@@ -69,12 +77,26 @@ export {
 };
 
 // sprites
+const { Sprite_Animation } = require("./sprites/Sprite_Animation");
+const { Sprite_Balloon } = require("./sprites/Sprite_Balloon");
+const { Sprite_Character } = require("./sprites/Sprite_Character");
 const { Sprite_Clickable } = require("./sprites/Sprite_Clickable");
 const { Sprite_Picture } = require("./sprites/Sprite_Picture");
+const { Spriteset_Base } = require("./sprites/Spriteset_Base");
+const { Spriteset_Map } = require("./sprites/Spriteset_Map");
+globalThis.Sprite_Animation = Sprite_Animation;
+globalThis.Sprite_Balloon = Sprite_Balloon;
+globalThis.Sprite_Character = Sprite_Character;
 globalThis.Sprite_Clickable = Sprite_Clickable;
 globalThis.Sprite_Picture = Sprite_Picture;
+globalThis.Spriteset_Base = Spriteset_Base;
+globalThis.Spriteset_Map = Spriteset_Map;
 export {
+  Sprite_Animation,
+  Sprite_Balloon,
+  Sprite_Character,
   Sprite_Clickable,
   Sprite_Picture,
-  //
+  Spriteset_Base,
+  Spriteset_Map,
 };

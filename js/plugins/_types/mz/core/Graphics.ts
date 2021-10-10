@@ -84,6 +84,7 @@ export declare class Graphics {
   static boxHeight: number;
   static boxWidth: number;
   static frameCount: number;
+  static FPSCounter: { new (): FPSCounter };
 }
 
 declare class FPSCounter {

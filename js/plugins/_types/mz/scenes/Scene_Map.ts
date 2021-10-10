@@ -62,4 +62,5 @@ export declare class Scene_Map extends Scene_Message {
   public _transfer: boolean;
   public _waitCount: number;
   public menuCalling: boolean;
+  public _spriteset: Spriteset_Map;
 }
