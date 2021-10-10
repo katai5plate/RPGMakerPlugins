@@ -12,6 +12,7 @@ const { Stage } = require("./core/Stage");
 const { Tilemap } = require("./core/Tilemap");
 const { TouchInput } = require("./core/TouchInput");
 const { Window } = require("./core/Window");
+const { WindowLayer } = require("./core/WindowLayer");
 globalThis.Bitmap = Bitmap;
 globalThis.ColorFilter = ColorFilter;
 globalThis.Graphics = Graphics;
@@ -21,6 +22,7 @@ globalThis.Stage = Stage;
 globalThis.Tilemap = Tilemap;
 globalThis.TouchInput = TouchInput;
 globalThis.Window = Window;
+globalThis.WindowLayer = WindowLayer;
 export {
   Bitmap,
   ColorFilter,
@@ -31,6 +33,7 @@ export {
   Tilemap,
   TouchInput,
   Window,
+  WindowLayer,
 };
 
 // managers

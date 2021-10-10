@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Spriteset_Map } from "..";
+import { Spriteset_Map, WindowLayer } from "..";
 
 export declare class Scene_Map extends Scene_Message {
   constructor();
@@ -64,4 +64,5 @@ export declare class Scene_Map extends Scene_Message {
   public _waitCount: number;
   public menuCalling: boolean;
   public _spriteset: Spriteset_Map;
+  public _windowLayer: WindowLayer;
 }

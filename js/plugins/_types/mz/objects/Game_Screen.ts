@@ -47,6 +47,29 @@ export declare class Game_Screen {
   public updateWeather(): void;
   public updatePictures(): void;
   public startFlashForDamage(): void;
+  public showPicture(
+    pictureId: number,
+    name: string,
+    origin: number,
+    x: number,
+    y: number,
+    scaleX: number,
+    scaleY: number,
+    opacity: number,
+    blendMode: number
+  ): void;
+  public movePicture(
+    pictureId: number,
+    origin: number,
+    x: number,
+    y: number,
+    scaleX: number,
+    scaleY: number,
+    opacity: number,
+    blendMode: number,
+    duration: number,
+    easingType: number
+  ): void;
   public rotatePicture(pictureId: number, speed: number): void;
   public tintPicture(
     pictureId: number,
