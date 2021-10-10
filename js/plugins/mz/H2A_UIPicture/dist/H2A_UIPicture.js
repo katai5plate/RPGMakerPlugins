@@ -162,6 +162,16 @@
     }
   }
 
+  class S extends PIXI.Point {
+    /**
+     * @param {ConstructorParameters<typeof PIXI.Point>[0]} [w]
+     * @param {ConstructorParameters<typeof PIXI.Point>[1]} [h]
+     */
+    constructor(w, h) {
+      super(w, h);
+    }
+  }
+
   class R extends PIXI.Rectangle {
     /**
      * @param {ConstructorParameters<typeof PIXI.Rectangle>[0]} [x]
@@ -191,29 +201,33 @@
   }
 
   /*========== ./main.js ==========*/
-  //@ts-check
-
-  /** @typedef {import("../../../_types/mz/index.js").ColorFilter} ColorFilter */
 
   class UIPictureState {
-    /** @type {Table} */
-    static table = null;
+    // /** @type {Table} */
+    // static table = null;
+    /** @return {MZ.Window_Base} */
+    static get baseWindow() {
+      const win = RT.as(
+        /** @param {MZ.Window_Base | null} _ */ (_) => _,
+        SceneManager._scene._windowLayer.children.find(
+          (x) => x instanceof Window_Base
+        )
+      );
+      return win;
+    }
   }
 
-  class Table extends PIXI.Container {
-    /** @type {Button[]} */
-    children = [];
-    constructor() {
-      super();
-    }
-    update() {
-      for (let index = 0; index < this.children.length; index++) {
-        const child = this.children[index];
-        // 重なり判定対策のため、update に次回の要素を送る
-        const next =
-          index === this.children.length - 1 ? null : this.children[index + 1];
-        child.update && child.update(next);
-      }
+  /** Resolve Types */
+  class RT {
+    /**
+     * @template T
+     * @param {(type:T)=>any} typeFn
+     * @param {unknown} target
+     * @returns {T}
+     */
+    // 使い方: RT.convert(/** @param {Type} _ */ (_) => _, sprite)
+    static as(typeFn, target) {
+      return target;
     }
   }
 
@@ -223,20 +237,19 @@
      * @param {number} width
      * @param {number} height
      */
-    //@ts-ignore
     constructor(width, height) {
-      // super();
+      super();
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      // this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
-      super(new PIXI.Texture(PIXI.BaseTexture.from(canvas)));
+      this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
       this.#context = canvas.getContext("2d");
     }
     get ctx() {
       return this.#context;
     }
   }
+  globalThis.CanvasSprite = CanvasSprite;
 
   class ButtonLabel extends CanvasSprite {
     /**
@@ -246,8 +259,17 @@
      */
     constructor(width, height, text) {
       super(width, height);
-      const x = width / 2;
-      const y = height / 2;
+      this.drawText(text);
+      console.log(this);
+    }
+    /** @param {string} text */
+    drawText(text) {
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      const x = this.width / 2;
+      const y = this.height / 2;
+      const t =
+        UIPictureState.baseWindow?.convertEscapeCharacters(text) || text;
+      // const t = text;
       this.ctx.textAlign = "center";
       this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
       this.ctx.textBaseline = "middle";
@@ -255,178 +277,173 @@
       this.ctx.strokeStyle = "black";
       this.ctx.lineWidth = 3;
       this.ctx.lineJoin = "round";
-      this.ctx.strokeText(text, x, y);
+      this.ctx.strokeText(t, x, y);
       // body
       this.ctx.fillStyle = "white";
-      this.ctx.fillText(text, x, y);
+      this.ctx.fillText(t, x, y);
       this.texture.update();
     }
   }
 
-  class Button extends PIXI.Sprite {
-    /** @type {string} */
-    #aliasName;
+  class Game_UIPicture extends Game_Picture {
+    // /** @type {number} */
+    // _pictureId;
     /** @type {R} */
-    #collision;
-    /** @type {boolean} */
-    isPressed = false;
-    /** @type {boolean} */
-    isHovered = false;
-    /** @type {boolean} */
-    isDragging = false;
-    /** @type {P} */
-    #dragPosition = new P();
-    /** @type {boolean} */
-    #isDraggable = true;
+    _collision = new R(48, 24, 192, 72);
     /** @type {R} */
-    #draggableArea = new R();
-    /** @type {ButtonLabel} */
-    labelSprite;
+    _draggableArea = new R(96, 96, 480, 480);
     /** @type {string} */
-    #labelText = "";
-    /** @type {ColorFilter} */
-    #color;
-    constructor({
-      pictureName,
-      aliasName,
-      labelText,
-      position,
-      collision,
-      dragConfig,
-    }) {
+    _labelText = "";
+    /** @param {number} pictureId */
+    constructor(pictureId) {
       super();
-      const texture = PIXI.Texture.from(`/img/pictures/${pictureName}.png`);
-      texture.baseTexture.addListener("loaded", () => {
-        this.texture = texture;
-        this.#collision =
-          collision ||
-          // 画像全体を設定するので XY がゼロになる
-          new R(0, 0, this.width, this.height);
-        this.initialize();
-        this.labelSprite = new ButtonLabel(
-          this.width,
-          this.height,
-          this.#labelText
-        );
-        this.addChild(this.labelSprite);
-        console.log(this.labelSprite);
-      });
-      this.#aliasName = aliasName;
-      this.#labelText = labelText;
-      this.x = position.x;
-      this.y = position.y;
-      this.#isDraggable = !!dragConfig.isEnable;
-      this.#draggableArea = dragConfig.draggableArea;
-      this.#color = new ColorFilter();
-      this.filters = [this.#color];
-    }
-    #connectToTable() {
-      if (!UIPictureState.table) {
-        UIPictureState.table = new Table();
-      }
-      const tableIndex = SceneManager._scene.children.indexOf(
-        UIPictureState.table
-      );
-      if (tableIndex === -1) {
-        SceneManager._scene.addChild(UIPictureState.table);
-      }
-      UIPictureState.table.addChild(this);
-    }
-    initialize() {
-      this.#connectToTable();
+      this._pictureId = pictureId;
       console.log(this);
     }
-    get mousePosition() {
-      // return this.worldTransform.applyInverse(new P(TouchInput.x, TouchInput.y));
-      return new P(TouchInput.x, TouchInput.y);
+    get collision() {
+      const sx = this._scaleX / 100;
+      const sy = this._scaleY / 100;
+      return new R(
+        this._collision.x * (sx / 100),
+        this._collision.y * (sy / 100),
+        this._collision.width * (sx / 100),
+        this._collision.height * (sy / 100)
+      );
     }
-    get #globalCollision() {
-      const c = this.#collision;
-      return new R(this.x + c.x, this.y + c.y, c.width, c.height);
+  }
+
+  class Sprite_UIPicture extends Sprite_Picture {
+    /** @type {boolean} */
+    _isDragging = false;
+    /** @type {P} */
+    _dragPosition = new P();
+    /** @type {boolean} */
+    _isDraggable = true;
+    /** @type {ButtonLabel} */
+    _labelSprite;
+    constructor(pictureId) {
+      super(pictureId);
     }
-    get isBeingTouched() {
-      return this.#globalCollision.hit(this.mousePosition);
+    /** @param {MZ.Bitmap} bitmapLoaded */
+    _onBitmapLoad(bitmapLoaded) {
+      console.log(bitmapLoaded.width, bitmapLoaded.height);
+
+      $gameVariables.setValue(5, "123456");
+      this._labelSprite = new ButtonLabel(
+        bitmapLoaded.width,
+        bitmapLoaded.height,
+        "val: \\v[5]"
+      );
+      this.addChild(this._labelSprite);
+      return super._onBitmapLoad(bitmapLoaded);
+    }
+    /** @returns {Sprite_UIPicture | null} */
+    get nextSprite() {
+      return RT.as(
+        /** @param {Sprite_UIPicture | null} _ */ (_) => _,
+        SceneManager._scene?._spriteset?._pictureContainer?.children?.[
+          this._pictureId // _pictureId - 1 + 1
+        ] || null
+      );
+    }
+    isBeingTouched() {
+      const picture = RT.as(
+        /** @param {Game_UIPicture} _ */ (_) => _,
+        this.picture()
+      );
+      if (!picture) return super.isBeingTouched();
+      return new R(
+        this.x + picture.collision.x,
+        this.y + picture.collision.y,
+        picture.collision.width,
+        picture.collision.height
+      ).hit(new P(TouchInput.x, TouchInput.y));
     }
     updateTouch() {
       if (this.worldVisible) {
         // 画面上
-        if (this.isBeingTouched) {
+        if (this.isBeingTouched()) {
           // 判定内
-          if (!this.isHovered && TouchInput.isHovered()) {
-            this.isHovered = true;
+          if (!this._isHovered && TouchInput.isHovered()) {
+            this._isHovered = true;
             this.onMouseOver();
           }
           if (TouchInput.isTriggered()) {
-            this.isPressed = true;
+            this._isPressed = true;
             this.onMousePress();
           }
         } else {
           // 判定外
-          if (this.isHovered) this.onMouseOut();
-          (this.isPressed = false), (this.isHovered = false);
+          if (this._isHovered) this.onMouseOut();
+          (this._isPressed = false), (this._isHovered = false);
         }
-        if (this.isPressed && TouchInput.isReleased()) {
-          this.isPressed = false;
+        if (this._isPressed && TouchInput.isReleased()) {
+          this._isPressed = false;
           this.onMouseRelease();
         }
       } else {
         // 画面外
-        (this.isPressed = false), (this.isHovered = false);
+        (this._isPressed = false), (this._isHovered = false);
       }
     }
     onDragEnd() {
       //
     }
     updateDrag() {
-      if (!this.#isDraggable || !this.isDragging) return;
-      if (!TouchInput.isPressed() || (this.isHovered && !this.isPressed)) {
-        this.isDragging = false;
+      if (!this._isDraggable || !this._isDragging) return;
+      if (!TouchInput.isPressed() || (this._isHovered && !this._isPressed)) {
+        this._isDragging = false;
         this.onDragEnd();
       }
-      const z = new P(
-        this.mousePosition.x - this.#dragPosition.x,
-        this.mousePosition.y - this.#dragPosition.y
+      /** @type {Game_UIPicture} */
+      const picture = RT.as(
+        /** @param {Game_UIPicture} _ */ (_) => _,
+        this.picture()
       );
-      const area = this.#draggableArea;
-      const col = this.#collision;
+      const z = new P(
+        TouchInput.x - this._dragPosition.x,
+        TouchInput.y - this._dragPosition.y
+      );
+      const area = picture._draggableArea;
+      /** @type {R} */
+      const col = picture.collision;
       if (z.x + col.left <= area.left) {
-        this.x = area.left - col.left;
+        picture._x = area.left - col.left;
       } else if (area.right <= z.x + col.right) {
-        this.x = area.right - col.right;
+        picture._x = area.right - col.right;
       } else {
-        this.x = z.x;
+        picture._x = z.x;
       }
       if (z.y + col.top <= area.top) {
-        this.y = area.top - col.top;
+        picture._y = area.top - col.top;
       } else if (area.bottom <= z.y + col.bottom) {
-        this.y = area.bottom - col.bottom;
+        picture._y = area.bottom - col.bottom;
       } else {
-        this.y = z.y;
+        picture._y = z.y;
       }
     }
-    /** @param {Button|null} nextButton */
-    updateColor(nextButton) {
-      if (nextButton?.isHovered) {
-        this.#color.setBlendColor([0, 0, 0, 0]);
-      } else if (this.isDragging || this.isPressed) {
-        this.#color.setBlendColor([0, 0, 0, 63]);
-      } else if (this.isHovered) {
-        this.#color.setBlendColor([255, 255, 255, 63]);
+    updateColor() {
+      if (this.nextSprite?._isHovered) {
+        this.setBlendColor([0, 0, 0, 0]);
+      } else if (this._isDragging || this._isPressed) {
+        this.setBlendColor([0, 0, 0, 63]);
+      } else if (this._isHovered) {
+        this.setBlendColor([255, 255, 255, 63]);
       } else {
-        this.#color.setBlendColor([0, 0, 0, 0]);
+        this.setBlendColor([0, 0, 0, 0]);
       }
     }
-    /** @param {Button|null} nextButton */
-    update(nextButton) {
-      if (!nextButton?.isHovered) {
-        if (this.isDragging === nextButton?.isDragging) {
-          this.isPressed = false;
-          this.isDragging = false;
+    update() {
+      super.update();
+      if (!this.nextSprite?._isHovered) {
+        if (this._isDragging === this.nextSprite?._isDragging) {
+          this._isPressed = false;
+          this._isDragging = false;
         }
         this.updateTouch();
         this.updateDrag();
       }
-      this.updateColor(nextButton);
+      this.updateColor();
     }
     onMouseOver() {
       console.log("-[->]");
@@ -435,69 +452,98 @@
       console.log("OUT");
     }
     onMousePress() {
-      if (this.#isDraggable) {
-        this.isDragging = true;
-        const m = this.mousePosition;
-        this.#dragPosition = new P(m.x - this.x, m.y - this.y);
-        console.log(
-          "update dragPos",
-          this.#dragPosition.x,
-          this.#dragPosition.y
+      const picture = this.picture();
+      if (this._isDraggable) {
+        this._isDragging = true;
+        this._dragPosition = new P(
+          TouchInput.x - this.x,
+          TouchInput.y - this.y
         );
       }
       console.log("press");
     }
     onMouseRelease() {
       console.log("release");
-      if (this.#isDraggable) {
-        this.isDragging = false;
+      if (this._isDraggable) {
+        this._isDragging = false;
         this.onDragEnd();
       }
     }
   }
 
-  PluginManager.registerCommand(pluginName, "setup", (params) => {
-    const data = parse(params);
-    const {
-      _pictureName,
-      _aliasName,
-      _labelText,
-      _position,
-      _collision,
-      _dragConfig,
-    } = data;
-    new Button({
-      pictureName: _pictureName,
-      aliasName: _aliasName || _pictureName,
-      labelText: _labelText || "",
-      position: new P(_position._x, _position._y),
-      collision:
-        _collision &&
-        new R(
-          _collision._x,
-          _collision._y,
-          _collision._width,
-          _collision._height
-        ),
-      dragConfig: {
-        isEnable: !!_dragConfig?._isEnable,
-        draggableArea: _dragConfig._draggableArea
-          ? new R(
-              _dragConfig._draggableArea._x,
-              _dragConfig._draggableArea._y,
-              _dragConfig._draggableArea._width,
-              _dragConfig._draggableArea._height
-            )
-          : new R(0, 0, Graphics.boxWidth, Graphics.boxHeight),
-      },
-    });
-  });
+  // PluginManager.registerCommand(pluginName, "setup", (params) => {
+  //   const data = parse(params);
+  //   const {
+  //     _pictureName,
+  //     _aliasName,
+  //     _labelText,
+  //     _position,
+  //     _collision,
+  //     _dragConfig,
+  //   } = data;
+  //   new Button({
+  //     pictureName: _pictureName,
+  //     aliasName: _aliasName || _pictureName,
+  //     labelText: _labelText || "",
+  //     position: new P(_position._x, _position._y),
+  //     collision:
+  //       _collision &&
+  //       new R(
+  //         _collision._x,
+  //         _collision._y,
+  //         _collision._width,
+  //         _collision._height
+  //       ),
+  //     dragConfig: {
+  //       isEnable: !!_dragConfig?._isEnable,
+  //       draggableArea: _dragConfig._draggableArea
+  //         ? new R(
+  //             _dragConfig._draggableArea._x,
+  //             _dragConfig._draggableArea._y,
+  //             _dragConfig._draggableArea._width,
+  //             _dragConfig._draggableArea._height
+  //           )
+  //         : new R(0, 0, Graphics.boxWidth, Graphics.boxHeight),
+  //     },
+  //   });
+  // });
 
   const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
   Scene_Map.prototype.isMapTouchOk = function () {
+    const children = RT.as(
+      /** @param {Sprite_UIPicture[] | null} _ */ (_) => _,
+      SceneManager._scene?._spriteset?._pictureContainer?.children
+    );
     return (
       isMapTouchOk.apply(this, arguments) &&
-      !UIPictureState?.table?.children.find((b) => b.isBeingTouched)
+      !children.find((b) => b.isBeingTouched())
     );
+  };
+
+  Spriteset_Base.prototype.createPictures = function () {
+    const rect = this.pictureContainerRect();
+    this._pictureContainer = new Sprite();
+    this._pictureContainer.setFrame(rect.x, rect.y, rect.width, rect.height);
+    for (let i = 1; i <= $gameScreen.maxPictures(); i++) {
+      this._pictureContainer.addChild(new Sprite_UIPicture(i));
+    }
+    this.addChild(this._pictureContainer);
+  };
+
+  Game_Screen.prototype.showPicture = function (
+    pictureId,
+    name,
+    origin,
+    x,
+    y,
+    scaleX,
+    scaleY,
+    opacity,
+    blendMode
+  ) {
+    const realPictureId = this.realPictureId(pictureId);
+    const picture = new Game_UIPicture(pictureId);
+    picture.show(name, origin, x, y, scaleX, scaleY, opacity, blendMode);
+    this._pictures[realPictureId] = picture;
   };
 })();

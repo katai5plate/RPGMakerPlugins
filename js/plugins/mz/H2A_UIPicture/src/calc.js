@@ -20,6 +20,16 @@ class P extends PIXI.Point {
   }
 }
 
+class S extends PIXI.Point {
+  /**
+   * @param {ConstructorParameters<typeof PIXI.Point>[0]} [w]
+   * @param {ConstructorParameters<typeof PIXI.Point>[1]} [h]
+   */
+  constructor(w, h) {
+    super(w, h);
+  }
+}
+
 class R extends PIXI.Rectangle {
   /**
    * @param {ConstructorParameters<typeof PIXI.Rectangle>[0]} [x]

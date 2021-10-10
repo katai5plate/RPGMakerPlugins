@@ -1,6 +1,3 @@
-import * as PIXI from "pixi.js";
-
-// extension.js
 declare interface CanvasRenderingContext2D {
   /**
    * 文字列のサイズを調べる
