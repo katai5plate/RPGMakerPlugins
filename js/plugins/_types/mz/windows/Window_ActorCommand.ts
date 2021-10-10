@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Window_Command } from "..";
+import { Game_Actor, Window_Command } from "..";
 
 export declare class Window_ActorCommand extends Window_Command {
   constructor(rect: PIXI.Rectangle);

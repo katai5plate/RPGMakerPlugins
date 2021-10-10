@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Window_Status } from "..";
+import { Window_ActorCommand, Window_PartyCommand, Window_Status } from "..";
 
 export declare class Scene_Battle extends Scene_Message {
   constructor();
