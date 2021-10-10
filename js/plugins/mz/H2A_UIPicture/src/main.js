@@ -105,6 +105,12 @@ class Game_UIPicture extends Game_Picture {
   _draggableArea = new R(96, 96, 480, 480);
   /** @type {string} */
   _labelText = "";
+  /** @type {number} */
+  _width;
+  /** @type {number} */
+  _height;
+  /** @type {PIXI.ObservablePoint | P} */
+  anchor = new P(0, 0);
   /** @param {number} pictureId */
   constructor(pictureId) {
     super();
@@ -114,11 +120,13 @@ class Game_UIPicture extends Game_Picture {
   get collision() {
     const sx = this._scaleX / 100;
     const sy = this._scaleY / 100;
+    const px = -this.anchor.x * this._width;
+    const py = -this.anchor.y * this._height;
     return new R(
-      this._collision.x * (sx / 100),
-      this._collision.y * (sy / 100),
-      this._collision.width * (sx / 100),
-      this._collision.height * (sy / 100)
+      (px + this._collision.x) * sx,
+      (py + this._collision.y) * sy,
+      this._collision.width * sx,
+      this._collision.height * sy
     );
   }
 }
@@ -137,7 +145,13 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
   /** @param {MZ.Bitmap} bitmapLoaded */
   _onBitmapLoad(bitmapLoaded) {
-    console.log(bitmapLoaded.width, bitmapLoaded.height);
+    const picture = RT.as(
+      /** @param {Game_UIPicture} _ */ (_) => _,
+      this.picture()
+    );
+    picture._width = bitmapLoaded.width;
+    picture._height = bitmapLoaded.height;
+    picture.anchor = this.anchor;
     //@ts-expect-error
     $gameVariables.setValue(5, "123456");
     this._labelSprite = new ButtonLabel(
@@ -145,6 +159,7 @@ class Sprite_UIPicture extends Sprite_Picture {
       bitmapLoaded.height,
       "val: \\v[5]"
     );
+    this._labelSprite.anchor = this.anchor;
     this.addChild(this._labelSprite);
     return super._onBitmapLoad(bitmapLoaded);
   }
@@ -206,7 +221,6 @@ class Sprite_UIPicture extends Sprite_Picture {
       this._isDragging = false;
       this.onDragEnd();
     }
-    /** @type {Game_UIPicture} */
     const picture = RT.as(
       /** @param {Game_UIPicture} _ */ (_) => _,
       this.picture()
@@ -263,7 +277,10 @@ class Sprite_UIPicture extends Sprite_Picture {
     console.log("OUT");
   }
   onMousePress() {
-    const picture = this.picture();
+    const picture = RT.as(
+      /** @param {Game_UIPicture} _ */ (_) => _,
+      this.picture()
+    );
     if (this._isDraggable) {
       this._isDragging = true;
       this._dragPosition = new P(TouchInput.x - this.x, TouchInput.y - this.y);
