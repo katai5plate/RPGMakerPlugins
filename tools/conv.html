@@ -18,9 +18,8 @@
           code.match(/^function ([A-Z][a-zA-Z0-9_]+)\(\) \{\n/m)?.[1] ||
           code.match(/^function ([A-Z][a-zA-Z0-9_]+)\(\) \{\r\n/m)?.[1] ||
           code.match("@namespace (JsExtensions)")?.[1];
-        const methods = code
-          .match(/^.*?= function \((.|\n)*?\)/gm)
-          ?.map((x) => {
+        const methods = [
+          ...(code.match(/^.*?= function \((.|\n)*?\)/gm)?.map((x) => {
             const methodPath = x.match(/^(\S+?)\s=/)[1];
             const args = x.match(/\(((.|\n)*?)\)/m)[1].split(", ");
             return `${
@@ -28,7 +27,10 @@
             } ${methodPath.match(/\.([^.]*?)$/)[1]}(${
               args[0] ? `${args.join(": unknown, ")}: unknown` : ""
             }): unknown;`;
-          });
+          }) || []),
+          ...(code.match(/^.*?= function\s*\(\n/gm)?.map((x) => `// ${x}`) ||
+            []),
+        ];
         const getset = code
           .match(/^.*?defineProperty\(.*?"(.*?)",(.|\n)*?\}\);/gm)
           ?.map((x) => {
