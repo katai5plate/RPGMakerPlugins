@@ -58,6 +58,7 @@ const { Game_Item } = require("./objects/Game_Item");
 const { Game_Picture } = require("./objects/Game_Picture");
 const { Game_Screen } = require("./objects/Game_Screen");
 const { Game_System } = require("./objects/Game_System");
+const { Game_Variables } = require("./objects/Game_Variables");
 globalThis.Game_Action = Game_Action;
 globalThis.Game_Actor = Game_Actor;
 globalThis.Game_Battler = Game_Battler;
@@ -68,6 +69,7 @@ globalThis.Game_Item = Game_Item;
 globalThis.Game_Picture = Game_Picture;
 globalThis.Game_Screen = Game_Screen;
 globalThis.Game_System = Game_System;
+globalThis.Game_Variables = Game_Variables;
 export {
   Game_Action,
   Game_Actor,
@@ -79,9 +81,11 @@ export {
   Game_Picture,
   Game_Screen,
   Game_System,
+  Game_Variables,
 };
 globalThis.$gameScreen = new Game_Screen();
 globalThis.$gameSystem = new Game_System();
+globalThis.$gameVariables = new Game_Variables();
 
 // scenes
 const { Scene_Base } = require("./scenes/Scene_Base");

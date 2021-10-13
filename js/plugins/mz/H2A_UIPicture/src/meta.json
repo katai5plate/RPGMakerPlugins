@@ -56,8 +56,8 @@
     "R": [
       { "param": "x", "text": "左上X", "type": "number", "min": 0 },
       { "param": "y", "text": "左上Y", "type": "number", "min": 0 },
-      { "param": "w", "text": "幅", "type": "number", "min": 1 },
-      { "param": "h", "text": "高さ", "type": "number", "min": 1 }
+      { "param": "width", "text": "幅", "type": "number", "min": 1 },
+      { "param": "height", "text": "高さ", "type": "number", "min": 1 }
     ],
     "M": [
       { "param": "left", "text": "左から", "type": "number", "min": 0 },
@@ -91,7 +91,7 @@
         "default": 0
       },
       {
-        "param": "s",
+        "param": "v",
         "type": "number",
         "text": "強度",
         "min": 0,
@@ -109,7 +109,7 @@
     ],
     "SE": [
       {
-        "param": "path",
+        "param": "name",
         "text": "ファイル名",
         "type": "file",
         "dir": "audio/se"
@@ -141,10 +141,20 @@
     ],
     "DragConfig": [
       {
-        "param": "draggableArea",
+        "param": "range",
         "type": "struct<R>",
         "text": "ドラッグ範囲",
         "desc": "ドラッグが可能な範囲。省略・不備の場合はドラッグ無効になります"
+      },
+      {
+        "param": "move",
+        "type": "select",
+        "text": "移動方向",
+        "desc": "移動方向の制限。省略・不備の場合は自由移動になります",
+        "...": [
+          { "option": "横", "value": "horizontal" },
+          { "option": "縦", "value": "vertical" }
+        ]
       },
       {
         "param": "type",
@@ -152,9 +162,10 @@
         "text": "代入設定",
         "desc": "変数に位置情報を代入するタイプ。省略・不備の場合は代入されません",
         "...": [
-          { "option": "比率", "value": "per" },
-          { "option": "差分", "value": "local" },
-          { "option": "画面", "value": "global" }
+          { "option": "比率(0 - 100)", "value": "perint" },
+          { "option": "比率(0.0 - 1.0)", "value": "perflo" },
+          { "option": "差分座標", "value": "local" },
+          { "option": "画面座標", "value": "global" }
         ]
       },
       {

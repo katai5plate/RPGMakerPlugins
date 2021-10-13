@@ -71,12 +71,12 @@
  * @type number
  * @min 0
  *
- * @param w
+ * @param width
  * @text 幅
  * @type number
  * @min 1
  *
- * @param h
+ * @param height
  * @text 高さ
  * @type number
  * @min 1
@@ -126,7 +126,7 @@
  * @max 255
  * @default 0
  *
- * @param s
+ * @param v
  * @type number
  * @text 強度
  * @min 0
@@ -142,7 +142,7 @@
  *
  */
 /*~struct~SE:ja
- * @param path
+ * @param name
  * @text ファイル名
  * @type file
  * @dir audio/se
@@ -170,23 +170,37 @@
  *
  */
 /*~struct~DragConfig:ja
- * @param draggableArea
+ * @param range
  * @type struct<R>
  * @text ドラッグ範囲
  * @desc ドラッグが可能な範囲。省略・不備の場合はドラッグ無効になります
+ *
+ * @param move
+ * @type select
+ * @text 移動方向
+ * @desc 移動方向の制限。省略・不備の場合は自由移動になります
+ *
+ *   @option 横
+ *   @value horizontal
+ *
+ *   @option 縦
+ *   @value vertical
  *
  * @param type
  * @type select
  * @text 代入設定
  * @desc 変数に位置情報を代入するタイプ。省略・不備の場合は代入されません
  *
- *   @option 比率
- *   @value per
+ *   @option 比率(0 - 100)
+ *   @value perint
  *
- *   @option 差分
+ *   @option 比率(0.0 - 1.0)
+ *   @value perflo
+ *
+ *   @option 差分座標
  *   @value local
  *
- *   @option 画面
+ *   @option 画面座標
  *   @value global
  *
  * @param variableX
@@ -280,10 +294,11 @@
  *
  */
 (() => {
-  /*========== ../../../_templates/utils.js ==========*/
+  /*========== ../../../_templates/pluginName.js ==========*/
   const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
 
-  const parse = (paramText) =>
+  /*========== ../../../_templates/parsePluginParams.js ==========*/
+  const parsePluginParams = (paramText) =>
     JSON.parse(
       JSON.stringify(paramText, (_, v) => {
         if (/^".*?"$/.test(v)) return v;
@@ -291,26 +306,19 @@
           const p = JSON.parse(v);
           return null === p ? v : p;
         } catch (__) {
-          return v;
+          return v === "" ? null : v;
         }
       })
     );
 
-  /*========== ../../../_templates/debug.js ==========*/
-  const debugLog = (
-    logs = [],
-    groupName = `${Date.now()}`,
-    enableTrace = false
-  ) => {
-    console.group(groupName);
-    for (let log of logs) console.log(...log);
-    if (enableTrace) {
-      console.groupCollapsed("trace");
-      console.trace();
-      console.groupEnd();
-    }
-    console.groupEnd();
-  };
+  /*========== ../../../_templates/resolveTypeAs.js ==========*/
+  /**
+   * @template T
+   * @param {(type: T) => any} def
+   * @param {unknown} from
+   * @returns {T}
+   */
+  const resolveTypeAs = (def, from) => from;
 
   /*========== ./extension.js ==========*/
 
@@ -340,8 +348,6 @@
   };
 
   /*========== ./calc.js ==========*/
-  /** @typedef {import("pixi.js").Point} Point */
-  /** @typedef {import("pixi.js").Rectangle} Rectangle */
 
   class P extends PIXI.Point {
     /**
@@ -351,7 +357,12 @@
     constructor(x, y) {
       super(x, y);
     }
-    /** @param {Rectangle} rect */
+    get isSafe() {
+      return [this.x, this.y].every(
+        (v) => Number.isFinite(v) && 0 <= v && v <= Number.MAX_SAFE_INTEGER
+      );
+    }
+    /** @param {PIXI.Rectangle} rect */
     hit(rect) {
       return (
         rect.left <= this.x &&
@@ -360,15 +371,40 @@
         this.y <= rect.bottom
       );
     }
-  }
-
-  class S extends PIXI.Point {
     /**
-     * @param {ConstructorParameters<typeof PIXI.Point>[0]} [w]
-     * @param {ConstructorParameters<typeof PIXI.Point>[1]} [h]
+     * @param {number} xmin
+     * @param {number} xmax
+     * @param {number} ymin
+     * @param {number} ymax
      */
-    constructor(w, h) {
-      super(w, h);
+    mapping(xmin, xmax, ymin, ymax) {
+      xmin > this.x && (this.x = xmin);
+      xmax < this.x && (this.x = xmax);
+      ymin > this.y && (this.y = ymin);
+      ymax < this.y && (this.y = ymax);
+      return this;
+    }
+    /**
+     * @param {"add"|"sub"|"mul"|"div"|"mod"} op
+     * @param {number} x
+     * @param {number} [y]
+     */
+    calc(op, x, y = x) {
+      if (op === "add") {
+        (this.x += x), (this.y += y);
+      } else if (op === "sub") {
+        (this.x -= x), (this.y -= y);
+      } else if (op === "mul") {
+        (this.x *= x), (this.y *= y);
+      } else if (op === "div") {
+        (this.x /= x), (this.y /= y);
+      } else if (op === "mod") {
+        (this.x %= x), (this.y %= y);
+      }
+      return this;
+    }
+    static from({ x, y }) {
+      return new this(x, y);
     }
   }
 
@@ -382,7 +418,14 @@
     constructor(x, y, w, h) {
       super(x, y, w, h);
     }
-    /** @param {Point} point */
+    get isSafe() {
+      return (
+        [this.x, this.y, this.width, this.height].every(
+          (v) => Number.isFinite(v) && 0 <= v && v <= Number.MAX_SAFE_INTEGER
+        ) && [this.width, this.height].every((v) => 0 < v)
+      );
+    }
+    /** @param {PIXI.Point} point */
     hit(point) {
       return (
         this.left <= point.x &&
@@ -391,12 +434,72 @@
         point.y <= this.bottom
       );
     }
-    /** @param {Rectangle} rect */
+    /**
+     * @param {"add"|"sub"|"mul"|"div"|"mod"} op
+     * @param {number} x
+     * @param {number} [y]
+     * @param {number} [w]
+     * @param {number} [h]
+     */
+    calc(op, x, y, w, h) {
+      let _y = y,
+        _w = w,
+        _h = h;
+      !y && (_y = x);
+      !w && !h && (_w = x), (_h = _y);
+      if (op === "add") {
+        (this.x += x), (this.y += _y), (this.width += _w), (this.height += _h);
+      } else if (op === "sub") {
+        (this.x -= x), (this.y -= _y), (this.width -= _w), (this.height -= _h);
+      } else if (op === "mul") {
+        (this.x *= x), (this.y *= _y), (this.width *= _w), (this.height *= _h);
+      } else if (op === "div") {
+        (this.x /= x), (this.y /= _y), (this.width /= _w), (this.height /= _h);
+      } else if (op === "mod") {
+        (this.x %= x), (this.y %= _y), (this.width %= _w), (this.height %= _h);
+      }
+      return this;
+    }
+    /** @param {PIXI.Rectangle} rect */
     containsRect(rect) {
       return (
         Math.abs(this.x - rect.x) < this.width / 2 + rect.width / 2 &&
         Math.abs(this.y - rect.y) < this.height / 2 + rect.height / 2
       );
+    }
+    static from({ x, y, width, height }) {
+      return new this(x, y, width, height);
+    }
+  }
+
+  class Margin {
+    constructor({ left = 0, right = 0, top = 0, bottom = 0 }) {
+      this.left = left;
+      this.right = right;
+      this.top = top;
+      this.bottom = bottom;
+    }
+  }
+
+  class Color {
+    constructor(r = 0, g = 0, b = 0, v = 0, a = 0) {
+      this.r = r;
+      this.g = g;
+      this.b = b;
+      this.v = v;
+      this.a = a;
+    }
+  }
+
+  class Sound {
+    constructor(name = "", volume = 0, pitch = 0, pan = 0) {
+      this.name = name;
+      this.volume = volume;
+      this.pitch = pitch;
+      this.pan = pan;
+    }
+    play() {
+      AudioManager.playSe(this);
     }
   }
 
@@ -406,27 +509,18 @@
     /** convertEscapeCharacters 呼び出し用
      *  @return {MZ.Window_Base} */
     static get baseWindow() {
-      const win = RT.as(
+      return resolveTypeAs(
         /** @param {MZ.Window_Base | null} _ */ (_) => _,
         SceneManager._scene._windowLayer?.children.find(
           (x) => x instanceof Window_Base
         )
       );
-      return win;
     }
-  }
-
-  /** Resolve Types */
-  class RT {
-    /**
-     * @template T
-     * @param {(type:T)=>any} typeFn
-     * @param {unknown} target
-     * @returns {T}
-     */
-    // 使い方: RT.convert(/** @param {Type} _ */ (_) => _, sprite)
-    static as(typeFn, target) {
-      return target;
+    static picture(pictureId) {
+      return resolveTypeAs(
+        /** @param {Game_UIPicture | null} _ */ (_) => _,
+        $gameScreen.picture(pictureId)
+      );
     }
   }
 
@@ -459,25 +553,21 @@
       //
     }
   }
-  globalThis.CanvasSprite = CanvasSprite;
 
   class Sprite_ButtonPictureLabel extends CanvasSprite {
     /** @type {number} */
     pictureId;
-    /** @type {string} */
-    text = "";
     /** @param {number} pictureId */
     constructor(pictureId) {
       super();
       this.pictureId = pictureId;
       this.width = this.picture._width;
       this.height = this.picture._height;
-      this.text = this.picture._labelText;
       this.createCanvas();
-      console.log(this, this.text);
+      console.log(this);
     }
     get picture() {
-      return RT.as(
+      return resolveTypeAs(
         /** @param {Game_UIPicture} _ */ (_) => _,
         $gameScreen.picture(this.pictureId)
       );
@@ -486,7 +576,7 @@
       this.ctx.clearRect(0, 0, this.width, this.height);
       const x = this.width / 2;
       const y = this.height / 2;
-      const text = `${this.text}`;
+      const text = `${this.picture._labelText}`;
       const t = UIPicture.baseWindow?.convertEscapeCharacters(text) || text;
       this.ctx.textAlign = "center";
       this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
@@ -515,9 +605,15 @@
     /** @type {number} */
     _pictureId;
     /** @type {R} */
-    _collision = new R(48, 24, 192, 72);
+    _collision = new R(NaN, NaN, NaN, NaN);
     /** @type {R} */
-    _draggableArea = new R(96, 96, 480, 480);
+    _dragRange = new R(NaN, NaN, NaN, NaN);
+    /** @type {P} */
+    _movableDirection = new P(1, 1);
+    /** @type {null|"perint"|"perflo"|"local"|"global"} */
+    _variableType = null;
+    /** @type {P} */
+    _variableIds = new P(0, 0);
     /** @type {string} */
     _labelText = "";
     /** @type {number} */
@@ -531,17 +627,28 @@
       console.log(this);
     }
     get collision() {
-      const anchor = this.origin() === 0 ? 0 : 0.5;
+      // MEMO: anchor が 0.5 の時は xy はマイナスになる
+      const anchor = +!!this.origin() * 0.5;
       const sx = this._scaleX / 100;
       const sy = this._scaleY / 100;
       const px = -anchor * this._width;
       const py = -anchor * this._height;
       return new R(
-        (px + this._collision.x) * sx,
-        (py + this._collision.y) * sy,
-        this._collision.width * sx,
-        this._collision.height * sy
-      );
+        px + this._collision.x,
+        py + this._collision.y,
+        this._collision.width,
+        this._collision.height
+      ).calc("mul", sx, sy);
+    }
+    set collision({ x, y, width, height }) {
+      const isNotNullable = (a) => a !== null && a !== undefined;
+      isNotNullable(x) && (this._collision.x = x);
+      isNotNullable(y) && (this._collision.y = y);
+      isNotNullable(width) && (this._collision.width = width);
+      isNotNullable(height) && (this._collision.height = height);
+    }
+    get enableDrag() {
+      return this._dragRange.isSafe;
     }
   }
 
@@ -557,10 +664,17 @@
     constructor(pictureId) {
       super(pictureId);
     }
+    /** @override @returns {Game_UIPicture} */
+    picture() {
+      return resolveTypeAs(
+        /** @param {Game_UIPicture} _ */ (_) => _,
+        super.picture()
+      );
+    }
     get isForeground() {
       return (
         Math.max(
-          ...RT.as(
+          ...resolveTypeAs(
             /** @param {Sprite_UIPicture[]} _ */ (_) => _,
             SceneManager._scene?._spriteset?._pictureContainer?.children || []
           )
@@ -571,22 +685,15 @@
     }
     /** @param {MZ.Bitmap} bitmapLoaded */
     _onBitmapLoad(bitmapLoaded) {
-      const picture = RT.as(
-        /** @param {Game_UIPicture} _ */ (_) => _,
-        this.picture()
-      );
+      const picture = this.picture();
       picture._width = bitmapLoaded.width;
       picture._height = bitmapLoaded.height;
-      picture._labelText = `picId: ${this._pictureId}`;
       this._labelSprite = new Sprite_ButtonPictureLabel(this._pictureId);
       this.addChild(this._labelSprite);
       return super._onBitmapLoad(bitmapLoaded);
     }
     isBeingTouched() {
-      const picture = RT.as(
-        /** @param {Game_UIPicture} _ */ (_) => _,
-        this.picture()
-      );
+      const picture = this.picture();
       if (!picture) return super.isBeingTouched();
       return new R(
         this.x + picture.collision.x,
@@ -626,35 +733,39 @@
       //
     }
     updateDrag() {
+      const picture = this.picture();
+      if (!picture) return;
       if (!this._isDraggable || !this._isDragging) return;
       if (!TouchInput.isPressed() || (this._isHovered && !this._isPressed)) {
         this._isDragging = false;
         this.onDragEnd();
       }
-      const picture = RT.as(
-        /** @param {Game_UIPicture} _ */ (_) => _,
-        this.picture()
-      );
       const z = new P(
         TouchInput.x - this._dragPosition.x,
         TouchInput.y - this._dragPosition.y
       );
-      const area = picture._draggableArea;
+      const area = picture._dragRange;
       /** @type {R} */
       const col = picture.collision;
-      if (z.x + col.left <= area.left) {
-        picture._x = area.left - col.left;
-      } else if (area.right <= z.x + col.right) {
-        picture._x = area.right - col.right;
-      } else {
-        picture._x = z.x;
-      }
-      if (z.y + col.top <= area.top) {
-        picture._y = area.top - col.top;
-      } else if (area.bottom <= z.y + col.bottom) {
-        picture._y = area.bottom - col.bottom;
-      } else {
-        picture._y = z.y;
+      if (picture.enableDrag) {
+        if (picture._movableDirection.x > 0) {
+          if (z.x + col.left <= area.left) {
+            picture._x = area.left - col.left;
+          } else if (area.right <= z.x + col.right) {
+            picture._x = area.right - col.right;
+          } else {
+            picture._x = z.x;
+          }
+        }
+        if (picture._movableDirection.y > 0) {
+          if (z.y + col.top <= area.top) {
+            picture._y = area.top - col.top;
+          } else if (area.bottom <= z.y + col.bottom) {
+            picture._y = area.bottom - col.bottom;
+          } else {
+            picture._y = z.y;
+          }
+        }
       }
     }
     updateColor() {
@@ -666,11 +777,51 @@
         this.setBlendColor([0, 0, 0, 0]);
       }
     }
+    updateVariables() {
+      const picture = this.picture();
+      if (!picture || !picture?._variableIds || !picture?._variableType) return;
+      const { x: idx, y: idy } = picture._variableIds;
+      if (picture._variableType) {
+        const pos = new P(
+          picture._x - picture._dragRange.x + picture.collision.x,
+          picture._y - picture._dragRange.y + picture.collision.y
+        );
+        const max = new P(
+          picture._dragRange.right +
+            (picture.collision.x - picture.collision.width) -
+            (picture._dragRange.x + picture.collision.x),
+          picture._dragRange.bottom +
+            (picture.collision.y - picture.collision.height) -
+            (picture._dragRange.y + picture.collision.y)
+        );
+        const per = new P(pos.x / max.x, pos.y / max.y).mapping(0, 1, 0, 1);
+        switch (picture._variableType) {
+          case "perint":
+            per.calc("mul", 100);
+            idx > 0 && $gameVariables.setValue(idx, per.x);
+            idy > 0 && $gameVariables.setValue(idy, per.y);
+            break;
+          case "perflo":
+            idx > 0 && ($gameVariables._data[idx] = per.x);
+            idy > 0 && ($gameVariables._data[idy] = per.y);
+            break;
+          case "local":
+            idx > 0 && $gameVariables.setValue(idx, pos.x);
+            idy > 0 && $gameVariables.setValue(idy, pos.y);
+            break;
+          case "global":
+            idx > 0 && $gameVariables.setValue(idx, picture._x);
+            idy > 0 && $gameVariables.setValue(idy, picture._y);
+            break;
+        }
+      }
+    }
     update() {
       super.update();
       this.updateTouch();
       this.updateDrag();
       this.updateColor();
+      this.updateVariables();
     }
     onMouseOver() {
       console.log("-[->]");
@@ -679,10 +830,6 @@
       console.log("OUT");
     }
     onMousePress() {
-      const picture = RT.as(
-        /** @param {Game_UIPicture} _ */ (_) => _,
-        this.picture()
-      );
       if (this._isDraggable) {
         this._isDragging = true;
         this._dragPosition = new P(
@@ -701,46 +848,68 @@
     }
   }
 
-  // PluginManager.registerCommand(pluginName, "setup", (params) => {
-  //   const data = parse(params);
-  //   const {
-  //     _pictureName,
-  //     _aliasName,
-  //     _labelText,
-  //     _position,
-  //     _collision,
-  //     _dragConfig,
-  //   } = data;
-  //   new Button({
-  //     pictureName: _pictureName,
-  //     aliasName: _aliasName || _pictureName,
-  //     labelText: _labelText || "",
-  //     position: new P(_position._x, _position._y),
-  //     collision:
-  //       _collision &&
-  //       new R(
-  //         _collision._x,
-  //         _collision._y,
-  //         _collision._width,
-  //         _collision._height
-  //       ),
-  //     dragConfig: {
-  //       isEnable: !!_dragConfig?._isEnable,
-  //       draggableArea: _dragConfig._draggableArea
-  //         ? new R(
-  //             _dragConfig._draggableArea._x,
-  //             _dragConfig._draggableArea._y,
-  //             _dragConfig._draggableArea._width,
-  //             _dragConfig._draggableArea._height
-  //           )
-  //         : new R(0, 0, Graphics.boxWidth, Graphics.boxHeight),
-  //     },
-  //   });
-  // });
+  PluginManager.registerCommand(pluginName, "setup", (params) => {
+    /**
+     * @type {Partial<{
+     *  pictureId: number
+     *  collision: R
+     *  dragConfig: {
+     *    range: R,
+     *    move: "horizontal"|"vertical"
+     *    type: "perint"|"perflo"|"local"|"global"
+     *    variableX: number
+     *    variableY: number
+     *  }
+     *  textConfig: {
+     *    text: string,
+     *    align: "left"|"right"
+     *    margin: Margin
+     *  }
+     *  colorConfig: {
+     *    off: Color
+     *    onOver: Color
+     *    onPress: Color
+     *    onDisable: Color
+     *  }
+     *  soundConfig: {
+     *    normal: {
+     *      onOver: Sound
+     *      onOut: Sound
+     *      onPress: Sound
+     *      onRelease: Sound
+     *    }
+     *    onDisable: {
+     *      onOver: Sound
+     *      onOut: Sound
+     *      onPress: Sound
+     *      onRelease: Sound
+     *    }
+     *  }
+     * }>}
+     */
+    const $ = parsePluginParams(params);
+    console.log({ $ });
+    const picture = UIPicture.picture($.pictureId);
+    picture.collision = R.from($.collision);
+    const dragRange = R.from($.dragConfig.range);
+    picture._dragRange = dragRange;
+    picture._movableDirection = $.dragConfig.move
+      ? new P(
+          +($.dragConfig.move === "horizontal"),
+          +($.dragConfig.move === "vertical")
+        )
+      : new P(1, 1);
+    picture._variableType = $.dragConfig.type;
+    picture._variableIds = new P(
+      $.dragConfig.variableX,
+      $.dragConfig.variableY
+    );
+    picture._labelText = $.textConfig.text;
+  });
 
   const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
   Scene_Map.prototype.isMapTouchOk = function () {
-    const children = RT.as(
+    const children = resolveTypeAs(
       /** @param {Sprite_UIPicture[] | null} _ */ (_) => _,
       SceneManager._scene?._spriteset?._pictureContainer?.children
     );

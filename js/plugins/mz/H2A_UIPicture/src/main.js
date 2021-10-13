@@ -1,44 +1,36 @@
 //@ts-check
+/***__HIDDEN-BEGIN__***/
+// types
+import * as PIXI from "pixi.js";
+import * as MZ from "../../../_types/mz";
+import "./type.ts";
 
-//: types ://
-import * as PIXI from "pixi.js"; /***__HIDDEN__***/
-import * as MZ from "../../../_types/mz/index.js"; /***__HIDDEN__***/
-import "./type.ts"; /***__HIDDEN__***/
+// templates
+import "../../../_templates/pluginName";
+import "../../../_templates/parsePluginParams";
+import "../../../_templates/resolveTypeAs";
 
-//: templates ://
-import "../../../_templates/utils.js"; /***__HIDDEN__***/
-import "../../../_templates/debug.js"; /***__HIDDEN__***/
-
-//: required ://
-import "./extension.js"; /***__HIDDEN__***/
-import "./calc.js"; /***__HIDDEN__***/
+// required
+import "./extension";
+import { P, R, Margin, Color, Sound } from "./calc";
+/***__HIDDEN-END__***/
 
 class UIPicture {
   /** convertEscapeCharacters 呼び出し用
    *  @return {MZ.Window_Base} */
   static get baseWindow() {
-    const win = RT.as(
+    return resolveTypeAs(
       /** @param {MZ.Window_Base | null} _ */ (_) => _,
       SceneManager._scene._windowLayer?.children.find(
         (x) => x instanceof Window_Base
       )
     );
-    return win;
   }
-}
-
-/** Resolve Types */
-class RT {
-  /**
-   * @template T
-   * @param {(type:T)=>any} typeFn
-   * @param {unknown} target
-   * @returns {T}
-   */
-  // 使い方: RT.convert(/** @param {Type} _ */ (_) => _, sprite)
-  static as(typeFn, target) {
-    //@ts-expect-error
-    return target;
+  static picture(pictureId) {
+    return resolveTypeAs(
+      /** @param {Game_UIPicture | null} _ */ (_) => _,
+      $gameScreen.picture(pictureId)
+    );
   }
 }
 
@@ -71,25 +63,21 @@ class CanvasSprite extends PIXI.Sprite {
     //
   }
 }
-globalThis.CanvasSprite = CanvasSprite;
 
 class Sprite_ButtonPictureLabel extends CanvasSprite {
   /** @type {number} */
   pictureId;
-  /** @type {string} */
-  text = "";
   /** @param {number} pictureId */
   constructor(pictureId) {
     super();
     this.pictureId = pictureId;
     this.width = this.picture._width;
     this.height = this.picture._height;
-    this.text = this.picture._labelText;
     this.createCanvas();
-    console.log(this, this.text);
+    console.log(this);
   }
   get picture() {
-    return RT.as(
+    return resolveTypeAs(
       /** @param {Game_UIPicture} _ */ (_) => _,
       $gameScreen.picture(this.pictureId)
     );
@@ -98,7 +86,7 @@ class Sprite_ButtonPictureLabel extends CanvasSprite {
     this.ctx.clearRect(0, 0, this.width, this.height);
     const x = this.width / 2;
     const y = this.height / 2;
-    const text = `${this.text}`;
+    const text = `${this.picture._labelText}`;
     const t = UIPicture.baseWindow?.convertEscapeCharacters(text) || text;
     this.ctx.textAlign = "center";
     this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
@@ -127,9 +115,15 @@ class Game_UIPicture extends Game_Picture {
   /** @type {number} */
   _pictureId;
   /** @type {R} */
-  _collision = new R(48, 24, 192, 72);
+  _collision = new R(NaN, NaN, NaN, NaN);
   /** @type {R} */
-  _draggableArea = new R(96, 96, 480, 480);
+  _dragRange = new R(NaN, NaN, NaN, NaN);
+  /** @type {P} */
+  _movableDirection = new P(1, 1);
+  /** @type {null|"perint"|"perflo"|"local"|"global"} */
+  _variableType = null;
+  /** @type {P} */
+  _variableIds = new P(0, 0);
   /** @type {string} */
   _labelText = "";
   /** @type {number} */
@@ -143,17 +137,28 @@ class Game_UIPicture extends Game_Picture {
     console.log(this);
   }
   get collision() {
-    const anchor = this.origin() === 0 ? 0 : 0.5;
+    // MEMO: anchor が 0.5 の時は xy はマイナスになる
+    const anchor = +!!this.origin() * 0.5;
     const sx = this._scaleX / 100;
     const sy = this._scaleY / 100;
     const px = -anchor * this._width;
     const py = -anchor * this._height;
     return new R(
-      (px + this._collision.x) * sx,
-      (py + this._collision.y) * sy,
-      this._collision.width * sx,
-      this._collision.height * sy
-    );
+      px + this._collision.x,
+      py + this._collision.y,
+      this._collision.width,
+      this._collision.height
+    ).calc("mul", sx, sy);
+  }
+  set collision({ x, y, width, height }) {
+    const isNotNullable = (a) => a !== null && a !== undefined;
+    isNotNullable(x) && (this._collision.x = x);
+    isNotNullable(y) && (this._collision.y = y);
+    isNotNullable(width) && (this._collision.width = width);
+    isNotNullable(height) && (this._collision.height = height);
+  }
+  get enableDrag() {
+    return this._dragRange.isSafe;
   }
 }
 
@@ -169,10 +174,17 @@ class Sprite_UIPicture extends Sprite_Picture {
   constructor(pictureId) {
     super(pictureId);
   }
+  /** @override @returns {Game_UIPicture} */
+  picture() {
+    return resolveTypeAs(
+      /** @param {Game_UIPicture} _ */ (_) => _,
+      super.picture()
+    );
+  }
   get isForeground() {
     return (
       Math.max(
-        ...RT.as(
+        ...resolveTypeAs(
           /** @param {Sprite_UIPicture[]} _ */ (_) => _,
           SceneManager._scene?._spriteset?._pictureContainer?.children || []
         )
@@ -183,22 +195,15 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
   /** @param {MZ.Bitmap} bitmapLoaded */
   _onBitmapLoad(bitmapLoaded) {
-    const picture = RT.as(
-      /** @param {Game_UIPicture} _ */ (_) => _,
-      this.picture()
-    );
+    const picture = this.picture();
     picture._width = bitmapLoaded.width;
     picture._height = bitmapLoaded.height;
-    picture._labelText = `picId: ${this._pictureId}`;
     this._labelSprite = new Sprite_ButtonPictureLabel(this._pictureId);
     this.addChild(this._labelSprite);
     return super._onBitmapLoad(bitmapLoaded);
   }
   isBeingTouched() {
-    const picture = RT.as(
-      /** @param {Game_UIPicture} _ */ (_) => _,
-      this.picture()
-    );
+    const picture = this.picture();
     if (!picture) return super.isBeingTouched();
     return new R(
       this.x + picture.collision.x,
@@ -238,35 +243,39 @@ class Sprite_UIPicture extends Sprite_Picture {
     //
   }
   updateDrag() {
+    const picture = this.picture();
+    if (!picture) return;
     if (!this._isDraggable || !this._isDragging) return;
     if (!TouchInput.isPressed() || (this._isHovered && !this._isPressed)) {
       this._isDragging = false;
       this.onDragEnd();
     }
-    const picture = RT.as(
-      /** @param {Game_UIPicture} _ */ (_) => _,
-      this.picture()
-    );
     const z = new P(
       TouchInput.x - this._dragPosition.x,
       TouchInput.y - this._dragPosition.y
     );
-    const area = picture._draggableArea;
+    const area = picture._dragRange;
     /** @type {R} */
     const col = picture.collision;
-    if (z.x + col.left <= area.left) {
-      picture._x = area.left - col.left;
-    } else if (area.right <= z.x + col.right) {
-      picture._x = area.right - col.right;
-    } else {
-      picture._x = z.x;
-    }
-    if (z.y + col.top <= area.top) {
-      picture._y = area.top - col.top;
-    } else if (area.bottom <= z.y + col.bottom) {
-      picture._y = area.bottom - col.bottom;
-    } else {
-      picture._y = z.y;
+    if (picture.enableDrag) {
+      if (picture._movableDirection.x > 0) {
+        if (z.x + col.left <= area.left) {
+          picture._x = area.left - col.left;
+        } else if (area.right <= z.x + col.right) {
+          picture._x = area.right - col.right;
+        } else {
+          picture._x = z.x;
+        }
+      }
+      if (picture._movableDirection.y > 0) {
+        if (z.y + col.top <= area.top) {
+          picture._y = area.top - col.top;
+        } else if (area.bottom <= z.y + col.bottom) {
+          picture._y = area.bottom - col.bottom;
+        } else {
+          picture._y = z.y;
+        }
+      }
     }
   }
   updateColor() {
@@ -278,11 +287,51 @@ class Sprite_UIPicture extends Sprite_Picture {
       this.setBlendColor([0, 0, 0, 0]);
     }
   }
+  updateVariables() {
+    const picture = this.picture();
+    if (!picture || !picture?._variableIds || !picture?._variableType) return;
+    const { x: idx, y: idy } = picture._variableIds;
+    if (picture._variableType) {
+      const pos = new P(
+        picture._x - picture._dragRange.x + picture.collision.x,
+        picture._y - picture._dragRange.y + picture.collision.y
+      );
+      const max = new P(
+        picture._dragRange.right +
+          (picture.collision.x - picture.collision.width) -
+          (picture._dragRange.x + picture.collision.x),
+        picture._dragRange.bottom +
+          (picture.collision.y - picture.collision.height) -
+          (picture._dragRange.y + picture.collision.y)
+      );
+      const per = new P(pos.x / max.x, pos.y / max.y).mapping(0, 1, 0, 1);
+      switch (picture._variableType) {
+        case "perint":
+          per.calc("mul", 100);
+          idx > 0 && $gameVariables.setValue(idx, per.x);
+          idy > 0 && $gameVariables.setValue(idy, per.y);
+          break;
+        case "perflo":
+          idx > 0 && ($gameVariables._data[idx] = per.x);
+          idy > 0 && ($gameVariables._data[idy] = per.y);
+          break;
+        case "local":
+          idx > 0 && $gameVariables.setValue(idx, pos.x);
+          idy > 0 && $gameVariables.setValue(idy, pos.y);
+          break;
+        case "global":
+          idx > 0 && $gameVariables.setValue(idx, picture._x);
+          idy > 0 && $gameVariables.setValue(idy, picture._y);
+          break;
+      }
+    }
+  }
   update() {
     super.update();
     this.updateTouch();
     this.updateDrag();
     this.updateColor();
+    this.updateVariables();
   }
   onMouseOver() {
     console.log("-[->]");
@@ -291,10 +340,6 @@ class Sprite_UIPicture extends Sprite_Picture {
     console.log("OUT");
   }
   onMousePress() {
-    const picture = RT.as(
-      /** @param {Game_UIPicture} _ */ (_) => _,
-      this.picture()
-    );
     if (this._isDraggable) {
       this._isDragging = true;
       this._dragPosition = new P(TouchInput.x - this.x, TouchInput.y - this.y);
@@ -310,46 +355,65 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
 }
 
-// PluginManager.registerCommand(pluginName, "setup", (params) => {
-//   const data = parse(params);
-//   const {
-//     _pictureName,
-//     _aliasName,
-//     _labelText,
-//     _position,
-//     _collision,
-//     _dragConfig,
-//   } = data;
-//   new Button({
-//     pictureName: _pictureName,
-//     aliasName: _aliasName || _pictureName,
-//     labelText: _labelText || "",
-//     position: new P(_position._x, _position._y),
-//     collision:
-//       _collision &&
-//       new R(
-//         _collision._x,
-//         _collision._y,
-//         _collision._width,
-//         _collision._height
-//       ),
-//     dragConfig: {
-//       isEnable: !!_dragConfig?._isEnable,
-//       draggableArea: _dragConfig._draggableArea
-//         ? new R(
-//             _dragConfig._draggableArea._x,
-//             _dragConfig._draggableArea._y,
-//             _dragConfig._draggableArea._width,
-//             _dragConfig._draggableArea._height
-//           )
-//         : new R(0, 0, Graphics.boxWidth, Graphics.boxHeight),
-//     },
-//   });
-// });
+PluginManager.registerCommand(pluginName, "setup", (params) => {
+  /**
+   * @type {Partial<{
+   *  pictureId: number
+   *  collision: R
+   *  dragConfig: {
+   *    range: R,
+   *    move: "horizontal"|"vertical"
+   *    type: "perint"|"perflo"|"local"|"global"
+   *    variableX: number
+   *    variableY: number
+   *  }
+   *  textConfig: {
+   *    text: string,
+   *    align: "left"|"right"
+   *    margin: Margin
+   *  }
+   *  colorConfig: {
+   *    off: Color
+   *    onOver: Color
+   *    onPress: Color
+   *    onDisable: Color
+   *  }
+   *  soundConfig: {
+   *    normal: {
+   *      onOver: Sound
+   *      onOut: Sound
+   *      onPress: Sound
+   *      onRelease: Sound
+   *    }
+   *    onDisable: {
+   *      onOver: Sound
+   *      onOut: Sound
+   *      onPress: Sound
+   *      onRelease: Sound
+   *    }
+   *  }
+   * }>}
+   */
+  const $ = parsePluginParams(params);
+  console.log({ $ });
+  const picture = UIPicture.picture($.pictureId);
+  picture.collision = R.from($.collision);
+  const dragRange = R.from($.dragConfig.range);
+  picture._dragRange = dragRange;
+  picture._movableDirection = $.dragConfig.move
+    ? new P(
+        +($.dragConfig.move === "horizontal"),
+        +($.dragConfig.move === "vertical")
+      )
+    : new P(1, 1);
+  picture._variableType = $.dragConfig.type;
+  picture._variableIds = new P($.dragConfig.variableX, $.dragConfig.variableY);
+  picture._labelText = $.textConfig.text;
+});
 
 const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
 Scene_Map.prototype.isMapTouchOk = function () {
-  const children = RT.as(
+  const children = resolveTypeAs(
     /** @param {Sprite_UIPicture[] | null} _ */ (_) => _,
     SceneManager._scene?._spriteset?._pictureContainer?.children
   );
