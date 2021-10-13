@@ -209,7 +209,7 @@
     static get baseWindow() {
       const win = RT.as(
         /** @param {MZ.Window_Base | null} _ */ (_) => _,
-        SceneManager._scene._windowLayer.children.find(
+        SceneManager._scene._windowLayer?.children.find(
           (x) => x instanceof Window_Base
         )
       );
