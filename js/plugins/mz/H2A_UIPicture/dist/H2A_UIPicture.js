@@ -358,6 +358,18 @@
     constructor(pictureId) {
       super(pictureId);
     }
+    get isForeground() {
+      return (
+        Math.max(
+          ...RT.as(
+            /** @param {Sprite_UIPicture[]} _ */ (_) => _,
+            SceneManager._scene?._spriteset?._pictureContainer?.children || []
+          )
+            ?.filter((x) => x.isBeingTouched())
+            .map((x) => x._pictureId)
+        ) === this._pictureId
+      );
+    }
     /** @param {MZ.Bitmap} bitmapLoaded */
     _onBitmapLoad(bitmapLoaded) {
       const picture = RT.as(
@@ -370,15 +382,6 @@
       this._labelSprite = new Sprite_ButtonPictureLabel(this._pictureId);
       this.addChild(this._labelSprite);
       return super._onBitmapLoad(bitmapLoaded);
-    }
-    /** @returns {Sprite_UIPicture | null} */
-    get nextSprite() {
-      return RT.as(
-        /** @param {Sprite_UIPicture | null} _ */ (_) => _,
-        SceneManager._scene?._spriteset?._pictureContainer?.children?.[
-          this._pictureId // _pictureId - 1 + 1
-        ] || null
-      );
     }
     isBeingTouched() {
       const picture = RT.as(
@@ -396,7 +399,7 @@
     updateTouch() {
       if (this.worldVisible) {
         // 画面上
-        if (this.isBeingTouched()) {
+        if (this.isBeingTouched() && this.isForeground) {
           // 判定内
           if (!this._isHovered && TouchInput.isHovered()) {
             this._isHovered = true;
@@ -456,9 +459,7 @@
       }
     }
     updateColor() {
-      if (this.nextSprite?._isHovered) {
-        this.setBlendColor([0, 0, 0, 0]);
-      } else if (this._isDragging || this._isPressed) {
+      if (this._isDragging || this._isPressed) {
         this.setBlendColor([0, 0, 0, 63]);
       } else if (this._isHovered) {
         this.setBlendColor([255, 255, 255, 63]);
@@ -468,14 +469,8 @@
     }
     update() {
       super.update();
-      if (!this.nextSprite?._isHovered) {
-        if (this._isDragging === this.nextSprite?._isDragging) {
-          this._isPressed = false;
-          this._isDragging = false;
-        }
-        this.updateTouch();
-        this.updateDrag();
-      }
+      this.updateTouch();
+      this.updateDrag();
       this.updateColor();
     }
     onMouseOver() {
