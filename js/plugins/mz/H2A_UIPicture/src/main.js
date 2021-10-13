@@ -94,6 +94,34 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
       picture._colorNormal
     );
   }
+  if ($?.soundConfig) {
+    if ($.soundConfig?.normal) {
+      picture._soundNormalOnOut = Sound.from($.soundConfig.normal.onOut || {});
+      picture._soundNormalOnOver = Sound.from(
+        $.soundConfig.normal.onOver || {}
+      );
+      picture._soundNormalOnPress = Sound.from(
+        $.soundConfig.normal.onPress || {}
+      );
+      picture._soundNormalOnRelease = Sound.from(
+        $.soundConfig.normal.onRelease || {}
+      );
+    }
+    if ($.soundConfig?.onDisable) {
+      picture._soundDisableOnOut = Sound.from(
+        $.soundConfig.onDisable.onOut || {}
+      );
+      picture._soundDisableOnOver = Sound.from(
+        $.soundConfig.onDisable.onOver || {}
+      );
+      picture._soundDisableOnPress = Sound.from(
+        $.soundConfig.onDisable.onPress || {}
+      );
+      picture._soundDisableOnRelease = Sound.from(
+        $.soundConfig.onDisable.onRelease || {}
+      );
+    }
+  }
 });
 
 const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;

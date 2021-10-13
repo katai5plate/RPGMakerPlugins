@@ -1,6 +1,6 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
-import { Color, P, R } from "../calc";
+import { Color, P, R, Sound } from "../calc";
 /***__HIDDEN-END__***/
 
 class Game_UIPicture extends Game_Picture {
@@ -42,6 +42,25 @@ class Game_UIPicture extends Game_Picture {
   _colorOnDisable = new Color(0, 0, 0, 0, 255);
   /** @type {number} */
   _opacityDuration = 0;
+
+  /** @type {boolean} */
+  _isDisabled = false;
+  /** @type {Sound} */
+  _soundNormalOnOver = new Sound();
+  /** @type {Sound} */
+  _soundNormalOnOut = new Sound();
+  /** @type {Sound} */
+  _soundNormalOnPress = new Sound();
+  /** @type {Sound} */
+  _soundNormalOnRelease = new Sound();
+  /** @type {Sound} */
+  _soundDisableOnOver = new Sound();
+  /** @type {Sound} */
+  _soundDisableOnOut = new Sound();
+  /** @type {Sound} */
+  _soundDisableOnPress = new Sound();
+  /** @type {Sound} */
+  _soundDisableOnRelease = new Sound();
 
   /** @param {number} pictureId */
   constructor(pictureId) {

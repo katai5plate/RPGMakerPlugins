@@ -516,6 +516,25 @@
       this.pitch = pitch;
       this.pan = pan;
     }
+    /**
+     * @param {{name?:string,volume?:number,pitch?:number,pan?:number}} _
+     * @returns
+     */
+    static from({ name, volume, pitch, pan }) {
+      const whenNaN = {
+        volume: 90,
+        pitch: 100,
+        pan: 0,
+      };
+      const f = (a, b) =>
+        Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+      return new this(
+        name || "",
+        f(volume, "volume"),
+        f(pitch, "pitch"),
+        f(pan, "pan")
+      );
+    }
     play() {
       AudioManager.playSe(this);
     }
@@ -854,10 +873,12 @@
     onMouseOver() {
       console.log("onMouseOver");
       this.triggerColor();
+      this.picture()._soundNormalOnOver.play();
     }
     onMouseOut() {
       console.log("onMouseOut");
       this.triggerColor();
+      this.picture()._soundNormalOnOut.play();
     }
     onMousePress() {
       console.log("onMousePress");
@@ -869,6 +890,7 @@
         );
       }
       this.triggerColor();
+      this.picture()._soundNormalOnPress.play();
     }
     onMouseRelease() {
       console.log("onMouseRelease");
@@ -877,6 +899,7 @@
         this.onDragEnd();
       }
       this.triggerColor();
+      this.picture()._soundNormalOnRelease.play();
     }
   }
 
@@ -921,6 +944,25 @@
     _colorOnDisable = new Color(0, 0, 0, 0, 255);
     /** @type {number} */
     _opacityDuration = 0;
+
+    /** @type {boolean} */
+    _isDisabled = false;
+    /** @type {Sound} */
+    _soundNormalOnOver = new Sound();
+    /** @type {Sound} */
+    _soundNormalOnOut = new Sound();
+    /** @type {Sound} */
+    _soundNormalOnPress = new Sound();
+    /** @type {Sound} */
+    _soundNormalOnRelease = new Sound();
+    /** @type {Sound} */
+    _soundDisableOnOver = new Sound();
+    /** @type {Sound} */
+    _soundDisableOnOut = new Sound();
+    /** @type {Sound} */
+    _soundDisableOnPress = new Sound();
+    /** @type {Sound} */
+    _soundDisableOnRelease = new Sound();
 
     /** @param {number} pictureId */
     constructor(pictureId) {
@@ -1059,6 +1101,36 @@
         $.colorConfig.onDisable || {},
         picture._colorNormal
       );
+    }
+    if ($?.soundConfig) {
+      if ($.soundConfig?.normal) {
+        picture._soundNormalOnOut = Sound.from(
+          $.soundConfig.normal.onOut || {}
+        );
+        picture._soundNormalOnOver = Sound.from(
+          $.soundConfig.normal.onOver || {}
+        );
+        picture._soundNormalOnPress = Sound.from(
+          $.soundConfig.normal.onPress || {}
+        );
+        picture._soundNormalOnRelease = Sound.from(
+          $.soundConfig.normal.onRelease || {}
+        );
+      }
+      if ($.soundConfig?.onDisable) {
+        picture._soundDisableOnOut = Sound.from(
+          $.soundConfig.onDisable.onOut || {}
+        );
+        picture._soundDisableOnOver = Sound.from(
+          $.soundConfig.onDisable.onOver || {}
+        );
+        picture._soundDisableOnPress = Sound.from(
+          $.soundConfig.onDisable.onPress || {}
+        );
+        picture._soundDisableOnRelease = Sound.from(
+          $.soundConfig.onDisable.onRelease || {}
+        );
+      }
     }
   });
 

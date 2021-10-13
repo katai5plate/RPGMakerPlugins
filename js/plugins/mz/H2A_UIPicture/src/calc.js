@@ -189,6 +189,25 @@ class Sound {
     this.pitch = pitch;
     this.pan = pan;
   }
+  /**
+   * @param {{name?:string,volume?:number,pitch?:number,pan?:number}} _
+   * @returns
+   */
+  static from({ name, volume, pitch, pan }) {
+    const whenNaN = {
+      volume: 90,
+      pitch: 100,
+      pan: 0,
+    };
+    const f = (a, b) =>
+      Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+    return new this(
+      name || "",
+      f(volume, "volume"),
+      f(pitch, "pitch"),
+      f(pan, "pan")
+    );
+  }
   play() {
     //@ts-expect-error
     AudioManager.playSe(this);

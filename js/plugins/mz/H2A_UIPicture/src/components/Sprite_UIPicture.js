@@ -208,10 +208,12 @@ class Sprite_UIPicture extends Sprite_Picture {
   onMouseOver() {
     console.log("onMouseOver");
     this.triggerColor();
+    this.picture()._soundNormalOnOver.play();
   }
   onMouseOut() {
     console.log("onMouseOut");
     this.triggerColor();
+    this.picture()._soundNormalOnOut.play();
   }
   onMousePress() {
     console.log("onMousePress");
@@ -220,6 +222,7 @@ class Sprite_UIPicture extends Sprite_Picture {
       this._dragPosition = new P(TouchInput.x - this.x, TouchInput.y - this.y);
     }
     this.triggerColor();
+    this.picture()._soundNormalOnPress.play();
   }
   onMouseRelease() {
     console.log("onMouseRelease");
@@ -228,6 +231,7 @@ class Sprite_UIPicture extends Sprite_Picture {
       this.onDragEnd();
     }
     this.triggerColor();
+    this.picture()._soundNormalOnRelease.play();
   }
 }
 
