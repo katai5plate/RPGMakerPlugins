@@ -14,9 +14,8 @@ import "./extension.js"; /***__HIDDEN__***/
 import "./calc.js"; /***__HIDDEN__***/
 
 class UIPictureState {
-  // /** @type {Table} */
-  // static table = null;
-  /** @return {MZ.Window_Base} */
+  /** convertEscapeCharacters 呼び出し用
+   *  @return {MZ.Window_Base} */
   static get baseWindow() {
     const win = RT.as(
       /** @param {MZ.Window_Base | null} _ */ (_) => _,
