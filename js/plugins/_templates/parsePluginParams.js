@@ -1,6 +1,4 @@
-const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
-
-const parse = (paramText) =>
+const parsePluginParams = (paramText) =>
   JSON.parse(
     JSON.stringify(paramText, (_, v) => {
       if (/^".*?"$/.test(v)) return v;
@@ -8,7 +6,7 @@ const parse = (paramText) =>
         const p = JSON.parse(v);
         return null === p ? v : p;
       } catch (__) {
-        return v;
+        return v === "" ? null : v;
       }
     })
   );
