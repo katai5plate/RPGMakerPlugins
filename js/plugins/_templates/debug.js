@@ -12,3 +12,5 @@ const debugLog = (
   }
   console.groupEnd();
 };
+
+export default debugLog; /***__HIDDEN__***/

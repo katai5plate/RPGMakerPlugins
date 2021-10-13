@@ -1,3 +1,4 @@
+//@ts-check
 /***__HIDDEN-BEGIN__***/
 import * as PIXI from "pixi.js";
 /***__HIDDEN-END__***/
@@ -172,10 +173,11 @@ class Sound {
     this.pan = pan;
   }
   play() {
+    //@ts-expect-error
     AudioManager.playSe(this);
   }
 }
 
 /***__HIDDEN-BEGIN__***/
-export { P, R, Margin, Color, Sound };
+export { P, R, Color, Sound };
 /***__HIDDEN-END__***/

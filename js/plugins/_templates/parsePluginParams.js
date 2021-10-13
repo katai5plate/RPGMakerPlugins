@@ -10,3 +10,5 @@ const parsePluginParams = (paramText) =>
       }
     })
   );
+
+export default parsePluginParams; /***__HIDDEN__***/

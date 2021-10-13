@@ -320,33 +320,6 @@
    */
   const resolveTypeAs = (def, from) => from;
 
-  /*========== ./extension.js ==========*/
-
-  CanvasRenderingContext2D.prototype.getTextSize = function (text) {
-    const measure = this.measureText(text);
-    return {
-      width: measure.width,
-      height:
-        measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
-    };
-  };
-  CanvasRenderingContext2D.prototype.log = function (value, x = 0, y = 0) {
-    const fillStyle = this.fillStyle;
-    this.fillStyle = "#fff";
-    const text = JSON.stringify(value, null, 2);
-    text.split("\n").forEach((line, i) => {
-      const { height } = this.getTextSize("あ");
-      this.fillText(line, x, y + height * i);
-    });
-    this.fillStyle = fillStyle;
-  };
-  CanvasRenderingContext2D.prototype.line = function (ax, ay, bx, by) {
-    this.beginPath();
-    this.moveTo(ax, ay);
-    this.lineTo(bx, by);
-    this.stroke();
-  };
-
   /*========== ./calc.js ==========*/
 
   class P extends PIXI.Point {
@@ -523,7 +496,7 @@
     }
   }
 
-  /*========== ./main.js ==========*/
+  /*========== ./components/UISprite.js ==========*/
 
   class UIPicture {
     /** convertEscapeCharacters 呼び出し用
@@ -551,6 +524,8 @@
       );
     }
   }
+
+  /*========== ./components/CanvasSprite.js ==========*/
 
   class CanvasSprite extends PIXI.Sprite {
     #context;
@@ -582,7 +557,9 @@
     }
   }
 
-  class Sprite_ButtonPictureLabel extends CanvasSprite {
+  /*========== ./components/Sprite_UIPictureLabel.js ==========*/
+
+  class Sprite_UIPictureLabel extends CanvasSprite {
     /** @type {number} */
     pictureId;
     /** @param {number} pictureId */
@@ -653,69 +630,7 @@
     }
   }
 
-  class Game_UIPicture extends Game_Picture {
-    /** @type {number} */
-    _pictureId;
-    /** @type {R} */
-    _collision = new R(NaN, NaN, NaN, NaN);
-    /** @type {R} */
-    _dragRange = new R(NaN, NaN, NaN, NaN);
-    /** @type {P} */
-    _movableDirection = new P(1, 1);
-    /** @type {null|"perint"|"perflo"|"local"|"global"} */
-    _variableType = null;
-    /** @type {P} */
-    _variableIds = new P(0, 0);
-    /** @type {string} */
-    _labelText = "";
-    /** @type {CanvasTextAlign} */
-    _textAlign = "center";
-    /** @type {P} */
-    _textOffset = new P(0, 0);
-    /** @type {number} */
-    _width;
-    /** @type {number} */
-    _height;
-    /** @param {number} pictureId */
-    constructor(pictureId) {
-      super();
-      this._pictureId = pictureId;
-      console.log(this);
-    }
-    get collision() {
-      // MEMO: anchor が 0.5 の時は xy はマイナスになる
-      const anchor = +!!this.origin() * 0.5;
-      // 判定が壊れている場合は画像サイズを代用する
-      const safeCol = this._collision.isSafe
-        ? this._collision
-        : new R(0, 0, this._width, this._height);
-      const sx = this._scaleX / 100;
-      const sy = this._scaleY / 100;
-      const px = -anchor * this._width;
-      const py = -anchor * this._height;
-      return new R(
-        px + safeCol.x,
-        py + safeCol.y,
-        safeCol.width,
-        safeCol.height
-      ).calc("mul", sx, sy);
-    }
-    set collision(r) {
-      const { x, y, width, height } = r || {
-        x: 0,
-        y: 0,
-        width: this._width,
-        height: this._height,
-      };
-      Number.isFinite(x) && (this._collision.x = x);
-      Number.isFinite(y) && (this._collision.y = y);
-      Number.isFinite(width) && (this._collision.width = width);
-      Number.isFinite(height) && (this._collision.height = height);
-    }
-    get enableDrag() {
-      return this._dragRange.isSafe;
-    }
-  }
+  /*========== ./components/Sprite_UIPicture.js ==========*/
 
   class Sprite_UIPicture extends Sprite_Picture {
     /** @type {boolean} */
@@ -724,7 +639,7 @@
     _dragPosition = new P();
     /** @type {boolean} */
     _isDraggable = true;
-    /** @type {Sprite_ButtonPictureLabel} */
+    /** @type {Sprite_UIPictureLabel} */
     _labelSprite;
     constructor(pictureId) {
       super(pictureId);
@@ -753,8 +668,13 @@
       const picture = this.picture();
       picture._width = bitmapLoaded.width;
       picture._height = bitmapLoaded.height;
-      this._labelSprite = new Sprite_ButtonPictureLabel(this._pictureId);
-      this.addChild(this._labelSprite);
+      this._labelSprite = new Sprite_UIPictureLabel(this._pictureId);
+      this.addChild(
+        resolveTypeAs(
+          /** @param {PIXI.DisplayObject} _ */ (_) => _,
+          this._labelSprite
+        )
+      );
       return super._onBitmapLoad(bitmapLoaded);
     }
     isBeingTouched() {
@@ -912,6 +832,74 @@
       }
     }
   }
+
+  /*========== ./components/Game_UIPicture.js ==========*/
+
+  class Game_UIPicture extends Game_Picture {
+    /** @type {number} */
+    _pictureId;
+    /** @type {R} */
+    _collision = new R(NaN, NaN, NaN, NaN);
+    /** @type {R} */
+    _dragRange = new R(NaN, NaN, NaN, NaN);
+    /** @type {P} */
+    _movableDirection = new P(1, 1);
+    /** @type {null|"perint"|"perflo"|"local"|"global"} */
+    _variableType = null;
+    /** @type {P} */
+    _variableIds = new P(0, 0);
+    /** @type {string} */
+    _labelText = "";
+    /** @type {CanvasTextAlign} */
+    _textAlign = "center";
+    /** @type {P} */
+    _textOffset = new P(0, 0);
+    /** @type {number} */
+    _width;
+    /** @type {number} */
+    _height;
+    /** @param {number} pictureId */
+    constructor(pictureId) {
+      super();
+      this._pictureId = pictureId;
+      console.log(this);
+    }
+    get collision() {
+      // MEMO: anchor が 0.5 の時は xy はマイナスになる
+      const anchor = +!!this.origin() * 0.5;
+      // 判定が壊れている場合は画像サイズを代用する
+      const safeCol = this._collision.isSafe
+        ? this._collision
+        : new R(0, 0, this._width, this._height);
+      const sx = this._scaleX / 100;
+      const sy = this._scaleY / 100;
+      const px = -anchor * this._width;
+      const py = -anchor * this._height;
+      return new R(
+        px + safeCol.x,
+        py + safeCol.y,
+        safeCol.width,
+        safeCol.height
+      ).calc("mul", sx, sy);
+    }
+    set collision(r) {
+      const { x, y, width, height } = r || {
+        x: 0,
+        y: 0,
+        width: this._width,
+        height: this._height,
+      };
+      Number.isFinite(x) && (this._collision.x = x);
+      Number.isFinite(y) && (this._collision.y = y);
+      Number.isFinite(width) && (this._collision.width = width);
+      Number.isFinite(height) && (this._collision.height = height);
+    }
+    get enableDrag() {
+      return this._dragRange.isSafe;
+    }
+  }
+
+  /*========== ./main.js ==========*/
 
   PluginManager.registerCommand(pluginName, "setup", (params) => {
     /**
