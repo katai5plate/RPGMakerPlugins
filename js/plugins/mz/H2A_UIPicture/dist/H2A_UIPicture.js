@@ -6,39 +6,38 @@
  * @url https://github.com/katai5plate/RPGMakerPlugins
  *
  * @command setup
- * @text ピクチャ設定
+ * @text 設定
  *
- *   @arg _pictureName
- *   @text ファイル名
- *   @type file
- *   @dir img/pictures
+ *   @arg pictureId
+ *   @text ピクチャID
+ *   @type number
+ *   @min 1
+ *   @max 100
  *
- *   @arg _aliasName
- *   @text エイリアス名
- *   @desc 省略した場合はファイル名が設定されます
- *   @type string
- *
- *   @arg _labelText
- *   @text ラベル文字列
- *   @desc
- *   @type string
- *
- *   @arg _position
- *   @text 左上位置
- *   @desc 省略禁止
- *   @type struct<P>
- *   @default {"_x":0,"_y":0}
- *
- *   @arg _collision
+ *   @arg collision
  *   @text 当たり判定
- *   @desc 省略した場合は画像サイズがそのまま設定されます
+ *   @desc 省略・不備の場合は画像サイズがそのまま設定されます
  *   @type struct<R>
  *
- *   @arg _dragConfig
+ *   @arg dragConfig
  *   @text ドラッグ設定
- *   @desc 省略禁止
+ *   @desc 省略・不備の場合はドラッグ無効になります
  *   @type struct<DragConfig>
- *   @default {"_isEnable":false}
+ *
+ *   @arg textConfig
+ *   @text 文字列設定
+ *   @desc 省略・不備の場合は文字列は表示されません
+ *   @type struct<TextConfig>
+ *
+ *   @arg colorConfig
+ *   @text 色調設定
+ *   @desc 省略・不備の場合は色調は変化しないか、通常時と同じになります
+ *   @type struct<ColorConfig>
+ *
+ *   @arg soundConfig
+ *   @text 効果音設定
+ *   @desc 省略・不備の場合は鳴りません
+ *   @type struct<SoundConfig>
  *
  * @help
  *
@@ -50,33 +49,234 @@
  * RPG Maker MZ Version: v1.3.3
  */
 /*~struct~P:ja
- * @param _x
+ * @param x
+ * @text 横軸座標
  * @type number
+ * @min 0
  *
- * @param _y
+ * @param y
+ * @text 縦軸座標
  * @type number
+ * @min 0
  *
  */
 /*~struct~R:ja
- * @param _x
+ * @param x
+ * @text 左上X
  * @type number
+ * @min 0
  *
- * @param _y
+ * @param y
+ * @text 左上Y
  * @type number
+ * @min 0
  *
- * @param _width
+ * @param w
+ * @text 幅
  * @type number
+ * @min 1
  *
- * @param _height
+ * @param h
+ * @text 高さ
  * @type number
+ * @min 1
+ *
+ */
+/*~struct~M:ja
+ * @param left
+ * @text 左から
+ * @type number
+ * @min 0
+ *
+ * @param right
+ * @text 右から
+ * @type number
+ * @min 0
+ *
+ * @param top
+ * @text 上から
+ * @type number
+ * @min 1
+ *
+ * @param bottom
+ * @text 下から
+ * @type number
+ * @min 1
+ *
+ */
+/*~struct~C:ja
+ * @param r
+ * @type number
+ * @text 赤
+ * @min 0
+ * @max 255
+ * @default 0
+ *
+ * @param g
+ * @type number
+ * @text 緑
+ * @min 0
+ * @max 255
+ * @default 0
+ *
+ * @param b
+ * @type number
+ * @text 青
+ * @min 0
+ * @max 255
+ * @default 0
+ *
+ * @param s
+ * @type number
+ * @text 強度
+ * @min 0
+ * @max 255
+ * @default 0
+ *
+ * @param a
+ * @type number
+ * @text 不透明度
+ * @min 0
+ * @max 255
+ * @default 255
+ *
+ */
+/*~struct~SE:ja
+ * @param path
+ * @text ファイル名
+ * @type file
+ * @dir audio/se
+ *
+ * @param volume
+ * @text 音量
+ * @type number
+ * @min 0
+ * @max 100
+ * @default 90
+ *
+ * @param pitch
+ * @text ピッチ
+ * @type number
+ * @min 50
+ * @max 150
+ * @default 100
+ *
+ * @param pan
+ * @text 定位
+ * @type number
+ * @min -100
+ * @max 100
+ * @default 0
  *
  */
 /*~struct~DragConfig:ja
- * @param _isEnable
- * @type boolean
- *
- * @param _draggableArea
+ * @param draggableArea
  * @type struct<R>
+ * @text ドラッグ範囲
+ * @desc ドラッグが可能な範囲。省略・不備の場合はドラッグ無効になります
+ *
+ * @param type
+ * @type select
+ * @text 代入設定
+ * @desc 変数に位置情報を代入するタイプ。省略・不備の場合は代入されません
+ *
+ *   @option 比率
+ *   @value per
+ *
+ *   @option 差分
+ *   @value local
+ *
+ *   @option 画面
+ *   @value global
+ *
+ * @param variableX
+ * @type variable
+ * @text X位置代入先
+ * @desc 横軸の位置情報を代入する変数。省略・不備の場合は代入されません
+ *
+ * @param variableY
+ * @type variable
+ * @text Y位置代入先
+ * @desc 縦軸の位置情報を代入する変数。省略・不備の場合は代入されません
+ *
+ */
+/*~struct~TextConfig:ja
+ * @param text
+ * @type multiline_string
+ * @text 文字列
+ * @desc \v[] などの文字列が使用できます。文字列が長すぎるとはみ出ます
+ *
+ * @param align
+ * @type select
+ * @text 文字揃え
+ * @desc 省略・不備の場合は中央になります
+ *
+ *   @option 左揃え
+ *   @value left
+ *
+ *   @option 右揃え
+ *   @value right
+ *
+ * @param margin
+ * @type struct<M>
+ * @text 余白設定
+ * @desc 省略・不備の場合は画像サイズに合わせます
+ *
+ */
+/*~struct~ColorConfig:ja
+ * @param off
+ * @type struct<C>
+ * @text 通常
+ * @desc 省略・不備の場合は変化しません
+ *
+ * @param onOver
+ * @type struct<C>
+ * @text マウスオーバー時
+ * @desc 省略・不備の場合は通常と同じになります
+ *
+ * @param onPress
+ * @type struct<C>
+ * @text 押下時
+ * @desc 省略・不備の場合は通常と同じになります
+ *
+ * @param onDisable
+ * @type struct<C>
+ * @text 無効時
+ * @desc 省略・不備の場合は通常と同じになります
+ *
+ */
+/*~struct~SoundConfig:ja
+ * @param normal
+ * @type struct<SoundConfigDetail>
+ * @text 通常時
+ * @desc 省略・不備の場合は鳴りません
+ *
+ * @param onDisable
+ * @type struct<SoundConfigDetail>
+ * @text 無効時
+ * @desc 省略・不備の場合は鳴りません
+ *
+ */
+/*~struct~SoundConfigDetail:ja
+ * @param onOver
+ * @type struct<SE>
+ * @text マウスオーバー時
+ * @desc 省略・不備の場合は鳴りません
+ *
+ * @param onOut
+ * @type struct<SE>
+ * @text マウスアウト時
+ * @desc 省略・不備の場合は鳴りません
+ *
+ * @param onPress
+ * @type struct<SE>
+ * @text 押下時
+ * @desc 省略・不備の場合は鳴りません
+ *
+ * @param onRelease
+ * @type struct<SE>
+ * @text リリース時
+ * @desc 省略・不備の場合は鳴りません
  *
  */
 (() => {
@@ -202,7 +402,7 @@
 
   /*========== ./main.js ==========*/
 
-  class UIPictureState {
+  class UIPicture {
     /** convertEscapeCharacters 呼び出し用
      *  @return {MZ.Window_Base} */
     static get baseWindow() {
@@ -287,8 +487,7 @@
       const x = this.width / 2;
       const y = this.height / 2;
       const text = `${this.text}`;
-      const t =
-        UIPictureState.baseWindow?.convertEscapeCharacters(text) || text;
+      const t = UIPicture.baseWindow?.convertEscapeCharacters(text) || text;
       this.ctx.textAlign = "center";
       this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
       this.ctx.textBaseline = "middle";

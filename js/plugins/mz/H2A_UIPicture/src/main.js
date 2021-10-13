@@ -13,7 +13,7 @@ import "../../../_templates/debug.js"; /***__HIDDEN__***/
 import "./extension.js"; /***__HIDDEN__***/
 import "./calc.js"; /***__HIDDEN__***/
 
-class UIPictureState {
+class UIPicture {
   /** convertEscapeCharacters 呼び出し用
    *  @return {MZ.Window_Base} */
   static get baseWindow() {
@@ -99,7 +99,7 @@ class Sprite_ButtonPictureLabel extends CanvasSprite {
     const x = this.width / 2;
     const y = this.height / 2;
     const text = `${this.text}`;
-    const t = UIPictureState.baseWindow?.convertEscapeCharacters(text) || text;
+    const t = UIPicture.baseWindow?.convertEscapeCharacters(text) || text;
     this.ctx.textAlign = "center";
     this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
     this.ctx.textBaseline = "middle";
