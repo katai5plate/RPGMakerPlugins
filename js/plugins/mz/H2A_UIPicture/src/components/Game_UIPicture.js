@@ -1,13 +1,19 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
-import { P, R } from "../calc";
+import { Color, P, R } from "../calc";
 /***__HIDDEN-END__***/
 
 class Game_UIPicture extends Game_Picture {
   /** @type {number} */
+  _width;
+  /** @type {number} */
+  _height;
+
+  /** @type {number} */
   _pictureId;
   /** @type {R} */
   _collision = new R(NaN, NaN, NaN, NaN);
+
   /** @type {R} */
   _dragRange = new R(NaN, NaN, NaN, NaN);
   /** @type {P} */
@@ -16,16 +22,27 @@ class Game_UIPicture extends Game_Picture {
   _variableType = null;
   /** @type {P} */
   _variableIds = new P(0, 0);
+
   /** @type {string} */
   _labelText = "";
   /** @type {CanvasTextAlign} */
   _textAlign = "center";
   /** @type {P} */
   _textOffset = new P(0, 0);
+
   /** @type {number} */
-  _width;
+  _colorDuration = 1;
+  /** @type {Color} */
+  _colorNormal = new Color(0, 0, 0, 0, 255);
+  /** @type {Color} */
+  _colorOnOver = new Color(0, 0, 0, 0, 255);
+  /** @type {Color} */
+  _colorOnPress = new Color(0, 0, 0, 0, 255);
+  /** @type {Color} */
+  _colorOnDisable = new Color(0, 0, 0, 0, 255);
   /** @type {number} */
-  _height;
+  _opacityDuration = 0;
+
   /** @param {number} pictureId */
   constructor(pictureId) {
     super();
@@ -64,6 +81,18 @@ class Game_UIPicture extends Game_Picture {
   }
   get enableDrag() {
     return this._dragRange.isSafe;
+  }
+  updateOpacity() {
+    if (this._opacityDuration > 0) {
+      const d = this._opacityDuration;
+      this._opacity =
+        ((this._opacity || 0) * (d - 1) + this._targetOpacity) / d;
+      this._opacityDuration--;
+    }
+  }
+  update() {
+    super.update();
+    this.updateOpacity();
   }
 }
 

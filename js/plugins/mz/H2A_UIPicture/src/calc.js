@@ -156,12 +156,29 @@ class R extends PIXI.Rectangle {
 }
 
 class Color {
-  constructor(r = 0, g = 0, b = 0, v = 0, a = 0) {
+  constructor(r = 0, g = 0, b = 0, s = 0, a = 0) {
     this.r = r;
     this.g = g;
     this.b = b;
-    this.v = v;
+    this.s = s;
     this.a = a;
+  }
+  /** @type {[number,number,number,number]} */
+  get TintColor() {
+    return [this.r, this.g, this.b, this.s];
+  }
+  get opacity() {
+    return this.a;
+  }
+  /**
+   * @param {{r?:number,g?:number,b?:number,s?:number,a?:number}} _
+   * @param {{r?:number,g?:number,b?:number,s?:number,a?:number}} [whenNaN]
+   * @returns
+   */
+  static from({ r, g, b, s, a } = {}, whenNaN) {
+    const f = (a, b) =>
+      Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+    return new this(f(r, "r"), f(g, "g"), f(b, "b"), f(s, "s"), f(a, "a"));
   }
 }
 

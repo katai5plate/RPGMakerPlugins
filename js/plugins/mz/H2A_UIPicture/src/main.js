@@ -29,6 +29,7 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
    *    offset: P
    *  }
    *  colorConfig: {
+   *    duration:number
    *    off: Color
    *    onOver: Color
    *    onPress: Color
@@ -73,6 +74,25 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
     picture._labelText = $.textConfig.text || "";
     picture._textAlign = $.textConfig.align || "center";
     picture._textOffset = P.from($.textConfig.offset || {}, { x: 0, y: 0 });
+  }
+  if ($?.colorConfig) {
+    picture._colorDuration = $.colorConfig.duration || 1;
+    picture._colorNormal = Color.from(
+      $.colorConfig.off || {},
+      new Color(0, 0, 0, 0, 255)
+    );
+    picture._colorOnOver = Color.from(
+      $.colorConfig.onOver || {},
+      picture._colorNormal
+    );
+    picture._colorOnPress = Color.from(
+      $.colorConfig.onPress || {},
+      picture._colorNormal
+    );
+    picture._colorOnDisable = Color.from(
+      $.colorConfig.onDisable || {},
+      picture._colorNormal
+    );
   }
 });
 

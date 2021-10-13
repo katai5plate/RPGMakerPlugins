@@ -132,13 +132,31 @@ class Sprite_UIPicture extends Sprite_Picture {
       }
     }
   }
-  updateColor() {
+  triggerColor() {
+    const picture = this.picture();
+    if (!picture) return;
+    const { _colorDuration, _colorNormal, _colorOnOver, _colorOnPress } =
+      picture;
     if (this._isDragging || this._isPressed) {
-      this.setBlendColor([0, 0, 0, 63]);
+      picture._targetOpacity = _colorOnPress.opacity;
+      picture.tint(_colorOnPress.TintColor, _colorDuration);
     } else if (this._isHovered) {
-      this.setBlendColor([255, 255, 255, 63]);
+      picture._targetOpacity = _colorOnOver.opacity;
+      picture.tint(_colorOnOver.TintColor, _colorDuration);
     } else {
-      this.setBlendColor([0, 0, 0, 0]);
+      picture._targetOpacity = _colorNormal.opacity;
+      picture.tint(_colorNormal.TintColor, _colorDuration);
+    }
+    picture._opacityDuration = _colorDuration;
+  }
+  updateColor() {
+    const picture = this.picture();
+    if (!picture) return;
+    const { _colorDuration, _colorNormal } = picture;
+    if (!this._isDragging && !this._isPressed && !this._isHovered) {
+      picture._targetOpacity = _colorNormal.opacity;
+      picture.tint(_colorNormal.TintColor, _colorDuration);
+      picture._opacityDuration = _colorDuration;
     }
   }
   updateVariables() {
@@ -188,24 +206,28 @@ class Sprite_UIPicture extends Sprite_Picture {
     this.updateVariables();
   }
   onMouseOver() {
-    console.log("-[->]");
+    console.log("onMouseOver");
+    this.triggerColor();
   }
   onMouseOut() {
-    console.log("OUT");
+    console.log("onMouseOut");
+    this.triggerColor();
   }
   onMousePress() {
+    console.log("onMousePress");
     if (this._isDraggable) {
       this._isDragging = true;
       this._dragPosition = new P(TouchInput.x - this.x, TouchInput.y - this.y);
     }
-    console.log("press");
+    this.triggerColor();
   }
   onMouseRelease() {
-    console.log("release");
+    console.log("onMouseRelease");
     if (this._isDraggable) {
       this._isDragging = false;
       this.onDragEnd();
     }
+    this.triggerColor();
   }
 }
 

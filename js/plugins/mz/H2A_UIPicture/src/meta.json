@@ -54,13 +54,15 @@
         "param": "x",
         "text": "横軸座標",
         "type": "number",
-        "desc": "マイナス入力OK"
+        "max": 9007199254740991,
+        "min": -9007199254740991
       },
       {
         "param": "y",
         "text": "縦軸座標",
         "type": "number",
-        "desc": "マイナス入力OK"
+        "max": 9007199254740991,
+        "min": -9007199254740991
       }
     ],
     "R": [
@@ -80,7 +82,7 @@
         "param": "r",
         "type": "number",
         "text": "赤",
-        "min": 0,
+        "min": -255,
         "max": 255,
         "default": 0
       },
@@ -88,7 +90,7 @@
         "param": "g",
         "type": "number",
         "text": "緑",
-        "min": 0,
+        "min": -255,
         "max": 255,
         "default": 0
       },
@@ -96,14 +98,14 @@
         "param": "b",
         "type": "number",
         "text": "青",
-        "min": 0,
+        "min": -255,
         "max": 255,
         "default": 0
       },
       {
-        "param": "v",
+        "param": "s",
         "type": "number",
-        "text": "強度",
+        "text": "グレー",
         "min": 0,
         "max": 255,
         "default": 0
@@ -216,6 +218,13 @@
       }
     ],
     "ColorConfig": [
+      {
+        "param": "duration",
+        "type": "number",
+        "text": "時間",
+        "desc": "フレーム指定(1/60秒)。省略・不備の場合は一瞬で変化します",
+        "min": 1
+      },
       {
         "param": "off",
         "type": "struct<C>",

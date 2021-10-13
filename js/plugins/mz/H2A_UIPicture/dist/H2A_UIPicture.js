@@ -52,12 +52,14 @@
  * @param x
  * @text 横軸座標
  * @type number
- * @desc マイナス入力OK
+ * @max 9007199254740991
+ * @min -9007199254740991
  *
  * @param y
  * @text 縦軸座標
  * @type number
- * @desc マイナス入力OK
+ * @max 9007199254740991
+ * @min -9007199254740991
  *
  */
 /*~struct~R:ja
@@ -108,27 +110,27 @@
  * @param r
  * @type number
  * @text 赤
- * @min 0
+ * @min -255
  * @max 255
  * @default 0
  *
  * @param g
  * @type number
  * @text 緑
- * @min 0
+ * @min -255
  * @max 255
  * @default 0
  *
  * @param b
  * @type number
  * @text 青
- * @min 0
+ * @min -255
  * @max 255
  * @default 0
  *
- * @param v
+ * @param s
  * @type number
- * @text 強度
+ * @text グレー
  * @min 0
  * @max 255
  * @default 0
@@ -238,6 +240,12 @@
  *
  */
 /*~struct~ColorConfig:ja
+ * @param duration
+ * @type number
+ * @text 時間
+ * @desc フレーム指定(1/60秒)。省略・不備の場合は一瞬で変化します
+ * @min 1
+ *
  * @param off
  * @type struct<C>
  * @text 通常
@@ -475,12 +483,29 @@
   }
 
   class Color {
-    constructor(r = 0, g = 0, b = 0, v = 0, a = 0) {
+    constructor(r = 0, g = 0, b = 0, s = 0, a = 0) {
       this.r = r;
       this.g = g;
       this.b = b;
-      this.v = v;
+      this.s = s;
       this.a = a;
+    }
+    /** @type {[number,number,number,number]} */
+    get TintColor() {
+      return [this.r, this.g, this.b, this.s];
+    }
+    get opacity() {
+      return this.a;
+    }
+    /**
+     * @param {{r?:number,g?:number,b?:number,s?:number,a?:number}} _
+     * @param {{r?:number,g?:number,b?:number,s?:number,a?:number}} [whenNaN]
+     * @returns
+     */
+    static from({ r, g, b, s, a } = {}, whenNaN) {
+      const f = (a, b) =>
+        Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+      return new this(f(r, "r"), f(g, "g"), f(b, "b"), f(s, "s"), f(a, "a"));
     }
   }
 
@@ -753,13 +778,31 @@
         }
       }
     }
-    updateColor() {
+    triggerColor() {
+      const picture = this.picture();
+      if (!picture) return;
+      const { _colorDuration, _colorNormal, _colorOnOver, _colorOnPress } =
+        picture;
       if (this._isDragging || this._isPressed) {
-        this.setBlendColor([0, 0, 0, 63]);
+        picture._targetOpacity = _colorOnPress.opacity;
+        picture.tint(_colorOnPress.TintColor, _colorDuration);
       } else if (this._isHovered) {
-        this.setBlendColor([255, 255, 255, 63]);
+        picture._targetOpacity = _colorOnOver.opacity;
+        picture.tint(_colorOnOver.TintColor, _colorDuration);
       } else {
-        this.setBlendColor([0, 0, 0, 0]);
+        picture._targetOpacity = _colorNormal.opacity;
+        picture.tint(_colorNormal.TintColor, _colorDuration);
+      }
+      picture._opacityDuration = _colorDuration;
+    }
+    updateColor() {
+      const picture = this.picture();
+      if (!picture) return;
+      const { _colorDuration, _colorNormal } = picture;
+      if (!this._isDragging && !this._isPressed && !this._isHovered) {
+        picture._targetOpacity = _colorNormal.opacity;
+        picture.tint(_colorNormal.TintColor, _colorDuration);
+        picture._opacityDuration = _colorDuration;
       }
     }
     updateVariables() {
@@ -809,12 +852,15 @@
       this.updateVariables();
     }
     onMouseOver() {
-      console.log("-[->]");
+      console.log("onMouseOver");
+      this.triggerColor();
     }
     onMouseOut() {
-      console.log("OUT");
+      console.log("onMouseOut");
+      this.triggerColor();
     }
     onMousePress() {
+      console.log("onMousePress");
       if (this._isDraggable) {
         this._isDragging = true;
         this._dragPosition = new P(
@@ -822,14 +868,15 @@
           TouchInput.y - this.y
         );
       }
-      console.log("press");
+      this.triggerColor();
     }
     onMouseRelease() {
-      console.log("release");
+      console.log("onMouseRelease");
       if (this._isDraggable) {
         this._isDragging = false;
         this.onDragEnd();
       }
+      this.triggerColor();
     }
   }
 
@@ -837,9 +884,15 @@
 
   class Game_UIPicture extends Game_Picture {
     /** @type {number} */
+    _width;
+    /** @type {number} */
+    _height;
+
+    /** @type {number} */
     _pictureId;
     /** @type {R} */
     _collision = new R(NaN, NaN, NaN, NaN);
+
     /** @type {R} */
     _dragRange = new R(NaN, NaN, NaN, NaN);
     /** @type {P} */
@@ -848,16 +901,27 @@
     _variableType = null;
     /** @type {P} */
     _variableIds = new P(0, 0);
+
     /** @type {string} */
     _labelText = "";
     /** @type {CanvasTextAlign} */
     _textAlign = "center";
     /** @type {P} */
     _textOffset = new P(0, 0);
+
     /** @type {number} */
-    _width;
+    _colorDuration = 1;
+    /** @type {Color} */
+    _colorNormal = new Color(0, 0, 0, 0, 255);
+    /** @type {Color} */
+    _colorOnOver = new Color(0, 0, 0, 0, 255);
+    /** @type {Color} */
+    _colorOnPress = new Color(0, 0, 0, 0, 255);
+    /** @type {Color} */
+    _colorOnDisable = new Color(0, 0, 0, 0, 255);
     /** @type {number} */
-    _height;
+    _opacityDuration = 0;
+
     /** @param {number} pictureId */
     constructor(pictureId) {
       super();
@@ -897,6 +961,18 @@
     get enableDrag() {
       return this._dragRange.isSafe;
     }
+    updateOpacity() {
+      if (this._opacityDuration > 0) {
+        const d = this._opacityDuration;
+        this._opacity =
+          ((this._opacity || 0) * (d - 1) + this._targetOpacity) / d;
+        this._opacityDuration--;
+      }
+    }
+    update() {
+      super.update();
+      this.updateOpacity();
+    }
   }
 
   /*========== ./main.js ==========*/
@@ -919,6 +995,7 @@
      *    offset: P
      *  }
      *  colorConfig: {
+     *    duration:number
      *    off: Color
      *    onOver: Color
      *    onPress: Color
@@ -963,6 +1040,25 @@
       picture._labelText = $.textConfig.text || "";
       picture._textAlign = $.textConfig.align || "center";
       picture._textOffset = P.from($.textConfig.offset || {}, { x: 0, y: 0 });
+    }
+    if ($?.colorConfig) {
+      picture._colorDuration = $.colorConfig.duration || 1;
+      picture._colorNormal = Color.from(
+        $.colorConfig.off || {},
+        new Color(0, 0, 0, 0, 255)
+      );
+      picture._colorOnOver = Color.from(
+        $.colorConfig.onOver || {},
+        picture._colorNormal
+      );
+      picture._colorOnPress = Color.from(
+        $.colorConfig.onPress || {},
+        picture._colorNormal
+      );
+      picture._colorOnDisable = Color.from(
+        $.colorConfig.onDisable || {},
+        picture._colorNormal
+      );
     }
   });
 
