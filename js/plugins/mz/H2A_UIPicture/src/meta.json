@@ -217,6 +217,12 @@
         "type": "variable",
         "text": "Y位置代入先",
         "desc": "縦軸の位置情報を代入する変数。省略・不備の場合は代入されません"
+      },
+      {
+        "param": "disDraggableWhenDisabled",
+        "type": "boolean",
+        "text": "無効中は移動しない",
+        "desc": "省略・不備の場合はOFF扱いです"
       }
     ],
     "TextConfig": [

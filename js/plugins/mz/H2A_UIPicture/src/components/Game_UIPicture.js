@@ -22,6 +22,8 @@ class Game_UIPicture extends Game_Picture {
   _variableType = null;
   /** @type {P} */
   _variableIds = new P(0, 0);
+  /** @type {boolean} */
+  _disDraggableWhenDisabled = false;
 
   /** @type {string} */
   _labelText = "";

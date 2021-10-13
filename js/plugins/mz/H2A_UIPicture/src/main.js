@@ -22,6 +22,7 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
    *    type: "perint"|"perflo"|"local"|"global"
    *    variableX: number
    *    variableY: number
+   *    disDraggableWhenDisabled: boolean
    *  }
    *  textConfig: {
    *    text: string,
@@ -69,6 +70,7 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
       $.dragConfig.variableX || 0,
       $.dragConfig.variableY || 0
     );
+    picture._disDraggableWhenDisabled = !!$.dragConfig.disDraggableWhenDisabled;
   }
   if ($?.textConfig) {
     picture._labelText = $.textConfig.text || "";

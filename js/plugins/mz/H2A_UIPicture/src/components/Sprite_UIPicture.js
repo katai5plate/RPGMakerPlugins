@@ -44,6 +44,9 @@ class Sprite_UIPicture extends Sprite_Picture {
       ) === this._pictureId
     );
   }
+  get isAutoMoving() {
+    return this.picture()._duration > 0;
+  }
   /** @param {Bitmap} bitmapLoaded */
   _onBitmapLoad(bitmapLoaded) {
     const picture = this.picture();
@@ -107,7 +110,11 @@ class Sprite_UIPicture extends Sprite_Picture {
     const picture = this.picture();
     if (!picture) return;
     if (!this._isDraggable || !this._isDragging) return;
-    if (!TouchInput.isPressed() || (this._isHovered && !this._isPressed)) {
+    if (
+      !TouchInput.isPressed() ||
+      (this._isHovered && !this._isPressed) ||
+      this.isAutoMoving
+    ) {
       this._isDragging = false;
       this.onDragEnd();
     }
@@ -144,7 +151,10 @@ class Sprite_UIPicture extends Sprite_Picture {
     if (!picture) return;
     const { _colorDuration, _colorNormal, _colorOnOver, _colorOnPress } =
       picture;
-    if (this._isDragging || this._isPressed) {
+    if (this.isAutoMoving) {
+      picture._targetOpacity = _colorNormal.opacity;
+      picture.tint(_colorNormal.TintColor, _colorDuration);
+    } else if (this._isDragging || this._isPressed) {
       picture._targetOpacity = _colorOnPress.opacity;
       picture.tint(_colorOnPress.TintColor, _colorDuration);
     } else if (this._isHovered) {
@@ -220,49 +230,62 @@ class Sprite_UIPicture extends Sprite_Picture {
   onMouseOver() {
     console.log("onMouseOver");
     this.triggerColor();
-    const picture = this.picture();
-    if (!picture._isDisabled) {
-      picture._soundNormalOnOver.play();
-    } else {
-      picture._soundDisableOnOver.play();
+    if (!this.isAutoMoving) {
+      const picture = this.picture();
+      if (!picture._isDisabled) {
+        picture._soundNormalOnOver.play();
+      } else {
+        picture._soundDisableOnOver.play();
+      }
     }
   }
   onMouseOut() {
     console.log("onMouseOut");
     this.triggerColor();
-    const picture = this.picture();
-    if (!picture._isDisabled) {
-      picture._soundNormalOnOut.play();
-    } else {
-      picture._soundDisableOnOut.play();
+    if (!this.isAutoMoving) {
+      const picture = this.picture();
+      if (!picture._isDisabled) {
+        picture._soundNormalOnOut.play();
+      } else {
+        picture._soundDisableOnOut.play();
+      }
     }
   }
   onMousePress() {
     console.log("onMousePress");
-    if (this._isDraggable) {
-      this._isDragging = true;
-      this._dragPosition = new P(TouchInput.x - this.x, TouchInput.y - this.y);
-    }
     this.triggerColor();
     const picture = this.picture();
-    if (!picture._isDisabled) {
-      picture._soundNormalOnPress.play();
-    } else {
-      picture._soundDisableOnPress.play();
+    if (!this.isAutoMoving) {
+      if (this._isDraggable) {
+        if (!(picture._isDisabled && picture._disDraggableWhenDisabled)) {
+          this._isDragging = true;
+          this._dragPosition = new P(
+            TouchInput.x - this.x,
+            TouchInput.y - this.y
+          );
+        }
+      }
+      if (!picture._isDisabled) {
+        picture._soundNormalOnPress.play();
+      } else {
+        picture._soundDisableOnPress.play();
+      }
     }
   }
   onMouseRelease() {
     console.log("onMouseRelease");
-    if (this._isDraggable) {
-      this._isDragging = false;
-      this.onDragEnd();
-    }
     this.triggerColor();
-    const picture = this.picture();
-    if (!picture._isDisabled) {
-      picture._soundNormalOnRelease.play();
-    } else {
-      picture._soundDisableOnRelease.play();
+    if (!this.isAutoMoving) {
+      if (this._isDraggable) {
+        this._isDragging = false;
+        this.onDragEnd();
+      }
+      const picture = this.picture();
+      if (!picture._isDisabled) {
+        picture._soundNormalOnRelease.play();
+      } else {
+        picture._soundDisableOnRelease.play();
+      }
     }
   }
 }
