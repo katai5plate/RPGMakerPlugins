@@ -52,12 +52,12 @@
  * @param x
  * @text 横軸座標
  * @type number
- * @min 0
+ * @desc マイナス入力OK
  *
  * @param y
  * @text 縦軸座標
  * @type number
- * @min 0
+ * @desc マイナス入力OK
  *
  */
 /*~struct~R:ja
@@ -231,10 +231,10 @@
  *   @option 右揃え
  *   @value right
  *
- * @param margin
- * @type struct<M>
- * @text 余白設定
- * @desc 省略・不備の場合は画像サイズに合わせます
+ * @param offset
+ * @type struct<P>
+ * @text オフセット
+ * @desc 省略・不備の場合は(0,0)にします
  *
  */
 /*~struct~ColorConfig:ja
@@ -403,6 +403,13 @@
       }
       return this;
     }
+    /**
+     * @param {Parameters<typeof this.calc>[0]} op
+     * @param {P} p
+     */
+    calcP(op, p) {
+      return this.calc(op, p.x, p.y);
+    }
     static from({ x, y }) {
       return new this(x, y);
     }
@@ -469,15 +476,6 @@
     }
     static from({ x, y, width, height }) {
       return new this(x, y, width, height);
-    }
-  }
-
-  class Margin {
-    constructor({ left = 0, right = 0, top = 0, bottom = 0 }) {
-      this.left = left;
-      this.right = right;
-      this.top = top;
-      this.bottom = bottom;
     }
   }
 
@@ -574,21 +572,45 @@
     }
     updateText() {
       this.ctx.clearRect(0, 0, this.width, this.height);
-      const x = this.width / 2;
-      const y = this.height / 2;
+      if (!UIPicture.baseWindow) return;
+      const base = UIPicture.baseWindow;
       const text = `${this.picture._labelText}`;
-      const t = UIPicture.baseWindow?.convertEscapeCharacters(text) || text;
-      this.ctx.textAlign = "center";
+      const convertedText = base.convertEscapeCharacters(text);
+      const convertedLines = convertedText.split("\n").map((text, i, s) => ({
+        text,
+        height:
+          base.maxFontSizeInLine(text) +
+          (i === s.length - 1
+            ? 0
+            : base.lineHeight() - $gameSystem.mainFontSize()),
+      }));
+      const convertedTextHeight = convertedLines.reduce(
+        (p, c) => p + c.height,
+        0
+      );
+      const align = this.picture._textAlign;
+      const drawPos = new P(
+        align === "start" || align === "left"
+          ? this.x
+          : align === "end" || align === "right"
+          ? this.width
+          : this.width / 2, // center
+        this.height / 2 - convertedTextHeight / 2
+      ).calcP("add", this.picture._textOffset);
+      this.ctx.textAlign = align;
       this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
-      this.ctx.textBaseline = "middle";
-      // outline
-      this.ctx.strokeStyle = "black";
-      this.ctx.lineWidth = 3;
-      this.ctx.lineJoin = "round";
-      this.ctx.strokeText(t, x, y);
-      // body
-      this.ctx.fillStyle = "white";
-      this.ctx.fillText(t, x, y);
+      this.ctx.textBaseline = "top";
+      convertedLines.forEach(({ text, height }) => {
+        // outline
+        this.ctx.strokeStyle = "black";
+        this.ctx.lineWidth = 3;
+        this.ctx.lineJoin = "round";
+        this.ctx.strokeText(text, drawPos.x, drawPos.y);
+        // body
+        this.ctx.fillStyle = "white";
+        this.ctx.fillText(text, drawPos.x, drawPos.y);
+        drawPos.calc("add", 0, height);
+      });
       this.flip();
     }
     update() {
@@ -616,6 +638,10 @@
     _variableIds = new P(0, 0);
     /** @type {string} */
     _labelText = "";
+    /** @type {CanvasTextAlign} */
+    _textAlign = "center";
+    /** @type {P} */
+    _textOffset = new P(0, 0);
     /** @type {number} */
     _width;
     /** @type {number} */
@@ -863,7 +889,7 @@
      *  textConfig: {
      *    text: string,
      *    align: "left"|"right"
-     *    margin: Margin
+     *    offset: P
      *  }
      *  colorConfig: {
      *    off: Color
@@ -891,20 +917,26 @@
     console.log({ $ });
     const picture = UIPicture.picture($.pictureId);
     picture.collision = R.from($.collision);
-    const dragRange = R.from($.dragConfig.range);
-    picture._dragRange = dragRange;
-    picture._movableDirection = $.dragConfig.move
-      ? new P(
-          +($.dragConfig.move === "horizontal"),
-          +($.dragConfig.move === "vertical")
-        )
-      : new P(1, 1);
-    picture._variableType = $.dragConfig.type;
-    picture._variableIds = new P(
-      $.dragConfig.variableX,
-      $.dragConfig.variableY
-    );
-    picture._labelText = $.textConfig.text;
+    if ($?.dragConfig) {
+      const dragRange = R.from($.dragConfig.range);
+      picture._dragRange = dragRange;
+      picture._movableDirection = $.dragConfig.move
+        ? new P(
+            +($.dragConfig.move === "horizontal"),
+            +($.dragConfig.move === "vertical")
+          )
+        : new P(1, 1);
+      picture._variableType = $.dragConfig.type;
+      picture._variableIds = new P(
+        $.dragConfig.variableX || 0,
+        $.dragConfig.variableY || 0
+      );
+    }
+    if ($?.textConfig) {
+      picture._labelText = $.textConfig.text || "";
+      picture._textAlign = $.textConfig.align || "center";
+      picture._textOffset = $.textConfig.offset || new P(0, 0);
+    }
   });
 
   const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;

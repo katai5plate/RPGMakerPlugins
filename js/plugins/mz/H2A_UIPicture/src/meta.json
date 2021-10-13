@@ -50,8 +50,18 @@
   ],
   "structs": {
     "P": [
-      { "param": "x", "text": "横軸座標", "type": "number", "min": 0 },
-      { "param": "y", "text": "縦軸座標", "type": "number", "min": 0 }
+      {
+        "param": "x",
+        "text": "横軸座標",
+        "type": "number",
+        "desc": "マイナス入力OK"
+      },
+      {
+        "param": "y",
+        "text": "縦軸座標",
+        "type": "number",
+        "desc": "マイナス入力OK"
+      }
     ],
     "R": [
       { "param": "x", "text": "左上X", "type": "number", "min": 0 },
@@ -199,10 +209,10 @@
         ]
       },
       {
-        "param": "margin",
-        "type": "struct<M>",
-        "text": "余白設定",
-        "desc": "省略・不備の場合は画像サイズに合わせます"
+        "param": "offset",
+        "type": "struct<P>",
+        "text": "オフセット",
+        "desc": "省略・不備の場合は(0,0)にします"
       }
     ],
     "ColorConfig": [

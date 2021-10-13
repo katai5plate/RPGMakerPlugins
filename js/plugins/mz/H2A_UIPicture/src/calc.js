@@ -56,6 +56,13 @@ class P extends PIXI.Point {
     }
     return this;
   }
+  /**
+   * @param {Parameters<typeof this.calc>[0]} op
+   * @param {P} p
+   */
+  calcP(op, p) {
+    return this.calc(op, p.x, p.y);
+  }
   static from({ x, y }) {
     return new this(x, y);
   }
@@ -122,15 +129,6 @@ class R extends PIXI.Rectangle {
   }
   static from({ x, y, width, height }) {
     return new this(x, y, width, height);
-  }
-}
-
-class Margin {
-  constructor({ left = 0, right = 0, top = 0, bottom = 0 }) {
-    this.left = left;
-    this.right = right;
-    this.top = top;
-    this.bottom = bottom;
   }
 }
 
