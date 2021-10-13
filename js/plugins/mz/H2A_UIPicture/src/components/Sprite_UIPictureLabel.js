@@ -1,6 +1,6 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
-import resolveTypeAs from "../../../../_templates/resolveTypeAs";
+import resolveTypeAs from "~templates/resolveTypeAs";
 
 import { P } from "../calc";
 

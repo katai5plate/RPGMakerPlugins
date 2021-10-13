@@ -2,8 +2,8 @@
 /***__HIDDEN-BEGIN__***/
 import * as PIXI from "pixi.js";
 
-import * as MZ from "../../../../_types/mz";
-import resolveTypeAs from "../../../../_templates/resolveTypeAs";
+import { Bitmap, Sprite_Picture } from "~types/mz";
+import resolveTypeAs from "~templates/resolveTypeAs";
 
 import { P, R } from "../calc";
 
@@ -42,7 +42,7 @@ class Sprite_UIPicture extends Sprite_Picture {
       ) === this._pictureId
     );
   }
-  /** @param {MZ.Bitmap} bitmapLoaded */
+  /** @param {Bitmap} bitmapLoaded */
   _onBitmapLoad(bitmapLoaded) {
     const picture = this.picture();
     picture._width = bitmapLoaded.width;

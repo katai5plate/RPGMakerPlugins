@@ -68,7 +68,7 @@ class P extends PIXI.Point {
     return this.calc(op, p.x, p.y);
   }
   /**
-   * @param {{x?:number,y?:number}}
+   * @param {{x?:number,y?:number}} _
    * @param {{x?:number,y?:number}} whenNaN
    * @returns
    */
@@ -139,7 +139,7 @@ class R extends PIXI.Rectangle {
     );
   }
   /**
-   * @param {{x?:number,y?:number,width?:number,height?:number}}
+   * @param {{x?:number,y?:number,width?:number,height?:number}} _
    * @param {{x?:number,y?:number,width?:number,height?:number}} [whenNaN]
    * @returns
    */

@@ -387,7 +387,7 @@
       return this.calc(op, p.x, p.y);
     }
     /**
-     * @param {{x?:number,y?:number}}
+     * @param {{x?:number,y?:number}} _
      * @param {{x?:number,y?:number}} whenNaN
      * @returns
      */
@@ -458,7 +458,7 @@
       );
     }
     /**
-     * @param {{x?:number,y?:number,width?:number,height?:number}}
+     * @param {{x?:number,y?:number,width?:number,height?:number}} _
      * @param {{x?:number,y?:number,width?:number,height?:number}} [whenNaN]
      * @returns
      */
@@ -500,10 +500,10 @@
 
   class UIPicture {
     /** convertEscapeCharacters 呼び出し用
-     *  @return {MZ.Window_Base} */
+     *  @return {Window_Base} */
     static get baseWindow() {
       return resolveTypeAs(
-        /** @param {MZ.Window_Base | null} _ */ (_) => _,
+        /** @param {Window_Base | null} _ */ (_) => _,
         SceneManager._scene._windowLayer?.children.find(
           (x) => x instanceof Window_Base
         )
@@ -663,7 +663,7 @@
         ) === this._pictureId
       );
     }
-    /** @param {MZ.Bitmap} bitmapLoaded */
+    /** @param {Bitmap} bitmapLoaded */
     _onBitmapLoad(bitmapLoaded) {
       const picture = this.picture();
       picture._width = bitmapLoaded.width;

@@ -1,8 +1,8 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
-import pluginName from "../../../_templates/pluginName";
-import parsePluginParams from "../../../_templates/parsePluginParams";
-import resolveTypeAs from "../../../_templates/resolveTypeAs";
+import pluginName from "~templates/pluginName";
+import parsePluginParams from "~templates/parsePluginParams";
+import resolveTypeAs from "~templates/resolveTypeAs";
 
 import { P, R, Color, Sound } from "./calc";
 

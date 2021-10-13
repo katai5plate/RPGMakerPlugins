@@ -1,8 +1,7 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
-import resolveTypeAs from "../../../../_templates/resolveTypeAs";
-
-import * as MZ from "../../../../_types/mz";
+import { Window_Base } from "~types/mz";
+import resolveTypeAs from "~templates/resolveTypeAs";
 
 import Game_UIPicture from "./Game_UIPicture";
 import Sprite_UIPicture from "./Sprite_UIPicture";
@@ -10,10 +9,10 @@ import Sprite_UIPicture from "./Sprite_UIPicture";
 
 class UIPicture {
   /** convertEscapeCharacters 呼び出し用
-   *  @return {MZ.Window_Base} */
+   *  @return {Window_Base} */
   static get baseWindow() {
     return resolveTypeAs(
-      /** @param {MZ.Window_Base | null} _ */ (_) => _,
+      /** @param {Window_Base | null} _ */ (_) => _,
       SceneManager._scene._windowLayer?.children.find(
         (x) => x instanceof Window_Base
       )
