@@ -237,39 +237,59 @@
      * @param {number} width
      * @param {number} height
      */
-    constructor(width, height) {
+    constructor(width = 1, height = 1) {
       super();
+      this.width = width;
+      this.height = height;
+      this.createCanvas();
+    }
+    createCanvas() {
       const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = this.width;
+      canvas.height = this.height;
       this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
       this.#context = canvas.getContext("2d");
     }
     get ctx() {
       return this.#context;
     }
+    flip() {
+      this.texture.update();
+    }
+    update() {
+      //
+    }
   }
   globalThis.CanvasSprite = CanvasSprite;
 
-  class ButtonLabel extends CanvasSprite {
-    /**
-     * @param {ConstructorParameters<typeof CanvasSprite>[0]} width
-     * @param {ConstructorParameters<typeof CanvasSprite>[1]} height
-     * @param {string} text
-     */
-    constructor(width, height, text) {
-      super(width, height);
-      this.drawText(text);
-      console.log(this);
+  class Sprite_ButtonPictureLabel extends CanvasSprite {
+    /** @type {number} */
+    pictureId;
+    /** @type {string} */
+    text = "";
+    /** @param {number} pictureId */
+    constructor(pictureId) {
+      super();
+      this.pictureId = pictureId;
+      this.width = this.picture._width;
+      this.height = this.picture._height;
+      this.text = this.picture._labelText;
+      this.createCanvas();
+      console.log(this, this.text);
     }
-    /** @param {string} text */
-    drawText(text) {
+    get picture() {
+      return RT.as(
+        /** @param {Game_UIPicture} _ */ (_) => _,
+        $gameScreen.picture(this.pictureId)
+      );
+    }
+    updateText() {
       this.ctx.clearRect(0, 0, this.width, this.height);
       const x = this.width / 2;
       const y = this.height / 2;
+      const text = `${this.text}`;
       const t =
         UIPictureState.baseWindow?.convertEscapeCharacters(text) || text;
-      // const t = text;
       this.ctx.textAlign = "center";
       this.ctx.font = `${$gameSystem.mainFontSize()}px ${$gameSystem.mainFontFace()}`;
       this.ctx.textBaseline = "middle";
@@ -281,13 +301,21 @@
       // body
       this.ctx.fillStyle = "white";
       this.ctx.fillText(t, x, y);
-      this.texture.update();
+      this.flip();
+    }
+    update() {
+      this.updateText();
+      if (this.picture.origin() === 0) {
+        this.anchor.set(0, 0);
+      } else {
+        this.anchor.set(0.5, 0.5);
+      }
     }
   }
 
   class Game_UIPicture extends Game_Picture {
-    // /** @type {number} */
-    // _pictureId;
+    /** @type {number} */
+    _pictureId;
     /** @type {R} */
     _collision = new R(48, 24, 192, 72);
     /** @type {R} */
@@ -298,8 +326,6 @@
     _width;
     /** @type {number} */
     _height;
-    /** @type {PIXI.ObservablePoint | P} */
-    anchor = new P(0, 0);
     /** @param {number} pictureId */
     constructor(pictureId) {
       super();
@@ -307,10 +333,11 @@
       console.log(this);
     }
     get collision() {
+      const anchor = this.origin() === 0 ? 0 : 0.5;
       const sx = this._scaleX / 100;
       const sy = this._scaleY / 100;
-      const px = -this.anchor.x * this._width;
-      const py = -this.anchor.y * this._height;
+      const px = -anchor * this._width;
+      const py = -anchor * this._height;
       return new R(
         (px + this._collision.x) * sx,
         (py + this._collision.y) * sy,
@@ -327,7 +354,7 @@
     _dragPosition = new P();
     /** @type {boolean} */
     _isDraggable = true;
-    /** @type {ButtonLabel} */
+    /** @type {Sprite_ButtonPictureLabel} */
     _labelSprite;
     constructor(pictureId) {
       super(pictureId);
@@ -340,15 +367,8 @@
       );
       picture._width = bitmapLoaded.width;
       picture._height = bitmapLoaded.height;
-      picture.anchor = this.anchor;
-
-      $gameVariables.setValue(5, "123456");
-      this._labelSprite = new ButtonLabel(
-        bitmapLoaded.width,
-        bitmapLoaded.height,
-        "val: \\v[5]"
-      );
-      this._labelSprite.anchor = this.anchor;
+      picture._labelText = `picId: ${this._pictureId}`;
+      this._labelSprite = new Sprite_ButtonPictureLabel(this._pictureId);
       this.addChild(this._labelSprite);
       return super._onBitmapLoad(bitmapLoaded);
     }
