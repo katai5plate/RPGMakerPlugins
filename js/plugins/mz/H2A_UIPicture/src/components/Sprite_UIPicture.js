@@ -20,6 +20,8 @@ class Sprite_UIPicture extends Sprite_Picture {
   _isDraggable = true;
   /** @type {Sprite_UIPictureLabel} */
   _labelSprite;
+  /** @type {number} */
+  _pressCount = 0;
   constructor(pictureId) {
     super(pictureId);
   }
@@ -92,6 +94,11 @@ class Sprite_UIPicture extends Sprite_Picture {
       // 画面外
       (this._isPressed = false), (this._isHovered = false);
     }
+    if (this._isPressed) {
+      this._pressCount++;
+    } else {
+      this._pressCount = -1;
+    }
   }
   onDragEnd() {
     //
@@ -152,11 +159,16 @@ class Sprite_UIPicture extends Sprite_Picture {
   updateColor() {
     const picture = this.picture();
     if (!picture) return;
-    const { _colorDuration, _colorNormal } = picture;
+    const { _colorDuration, _colorNormal, _colorOnDisable } = picture;
+    picture._opacityDuration = _colorDuration;
+    if (picture._isDisabled) {
+      picture._targetOpacity = _colorOnDisable.opacity;
+      picture.tint(_colorOnDisable.TintColor, _colorDuration);
+      return;
+    }
     if (!this._isDragging && !this._isPressed && !this._isHovered) {
       picture._targetOpacity = _colorNormal.opacity;
       picture.tint(_colorNormal.TintColor, _colorDuration);
-      picture._opacityDuration = _colorDuration;
     }
   }
   updateVariables() {
@@ -208,12 +220,22 @@ class Sprite_UIPicture extends Sprite_Picture {
   onMouseOver() {
     console.log("onMouseOver");
     this.triggerColor();
-    this.picture()._soundNormalOnOver.play();
+    const picture = this.picture();
+    if (!picture._isDisabled) {
+      picture._soundNormalOnOver.play();
+    } else {
+      picture._soundDisableOnOver.play();
+    }
   }
   onMouseOut() {
     console.log("onMouseOut");
     this.triggerColor();
-    this.picture()._soundNormalOnOut.play();
+    const picture = this.picture();
+    if (!picture._isDisabled) {
+      picture._soundNormalOnOut.play();
+    } else {
+      picture._soundDisableOnOut.play();
+    }
   }
   onMousePress() {
     console.log("onMousePress");
@@ -222,7 +244,12 @@ class Sprite_UIPicture extends Sprite_Picture {
       this._dragPosition = new P(TouchInput.x - this.x, TouchInput.y - this.y);
     }
     this.triggerColor();
-    this.picture()._soundNormalOnPress.play();
+    const picture = this.picture();
+    if (!picture._isDisabled) {
+      picture._soundNormalOnPress.play();
+    } else {
+      picture._soundDisableOnPress.play();
+    }
   }
   onMouseRelease() {
     console.log("onMouseRelease");
@@ -231,7 +258,12 @@ class Sprite_UIPicture extends Sprite_Picture {
       this.onDragEnd();
     }
     this.triggerColor();
-    this.picture()._soundNormalOnRelease.play();
+    const picture = this.picture();
+    if (!picture._isDisabled) {
+      picture._soundNormalOnRelease.play();
+    } else {
+      picture._soundDisableOnRelease.play();
+    }
   }
 }
 

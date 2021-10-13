@@ -124,6 +124,32 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
   }
 });
 
+PluginManager.registerCommand(pluginName, "disable", (params) => {
+  /**
+   * @type {Partial<{
+   *  pictureIds: number[]
+   * }>}
+   */
+  const $ = parsePluginParams(params);
+  $?.pictureIds?.forEach((id) => {
+    const picture = UIPicture.picture(id);
+    picture._isDisabled = true;
+  });
+});
+
+PluginManager.registerCommand(pluginName, "enable", (params) => {
+  /**
+   * @type {Partial<{
+   *  pictureIds: number[]
+   * }>}
+   */
+  const $ = parsePluginParams(params);
+  $?.pictureIds?.forEach((id) => {
+    const picture = UIPicture.picture(id);
+    picture._isDisabled = false;
+  });
+});
+
 const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
 Scene_Map.prototype.isMapTouchOk = function () {
   const children = resolveTypeAs(

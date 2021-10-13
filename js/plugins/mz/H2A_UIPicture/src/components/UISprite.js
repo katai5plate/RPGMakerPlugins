@@ -32,6 +32,18 @@ class UIPicture {
       ]
     );
   }
+  static isPressed(pictureId) {
+    return (
+      this.sprite(pictureId)._isPressed && !this.picture(pictureId)._isDisabled
+    );
+  }
+  static isTriggered(pictureId) {
+    return (
+      this.sprite(pictureId)._pressCount === 0 &&
+      !this.picture(pictureId)._isDisabled
+    );
+  }
 }
+globalThis.UIPicture = UIPicture;
 
 export default UIPicture; /***__HIDDEN__***/

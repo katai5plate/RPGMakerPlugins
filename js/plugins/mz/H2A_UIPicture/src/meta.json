@@ -46,6 +46,32 @@
           "type": "struct<SoundConfig>"
         }
       ]
+    },
+    {
+      "command": "disable",
+      "text": "無効化",
+      "...": [
+        {
+          "arg": "pictureIds",
+          "text": "ピクチャID",
+          "type": "number[]",
+          "min": 1,
+          "max": 100
+        }
+      ]
+    },
+    {
+      "command": "enable",
+      "text": "有効化",
+      "...": [
+        {
+          "arg": "pictureIds",
+          "text": "ピクチャID",
+          "type": "number[]",
+          "min": 1,
+          "max": 100
+        }
+      ]
     }
   ],
   "structs": {
