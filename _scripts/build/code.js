@@ -34,7 +34,12 @@ const f = (config) => {
       .readFileSync(f.path, { encoding: "utf8" })
       .replace(/\/\/\/ *< *reference *path.*?>/gm, "") // reference タグ
       .replace(/\/\/\:.*?\:\/\/$/gm, "") // 特殊注釈
-      .replace(/import .*?".*?"; \/\*\*\*__HIDDEN__\*\*\*\//gm, "") // import
+      .replace(/^.*?\/\*\*\*__HIDDEN__\*\*\*\/$/gm, "") // HIDDEN
+      // HIDDEN-BEGIN-END
+      .replace(
+        /\/\*\*\*__HIDDEN-BEGIN__\*\*\*\/(.|\n)*?\/\*\*\*__HIDDEN-END__\*\*\*\//gm,
+        ""
+      )
       .replace(/\/\/@ts-(((no|)check)|expect-error|ignore)/gm, ""), // ts checker,
   }));
   const includedCode = includeFileContents.reduce(

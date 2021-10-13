@@ -57,10 +57,8 @@
 - INCLUDE 先で特定の書き方をした行は省略される
   - `/// <reference`
   - `//: コメント ://`
-  - `import ""; /***__HIDDEN__***/`
-  - `import I from ""; /***__HIDDEN__***/`
-  - `import * as I from ""; /***__HIDDEN__***/`
-  - `//@ts-check` `//@ts-expect-error` `//@ts-ignore` `//@ts-nocheck`
+  - 行末尾に `/***__HIDDEN__***/`
+  - `/***__HIDDEN-BEGIN__***/` ～ `/***__HIDDEN-END__***/`
 
 ```js
 (function () {
