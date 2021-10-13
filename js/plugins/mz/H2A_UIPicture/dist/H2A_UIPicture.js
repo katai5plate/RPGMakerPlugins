@@ -359,7 +359,10 @@
     }
     get isSafe() {
       return [this.x, this.y].every(
-        (v) => Number.isFinite(v) && 0 <= v && v <= Number.MAX_SAFE_INTEGER
+        (v) =>
+          Number.isFinite(v) &&
+          v >= Number.MIN_SAFE_INTEGER &&
+          v <= Number.MAX_SAFE_INTEGER
       );
     }
     /** @param {PIXI.Rectangle} rect */
@@ -410,8 +413,15 @@
     calcP(op, p) {
       return this.calc(op, p.x, p.y);
     }
-    static from({ x, y }) {
-      return new this(x, y);
+    /**
+     * @param {{x?:number,y?:number}}
+     * @param {{x?:number,y?:number}} whenNaN
+     * @returns
+     */
+    static from({ x, y } = {}, whenNaN) {
+      const s = (a, b) =>
+        Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+      return new this(s(x, "x"), s(y, "y"));
     }
   }
 
@@ -474,8 +484,20 @@
         Math.abs(this.y - rect.y) < this.height / 2 + rect.height / 2
       );
     }
-    static from({ x, y, width, height }) {
-      return new this(x, y, width, height);
+    /**
+     * @param {{x?:number,y?:number,width?:number,height?:number}}
+     * @param {{x?:number,y?:number,width?:number,height?:number}} [whenNaN]
+     * @returns
+     */
+    static from({ x, y, width, height } = {}, whenNaN) {
+      const s = (a, b) =>
+        Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+      return new this(
+        s(x, "x"),
+        s(y, "y"),
+        s(width, "width"),
+        s(height, "height")
+      );
     }
   }
 
@@ -518,6 +540,14 @@
       return resolveTypeAs(
         /** @param {Game_UIPicture | null} _ */ (_) => _,
         $gameScreen.picture(pictureId)
+      );
+    }
+    static sprite(pictureId) {
+      return resolveTypeAs(
+        /** @param {Sprite_UIPicture | null} _ */ (_) => _,
+        SceneManager._scene?._spriteset?._pictureContainer?.children?.[
+          pictureId - 1
+        ]
       );
     }
   }
@@ -655,23 +685,32 @@
     get collision() {
       // MEMO: anchor が 0.5 の時は xy はマイナスになる
       const anchor = +!!this.origin() * 0.5;
+      // 判定が壊れている場合は画像サイズを代用する
+      const safeCol = this._collision.isSafe
+        ? this._collision
+        : new R(0, 0, this._width, this._height);
       const sx = this._scaleX / 100;
       const sy = this._scaleY / 100;
       const px = -anchor * this._width;
       const py = -anchor * this._height;
       return new R(
-        px + this._collision.x,
-        py + this._collision.y,
-        this._collision.width,
-        this._collision.height
+        px + safeCol.x,
+        py + safeCol.y,
+        safeCol.width,
+        safeCol.height
       ).calc("mul", sx, sy);
     }
-    set collision({ x, y, width, height }) {
-      const isNotNullable = (a) => a !== null && a !== undefined;
-      isNotNullable(x) && (this._collision.x = x);
-      isNotNullable(y) && (this._collision.y = y);
-      isNotNullable(width) && (this._collision.width = width);
-      isNotNullable(height) && (this._collision.height = height);
+    set collision(r) {
+      const { x, y, width, height } = r || {
+        x: 0,
+        y: 0,
+        width: this._width,
+        height: this._height,
+      };
+      Number.isFinite(x) && (this._collision.x = x);
+      Number.isFinite(y) && (this._collision.y = y);
+      Number.isFinite(width) && (this._collision.width = width);
+      Number.isFinite(height) && (this._collision.height = height);
     }
     get enableDrag() {
       return this._dragRange.isSafe;
@@ -916,9 +955,9 @@
     const $ = parsePluginParams(params);
     console.log({ $ });
     const picture = UIPicture.picture($.pictureId);
-    picture.collision = R.from($.collision);
+    picture.collision = R.from($?.collision || {});
     if ($?.dragConfig) {
-      const dragRange = R.from($.dragConfig.range);
+      const dragRange = R.from($.dragConfig.range || {});
       picture._dragRange = dragRange;
       picture._movableDirection = $.dragConfig.move
         ? new P(
@@ -935,7 +974,7 @@
     if ($?.textConfig) {
       picture._labelText = $.textConfig.text || "";
       picture._textAlign = $.textConfig.align || "center";
-      picture._textOffset = $.textConfig.offset || new P(0, 0);
+      picture._textOffset = P.from($.textConfig.offset || {}, { x: 0, y: 0 });
     }
   });
 

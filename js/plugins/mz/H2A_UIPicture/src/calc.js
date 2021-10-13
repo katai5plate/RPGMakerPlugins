@@ -12,7 +12,10 @@ class P extends PIXI.Point {
   }
   get isSafe() {
     return [this.x, this.y].every(
-      (v) => Number.isFinite(v) && 0 <= v && v <= Number.MAX_SAFE_INTEGER
+      (v) =>
+        Number.isFinite(v) &&
+        v >= Number.MIN_SAFE_INTEGER &&
+        v <= Number.MAX_SAFE_INTEGER
     );
   }
   /** @param {PIXI.Rectangle} rect */
@@ -63,8 +66,15 @@ class P extends PIXI.Point {
   calcP(op, p) {
     return this.calc(op, p.x, p.y);
   }
-  static from({ x, y }) {
-    return new this(x, y);
+  /**
+   * @param {{x?:number,y?:number}}
+   * @param {{x?:number,y?:number}} whenNaN
+   * @returns
+   */
+  static from({ x, y } = {}, whenNaN) {
+    const s = (a, b) =>
+      Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+    return new this(s(x, "x"), s(y, "y"));
   }
 }
 
@@ -127,8 +137,20 @@ class R extends PIXI.Rectangle {
       Math.abs(this.y - rect.y) < this.height / 2 + rect.height / 2
     );
   }
-  static from({ x, y, width, height }) {
-    return new this(x, y, width, height);
+  /**
+   * @param {{x?:number,y?:number,width?:number,height?:number}}
+   * @param {{x?:number,y?:number,width?:number,height?:number}} [whenNaN]
+   * @returns
+   */
+  static from({ x, y, width, height } = {}, whenNaN) {
+    const s = (a, b) =>
+      Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+    return new this(
+      s(x, "x"),
+      s(y, "y"),
+      s(width, "width"),
+      s(height, "height")
+    );
   }
 }
 
