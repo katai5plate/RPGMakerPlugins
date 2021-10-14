@@ -223,10 +223,12 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
   update() {
     super.update();
-    this.updateTouch();
-    this.updateDrag();
-    this.updateColor();
-    this.updateVariables();
+    if (this.picture()?._isUI) {
+      this.updateTouch();
+      this.updateDrag();
+      this.updateColor();
+      this.updateVariables();
+    }
   }
   onMouseOver() {
     console.log("onMouseOver");

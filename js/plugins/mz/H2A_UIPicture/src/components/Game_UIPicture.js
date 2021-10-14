@@ -9,6 +9,8 @@ class Game_UIPicture extends Game_Picture {
   /** @type {number} */
   _height;
 
+  /** @type {boolean} */
+  _isUI = false;
   /** @type {number} */
   _pictureId;
   /** @type {R} */
@@ -113,7 +115,9 @@ class Game_UIPicture extends Game_Picture {
   }
   update() {
     super.update();
-    this.updateOpacity();
+    if (this._isUI) {
+      this.updateOpacity();
+    }
   }
 }
 

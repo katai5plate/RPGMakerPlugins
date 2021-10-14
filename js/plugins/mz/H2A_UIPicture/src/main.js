@@ -1,5 +1,6 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
+import { Bitmap } from "~types/mz";
 import pluginName from "~templates/pluginName";
 import parsePluginParams from "~templates/parsePluginParams";
 import resolveTypeAs from "~templates/resolveTypeAs";
@@ -11,7 +12,7 @@ import Sprite_UIPicture from "./components/Sprite_UIPicture";
 import Game_UIPicture from "./components/Game_UIPicture";
 /***__HIDDEN-END__***/
 
-PluginManager.registerCommand(pluginName, "setup", (params) => {
+PluginManager.registerCommand(pluginName, "setup", function (params) {
   /**
    * @type {Partial<{
    *  pictureId: number
@@ -50,11 +51,16 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
    *      onRelease: Sound
    *    }
    *  }
+   *  advancedConfig: {
+   *    forceTransform: R
+   *  }
    * }>}
    */
   const $ = parsePluginParams(params);
-  console.log({ $ });
+  console.log({ $ }, this);
   const picture = UIPicture.picture($.pictureId);
+  const sprite = UIPicture.sprite($.pictureId);
+  picture._isUI = true;
   picture.collision = R.from($?.collision || {});
   if ($?.dragConfig) {
     const dragRange = R.from($.dragConfig.range || {});
@@ -123,6 +129,19 @@ PluginManager.registerCommand(pluginName, "setup", (params) => {
         $.soundConfig.onDisable.onRelease || {}
       );
     }
+  }
+  if ($?.advancedConfig) {
+    /** @type {Bitmap | null} */
+    let bitmap = null;
+    if ($.advancedConfig.forceTransform) {
+      picture._x = $.advancedConfig.forceTransform.x;
+      picture._y = $.advancedConfig.forceTransform.y;
+      bitmap = new Bitmap(
+        $.advancedConfig.forceTransform.width,
+        $.advancedConfig.forceTransform.height
+      );
+    }
+    if (bitmap) sprite._onBitmapLoad(bitmap);
   }
 });
 

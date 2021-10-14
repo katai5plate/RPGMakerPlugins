@@ -39,6 +39,11 @@
  *   @desc 省略・不備の場合は鳴りません
  *   @type struct<SoundConfig>
  *
+ *   @arg advancedConfig
+ *   @text 上級者向け設定
+ *   @desc 取り扱い注意
+ *   @type struct<AdvancedConfig>
+ *
  * @command disable
  * @text 無効化
  *
@@ -91,6 +96,18 @@
  * @type number
  * @min 0
  *
+ * @param width
+ * @text 幅
+ * @type number
+ * @min 1
+ *
+ * @param height
+ * @text 高さ
+ * @type number
+ * @min 1
+ *
+ */
+/*~struct~WH:ja
  * @param width
  * @text 幅
  * @type number
@@ -322,6 +339,13 @@
  * @type struct<SE>
  * @text リリース時
  * @desc 省略・不備の場合は鳴りません
+ *
+ */
+/*~struct~AdvancedConfig:ja
+ * @param forceTransform
+ * @type struct<R>
+ * @text 座標と画像サイズの強制変更
+ * @desc XYで初期座標、WHで画像サイズを別個設定。画像なしで使用する時など向け
  *
  */
 (() => {
@@ -591,19 +615,23 @@
       );
     }
     static isPressed(pictureId) {
+      const picture = this.picture(pictureId);
       const sprite = this.sprite(pictureId);
       return (
+        picture._isUI &&
         sprite._isPressed &&
         !sprite.isAutoMoving &&
-        !this.picture(pictureId)._isDisabled
+        !picture._isDisabled
       );
     }
     static isTriggered(pictureId) {
+      const picture = this.picture(pictureId);
       const sprite = this.sprite(pictureId);
       return (
-        this.sprite(pictureId)._pressCount === 0 &&
+        picture._isUI &&
+        sprite._pressCount === 0 &&
         !sprite.isAutoMoving &&
-        !this.picture(pictureId)._isDisabled
+        !picture._isDisabled
       );
     }
   }
@@ -928,10 +956,12 @@
     }
     update() {
       super.update();
-      this.updateTouch();
-      this.updateDrag();
-      this.updateColor();
-      this.updateVariables();
+      if (this.picture()?._isUI) {
+        this.updateTouch();
+        this.updateDrag();
+        this.updateColor();
+        this.updateVariables();
+      }
     }
     onMouseOver() {
       console.log("onMouseOver");
@@ -1004,6 +1034,8 @@
     /** @type {number} */
     _height;
 
+    /** @type {boolean} */
+    _isUI = false;
     /** @type {number} */
     _pictureId;
     /** @type {R} */
@@ -1108,13 +1140,15 @@
     }
     update() {
       super.update();
-      this.updateOpacity();
+      if (this._isUI) {
+        this.updateOpacity();
+      }
     }
   }
 
   /*========== ./main.js ==========*/
 
-  PluginManager.registerCommand(pluginName, "setup", (params) => {
+  PluginManager.registerCommand(pluginName, "setup", function (params) {
     /**
      * @type {Partial<{
      *  pictureId: number
@@ -1153,11 +1187,16 @@
      *      onRelease: Sound
      *    }
      *  }
+     *  advancedConfig: {
+     *    forceTransform: R
+     *  }
      * }>}
      */
     const $ = parsePluginParams(params);
-    console.log({ $ });
+    console.log({ $ }, this);
     const picture = UIPicture.picture($.pictureId);
+    const sprite = UIPicture.sprite($.pictureId);
+    picture._isUI = true;
     picture.collision = R.from($?.collision || {});
     if ($?.dragConfig) {
       const dragRange = R.from($.dragConfig.range || {});
@@ -1229,6 +1268,19 @@
           $.soundConfig.onDisable.onRelease || {}
         );
       }
+    }
+    if ($?.advancedConfig) {
+      /** @type {Bitmap | null} */
+      let bitmap = null;
+      if ($.advancedConfig.forceTransform) {
+        picture._x = $.advancedConfig.forceTransform.x;
+        picture._y = $.advancedConfig.forceTransform.y;
+        bitmap = new Bitmap(
+          $.advancedConfig.forceTransform.width,
+          $.advancedConfig.forceTransform.height
+        );
+      }
+      if (bitmap) sprite._onBitmapLoad(bitmap);
     }
   });
 
