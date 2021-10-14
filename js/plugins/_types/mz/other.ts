@@ -54,6 +54,7 @@ export type CommandListElement = {
 };
 export type ItemObject = unknown; //DataSkill | DataItem | DataWeapon | DataArmore
 export type AnyThisType = unknown;
+export type VariableValue = unknown;
 
 export interface AudioObject {
   name: string;

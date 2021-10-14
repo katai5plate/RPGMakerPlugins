@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "paths": {
+      "~types/*": ["js/plugins/_types/*"],
+      "~templates/*": ["js/plugins/_templates/*"]
+    }
+  },
+  "include": ["js/plugins"]
+}
