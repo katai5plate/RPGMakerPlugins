@@ -113,7 +113,8 @@ class Sprite_UIPicture extends Sprite_Picture {
     if (
       !TouchInput.isPressed() ||
       (this._isHovered && !this._isPressed) ||
-      this.isAutoMoving
+      this.isAutoMoving ||
+      picture._isDisabled
     ) {
       this._isDragging = false;
       this.onDragEnd();
