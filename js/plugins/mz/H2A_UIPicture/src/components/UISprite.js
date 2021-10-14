@@ -52,6 +52,9 @@ class UIPicture {
       !picture._isDisabled
     );
   }
+  static isDisabled(pictureId) {
+    return this.picture(pictureId)._isDisabled;
+  }
 }
 globalThis.UIPicture = UIPicture;
 

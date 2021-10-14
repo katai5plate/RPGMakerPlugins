@@ -161,38 +161,6 @@
         "default": 255
       }
     ],
-    "SE": [
-      {
-        "param": "name",
-        "text": "ファイル名",
-        "type": "file",
-        "dir": "audio/se"
-      },
-      {
-        "param": "volume",
-        "text": "音量",
-        "type": "number",
-        "min": 0,
-        "max": 100,
-        "default": 90
-      },
-      {
-        "param": "pitch",
-        "text": "ピッチ",
-        "type": "number",
-        "min": 50,
-        "max": 150,
-        "default": 100
-      },
-      {
-        "param": "pan",
-        "text": "定位",
-        "type": "number",
-        "min": -100,
-        "max": 100,
-        "default": 0
-      }
-    ],
     "DragConfig": [
       {
         "param": "range",
@@ -296,46 +264,6 @@
         "type": "struct<C>",
         "text": "無効時",
         "desc": "省略・不備の場合は通常と同じになります"
-      }
-    ],
-    "SoundConfig": [
-      {
-        "param": "normal",
-        "type": "struct<SoundConfigDetail>",
-        "text": "通常時",
-        "desc": "省略・不備の場合は鳴りません"
-      },
-      {
-        "param": "onDisable",
-        "type": "struct<SoundConfigDetail>",
-        "text": "無効時",
-        "desc": "省略・不備の場合は鳴りません"
-      }
-    ],
-    "SoundConfigDetail": [
-      {
-        "param": "onOver",
-        "type": "struct<SE>",
-        "text": "接触開始時",
-        "desc": "省略・不備の場合は鳴りません"
-      },
-      {
-        "param": "onOut",
-        "type": "struct<SE>",
-        "text": "接触終了時",
-        "desc": "省略・不備の場合は鳴りません"
-      },
-      {
-        "param": "onPress",
-        "type": "struct<SE>",
-        "text": "タップ開始時",
-        "desc": "省略・不備の場合は鳴りません"
-      },
-      {
-        "param": "onRelease",
-        "type": "struct<SE>",
-        "text": "タップ終了時",
-        "desc": "省略・不備の場合は鳴りません"
       }
     ],
     "CallbackConfig": [

@@ -49,22 +49,6 @@ class Game_UIPicture extends Game_Picture {
 
   /** @type {boolean} */
   _isDisabled = false;
-  /** @type {Sound} */
-  _soundNormalOnOver = new Sound();
-  /** @type {Sound} */
-  _soundNormalOnOut = new Sound();
-  /** @type {Sound} */
-  _soundNormalOnPress = new Sound();
-  /** @type {Sound} */
-  _soundNormalOnRelease = new Sound();
-  /** @type {Sound} */
-  _soundDisableOnOver = new Sound();
-  /** @type {Sound} */
-  _soundDisableOnOut = new Sound();
-  /** @type {Sound} */
-  _soundDisableOnPress = new Sound();
-  /** @type {Sound} */
-  _soundDisableOnRelease = new Sound();
 
   /** @type {*} */
   _callbackInterpreter = null;

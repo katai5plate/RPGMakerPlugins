@@ -183,34 +183,6 @@
  * @default 255
  *
  */
-/*~struct~SE:ja
- * @param name
- * @text ファイル名
- * @type file
- * @dir audio/se
- *
- * @param volume
- * @text 音量
- * @type number
- * @min 0
- * @max 100
- * @default 90
- *
- * @param pitch
- * @text ピッチ
- * @type number
- * @min 50
- * @max 150
- * @default 100
- *
- * @param pan
- * @text 定位
- * @type number
- * @min -100
- * @max 100
- * @default 0
- *
- */
 /*~struct~DragConfig:ja
  * @param range
  * @type struct<R>
@@ -310,40 +282,6 @@
  * @type struct<C>
  * @text 無効時
  * @desc 省略・不備の場合は通常と同じになります
- *
- */
-/*~struct~SoundConfig:ja
- * @param normal
- * @type struct<SoundConfigDetail>
- * @text 通常時
- * @desc 省略・不備の場合は鳴りません
- *
- * @param onDisable
- * @type struct<SoundConfigDetail>
- * @text 無効時
- * @desc 省略・不備の場合は鳴りません
- *
- */
-/*~struct~SoundConfigDetail:ja
- * @param onOver
- * @type struct<SE>
- * @text 接触開始時
- * @desc 省略・不備の場合は鳴りません
- *
- * @param onOut
- * @type struct<SE>
- * @text 接触終了時
- * @desc 省略・不備の場合は鳴りません
- *
- * @param onPress
- * @type struct<SE>
- * @text タップ開始時
- * @desc 省略・不備の場合は鳴りません
- *
- * @param onRelease
- * @type struct<SE>
- * @text タップ終了時
- * @desc 省略・不備の場合は鳴りません
  *
  */
 /*~struct~CallbackConfig:ja
@@ -665,6 +603,9 @@
         !sprite.isAutoMoving &&
         !picture._isDisabled
       );
+    }
+    static isDisabled(pictureId) {
+      return this.picture(pictureId)._isDisabled;
     }
   }
   globalThis.UIPicture = UIPicture;
@@ -1001,11 +942,6 @@
       this.triggerColor();
       if (!this.isAutoMoving) {
         picture.callback("over");
-        if (!picture._isDisabled) {
-          picture._soundNormalOnOver.play();
-        } else {
-          picture._soundDisableOnOver.play();
-        }
       }
     }
     onMouseOut() {
@@ -1014,11 +950,6 @@
       this.triggerColor();
       if (!this.isAutoMoving) {
         picture.callback("out");
-        if (!picture._isDisabled) {
-          picture._soundNormalOnOut.play();
-        } else {
-          picture._soundDisableOnOut.play();
-        }
       }
     }
     onMousePress() {
@@ -1036,11 +967,6 @@
             );
           }
         }
-        if (!picture._isDisabled) {
-          picture._soundNormalOnPress.play();
-        } else {
-          picture._soundDisableOnPress.play();
-        }
       }
     }
     onMouseRelease() {
@@ -1052,11 +978,6 @@
         if (this._isDraggable) {
           this._isDragging = false;
           this.onDragEnd();
-        }
-        if (!picture._isDisabled) {
-          picture._soundNormalOnRelease.play();
-        } else {
-          picture._soundDisableOnRelease.play();
         }
       }
     }
@@ -1110,22 +1031,6 @@
 
     /** @type {boolean} */
     _isDisabled = false;
-    /** @type {Sound} */
-    _soundNormalOnOver = new Sound();
-    /** @type {Sound} */
-    _soundNormalOnOut = new Sound();
-    /** @type {Sound} */
-    _soundNormalOnPress = new Sound();
-    /** @type {Sound} */
-    _soundNormalOnRelease = new Sound();
-    /** @type {Sound} */
-    _soundDisableOnOver = new Sound();
-    /** @type {Sound} */
-    _soundDisableOnOut = new Sound();
-    /** @type {Sound} */
-    _soundDisableOnPress = new Sound();
-    /** @type {Sound} */
-    _soundDisableOnRelease = new Sound();
 
     /** @type {*} */
     _callbackInterpreter = null;
@@ -1245,20 +1150,6 @@
      *    onPress: Color
      *    onDisable: Color
      *  }
-     *  soundConfig: {
-     *    normal: {
-     *      onOver: Sound
-     *      onOut: Sound
-     *      onPress: Sound
-     *      onRelease: Sound
-     *    }
-     *    onDisable: {
-     *      onOver: Sound
-     *      onOut: Sound
-     *      onPress: Sound
-     *      onRelease: Sound
-     *    }
-     *  }
      *  callbackConfig: {
      *    commonEventId: number
      *    onOver: string
@@ -1317,36 +1208,6 @@
         $.colorConfig.onDisable || {},
         picture._colorNormal
       );
-    }
-    if ($?.soundConfig) {
-      if ($.soundConfig?.normal) {
-        picture._soundNormalOnOut = Sound.from(
-          $.soundConfig.normal.onOut || {}
-        );
-        picture._soundNormalOnOver = Sound.from(
-          $.soundConfig.normal.onOver || {}
-        );
-        picture._soundNormalOnPress = Sound.from(
-          $.soundConfig.normal.onPress || {}
-        );
-        picture._soundNormalOnRelease = Sound.from(
-          $.soundConfig.normal.onRelease || {}
-        );
-      }
-      if ($.soundConfig?.onDisable) {
-        picture._soundDisableOnOut = Sound.from(
-          $.soundConfig.onDisable.onOut || {}
-        );
-        picture._soundDisableOnOver = Sound.from(
-          $.soundConfig.onDisable.onOver || {}
-        );
-        picture._soundDisableOnPress = Sound.from(
-          $.soundConfig.onDisable.onPress || {}
-        );
-        picture._soundDisableOnRelease = Sound.from(
-          $.soundConfig.onDisable.onRelease || {}
-        );
-      }
     }
     if ($.callbackConfig) {
       picture._callbackInterpreter = this;

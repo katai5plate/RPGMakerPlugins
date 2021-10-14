@@ -37,20 +37,6 @@ PluginManager.registerCommand(pluginName, "setup", function (params) {
    *    onPress: Color
    *    onDisable: Color
    *  }
-   *  soundConfig: {
-   *    normal: {
-   *      onOver: Sound
-   *      onOut: Sound
-   *      onPress: Sound
-   *      onRelease: Sound
-   *    }
-   *    onDisable: {
-   *      onOver: Sound
-   *      onOut: Sound
-   *      onPress: Sound
-   *      onRelease: Sound
-   *    }
-   *  }
    *  callbackConfig: {
    *    commonEventId: number
    *    onOver: string
@@ -108,34 +94,6 @@ PluginManager.registerCommand(pluginName, "setup", function (params) {
       $.colorConfig.onDisable || {},
       picture._colorNormal
     );
-  }
-  if ($?.soundConfig) {
-    if ($.soundConfig?.normal) {
-      picture._soundNormalOnOut = Sound.from($.soundConfig.normal.onOut || {});
-      picture._soundNormalOnOver = Sound.from(
-        $.soundConfig.normal.onOver || {}
-      );
-      picture._soundNormalOnPress = Sound.from(
-        $.soundConfig.normal.onPress || {}
-      );
-      picture._soundNormalOnRelease = Sound.from(
-        $.soundConfig.normal.onRelease || {}
-      );
-    }
-    if ($.soundConfig?.onDisable) {
-      picture._soundDisableOnOut = Sound.from(
-        $.soundConfig.onDisable.onOut || {}
-      );
-      picture._soundDisableOnOver = Sound.from(
-        $.soundConfig.onDisable.onOver || {}
-      );
-      picture._soundDisableOnPress = Sound.from(
-        $.soundConfig.onDisable.onPress || {}
-      );
-      picture._soundDisableOnRelease = Sound.from(
-        $.soundConfig.onDisable.onRelease || {}
-      );
-    }
   }
   if ($.callbackConfig) {
     picture._callbackInterpreter = this;

@@ -236,11 +236,6 @@ class Sprite_UIPicture extends Sprite_Picture {
     this.triggerColor();
     if (!this.isAutoMoving) {
       picture.callback("over");
-      if (!picture._isDisabled) {
-        picture._soundNormalOnOver.play();
-      } else {
-        picture._soundDisableOnOver.play();
-      }
     }
   }
   onMouseOut() {
@@ -249,11 +244,6 @@ class Sprite_UIPicture extends Sprite_Picture {
     this.triggerColor();
     if (!this.isAutoMoving) {
       picture.callback("out");
-      if (!picture._isDisabled) {
-        picture._soundNormalOnOut.play();
-      } else {
-        picture._soundDisableOnOut.play();
-      }
     }
   }
   onMousePress() {
@@ -271,11 +261,6 @@ class Sprite_UIPicture extends Sprite_Picture {
           );
         }
       }
-      if (!picture._isDisabled) {
-        picture._soundNormalOnPress.play();
-      } else {
-        picture._soundDisableOnPress.play();
-      }
     }
   }
   onMouseRelease() {
@@ -287,11 +272,6 @@ class Sprite_UIPicture extends Sprite_Picture {
       if (this._isDraggable) {
         this._isDragging = false;
         this.onDragEnd();
-      }
-      if (!picture._isDisabled) {
-        picture._soundNormalOnRelease.play();
-      } else {
-        picture._soundDisableOnRelease.play();
       }
     }
   }
