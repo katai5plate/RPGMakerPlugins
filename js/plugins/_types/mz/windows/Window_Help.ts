@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Item } from "../other";
+import { Item } from "../data";
 import { Window_Base } from "..";
 
 export declare class Window_Help extends Window_Base {

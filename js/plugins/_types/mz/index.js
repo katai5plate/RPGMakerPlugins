@@ -56,6 +56,8 @@ const { Game_Battler } = require("./objects/Game_Battler");
 const { Game_BattlerBase } = require("./objects/Game_BattlerBase");
 const { Game_Character } = require("./objects/Game_Character");
 const { Game_CharacterBase } = require("./objects/Game_CharacterBase");
+const { Game_CommonEvent } = require("./objects/Game_CommonEvent");
+const { Game_Interpreter } = require("./objects/Game_Interpreter");
 const { Game_Item } = require("./objects/Game_Item");
 const { Game_Picture } = require("./objects/Game_Picture");
 const { Game_Screen } = require("./objects/Game_Screen");
@@ -67,6 +69,8 @@ globalThis.Game_Battler = Game_Battler;
 globalThis.Game_BattlerBase = Game_BattlerBase;
 globalThis.Game_Character = Game_Character;
 globalThis.Game_CharacterBase = Game_CharacterBase;
+globalThis.Game_CommonEvent = Game_CommonEvent;
+globalThis.Game_Interpreter = Game_Interpreter;
 globalThis.Game_Item = Game_Item;
 globalThis.Game_Picture = Game_Picture;
 globalThis.Game_Screen = Game_Screen;
@@ -79,15 +83,28 @@ export {
   Game_BattlerBase,
   Game_Character,
   Game_CharacterBase,
+  Game_CommonEvent,
+  Game_Interpreter,
   Game_Item,
   Game_Picture,
   Game_Screen,
   Game_System,
   Game_Variables,
 };
-globalThis.$gameScreen = new Game_Screen();
+
+// globalThis.$gameTemp = new Game_Temp();
 globalThis.$gameSystem = new Game_System();
+globalThis.$gameScreen = new Game_Screen();
+// globalThis.$gameTimer = new Game_Timer();
+// globalThis.$gameMessage = new Game_Message();
+// globalThis.$gameSwitches = new Game_Switches();
 globalThis.$gameVariables = new Game_Variables();
+// globalThis.$gameSelfSwitches = new Game_SelfSwitches();
+// globalThis.$gameActors = new Game_Actors();
+// globalThis.$gameParty = new Game_Party();
+// globalThis.$gameTroop = new Game_Troop();
+// globalThis.$gameMap = new Game_Map();
+// globalThis.$gamePlayer = new Game_Player();
 
 // scenes
 const { Scene_Base } = require("./scenes/Scene_Base");
@@ -161,3 +178,38 @@ export {
   Window_Status,
   Window_StatusBase,
 };
+
+// $data
+/** @type {import("./data").Actors} */
+globalThis.$dataActors = [];
+/** @type {import("./data").Classes} */
+globalThis.$dataClasses = [];
+/** @type {import("./data").Skills} */
+globalThis.$dataSkills = [];
+/** @type {import("./data").Items} */
+globalThis.$dataItems = [];
+/** @type {import("./data").Weapons} */
+globalThis.$dataWeapons = [];
+/** @type {import("./data").Armores} */
+globalThis.$dataArmors = [];
+/** @type {import("./data").Enemies} */
+globalThis.$dataEnemies = [];
+/** @type {import("./data").Troops} */
+globalThis.$dataTroops = [];
+/** @type {import("./data").States} */
+globalThis.$dataStates = [];
+/** @type {import("./data").Animations} */
+globalThis.$dataAnimations = [];
+/** @type {import("./data").Tilesets} */
+globalThis.$dataTilesets = [];
+/** @type {import("./data").CommonEvents} */
+globalThis.$dataCommonEvents = [];
+/** @type {import("./data").System} */
+globalThis.$dataSystem = {};
+/** @type {import("./data").MapInfo} */
+globalThis.$dataMapInfos = {};
+/** @type {import("./data").Map} */
+globalThis.$dataMap = {};
+
+/** @type {import("./data").EventList} */
+globalThis.$testEvent = [];

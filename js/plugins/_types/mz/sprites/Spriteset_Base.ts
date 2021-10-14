@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Sprite, Sprite_Animation } from "..";
-import { Animation } from "../other";
+import { Animation } from "../data";
 
 export declare class Spriteset_Base extends Sprite {
   constructor();

@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Animation, BlendColor } from "../other";
+import { ColorTone, Animation } from "../data";
 
 export declare class Sprite_Animation extends Sprite {
   constructor();
@@ -29,7 +29,7 @@ export declare class Sprite_Animation extends Sprite {
   public _animation: Animation;
   public _delay: number;
   public _effect: unknown; // FIXME: EffectManager.load(animation.effectName);
-  public _flashColor: BlendColor;
+  public _flashColor: ColorTone;
   public _flashDuration: number;
   public _frameIndex: number;
   public _handle: unknown; // FIXME: Graphics.effekseer.play(this._effect);

@@ -1,4 +1,4 @@
-import { AudioObject, ColorTone } from "../other";
+import { Audio, ColorTone } from "../data";
 
 export declare class Game_System {
   constructor();
@@ -30,12 +30,12 @@ export declare class Game_System {
   public setSavefileId(savefileId: number): void;
   public windowTone(): ColorTone;
   public setWindowTone(value: ColorTone): void;
-  public battleBgm(): AudioObject;
-  public setBattleBgm(value: AudioObject): void;
-  public victoryMe(): AudioObject;
-  public setVictoryMe(value: AudioObject): void;
-  public defeatMe(): AudioObject;
-  public setDefeatMe(value: AudioObject): void;
+  public battleBgm(): Audio;
+  public setBattleBgm(value: Audio): void;
+  public victoryMe(): Audio;
+  public setVictoryMe(value: Audio): void;
+  public defeatMe(): Audio;
+  public setDefeatMe(value: Audio): void;
   public onBattleStart(): void;
   public onBattleWin(): void;
   public onBattleEscape(): void;
@@ -54,11 +54,11 @@ export declare class Game_System {
   public windowPadding(): number;
   public windowOpacity(): number;
 
-  public _battleBgm: AudioObject;
+  public _battleBgm: Audio;
   public _battleCount: number;
-  public _bgmOnSave: AudioObject;
-  public _bgsOnSave: AudioObject;
-  public _defeatMe: AudioObject;
+  public _bgmOnSave: Audio;
+  public _bgsOnSave: Audio;
+  public _defeatMe: Audio;
   public _encounterEnabled: boolean;
   public _escapeCount: number;
   public _formationEnabled: boolean;
@@ -66,11 +66,11 @@ export declare class Game_System {
   public _menuEnabled: boolean;
   public _saveCount: number;
   public _saveEnabled: boolean;
-  public _savedBgm: AudioObject;
+  public _savedBgm: Audio;
   public _savefileId: number;
   public _versionId: number;
-  public _victoryMe: AudioObject;
-  public _walkingBgm: AudioObject;
+  public _victoryMe: Audio;
+  public _walkingBgm: Audio;
   public _winCount: number;
   public _windowTone: ColorTone;
 }

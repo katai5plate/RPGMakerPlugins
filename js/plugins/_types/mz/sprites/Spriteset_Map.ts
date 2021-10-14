@@ -1,4 +1,4 @@
-import { Tileset } from "../other";
+import { Tileset } from "../data";
 import { Spriteset_Base, Sprite_Balloon, Sprite_Character, Tilemap } from "..";
 
 export declare class Spriteset_Map extends Spriteset_Base {

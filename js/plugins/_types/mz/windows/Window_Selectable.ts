@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
-import { Item, MZSynbol } from "../other";
+import { MZSynbol } from "../other";
 import { Window_Help, Window_Scrollable } from "..";
+import { Item } from "../data";
 
 export declare class Window_Selectable extends Window_Scrollable {
   constructor(rect: PIXI.Rectangle);
