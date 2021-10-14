@@ -1,4 +1,4 @@
-/// <reference path="../../../_templates/utils.js"/>
+/// <reference path="../../../_templates/pluginName.js"/>
 /// <reference path="./gameDialog.js"/>
 
 Game_Interpreter.prototype.updateWait = function () {
