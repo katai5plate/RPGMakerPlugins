@@ -2,6 +2,7 @@ const { PIXI } = require("pixi.js");
 /** @type {import("pixi.js")} */
 globalThis.PIXI = PIXI;
 globalThis.Rectangle = PIXI.Rectangle;
+globalThis.Point = PIXI.Point;
 
 // core
 const { Bitmap } = require("./core/Bitmap");
