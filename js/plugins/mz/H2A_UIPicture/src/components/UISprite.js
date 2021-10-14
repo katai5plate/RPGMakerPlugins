@@ -33,13 +33,18 @@ class UIPicture {
     );
   }
   static isPressed(pictureId) {
+    const sprite = this.sprite(pictureId);
     return (
-      this.sprite(pictureId)._isPressed && !this.picture(pictureId)._isDisabled
+      sprite._isPressed &&
+      !sprite.isAutoMoving &&
+      !this.picture(pictureId)._isDisabled
     );
   }
   static isTriggered(pictureId) {
+    const sprite = this.sprite(pictureId);
     return (
       this.sprite(pictureId)._pressCount === 0 &&
+      !sprite.isAutoMoving &&
       !this.picture(pictureId)._isDisabled
     );
   }
