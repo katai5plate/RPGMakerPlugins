@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Sprite, Window } from "..";
-import { Item, TextState } from "../other";
+import { Item } from "../data";
+import { TextState } from "../other";
 
 export declare class Window_Base extends Window {
   constructor(rect: PIXI.Rectangle);

@@ -1,5 +1,5 @@
 import { Game_CharacterBase } from "..";
-import { MoveRoute } from "../other";
+import { Map_EventPageMoveRoute } from "../data";
 
 export declare class Game_Character extends Game_CharacterBase {
   constructor();
@@ -7,11 +7,11 @@ export declare class Game_Character extends Game_CharacterBase {
   public memorizeMoveRoute(): void;
   public restoreMoveRoute(): void;
   public isMoveRouteForcing(): boolean;
-  public setMoveRoute(moveRoute: MoveRoute): void;
-  public forceMoveRoute(moveRoute: MoveRoute): void;
+  public setMoveRoute(moveRoute: Map_EventPageMoveRoute): void;
+  public forceMoveRoute(moveRoute: Map_EventPageMoveRoute): void;
   public updateStop(): void;
   public updateRoutineMove(): void;
-  public processMoveCommand(command: MoveRoute["list"][0]): void;
+  public processMoveCommand(command: Map_EventPageMoveRoute["list"][0]): void;
   public deltaXFrom(x: number): number;
   public deltaYFrom(y: number): number;
   public moveRandom(): void;
@@ -82,10 +82,10 @@ export declare class Game_Character extends Game_CharacterBase {
   static ROUTE_WAIT: 15;
   static ROUTE_WALK_ANIME_OFF: 32;
   static ROUTE_WALK_ANIME_ON: 31;
-  public _moveRoute: MoveRoute;
+  public _moveRoute: Map_EventPageMoveRoute;
   public _moveRouteForcing: boolean;
   public _moveRouteIndex: number;
-  public _originalMoveRoute: MoveRoute;
+  public _originalMoveRoute: Map_EventPageMoveRoute;
   public _originalMoveRouteIndex: number;
   public _waitCount: number;
 }

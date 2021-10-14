@@ -1,5 +1,5 @@
 import { Game_Picture } from "..";
-import { BlendColor, ColorTone } from "../other";
+import { ColorTone } from "../data";
 
 export declare class Game_Screen {
   constructor();
@@ -7,7 +7,7 @@ export declare class Game_Screen {
   public onBattleStart(): unknown;
   public brightness(): number;
   public tone(): ColorTone;
-  public flashColor(): BlendColor;
+  public flashColor(): ColorTone;
   public shake(): number;
   public zoomX(): number;
   public zoomY(): number;
@@ -28,7 +28,7 @@ export declare class Game_Screen {
   public startFadeOut(duration: number): void;
   public startFadeIn(duration: number): void;
   public startTint(tone: ColorTone, duration: number): void;
-  public startFlash(color: BlendColor, duration: number): void;
+  public startFlash(color: ColorTone, duration: number): void;
   public startShake(power: number, speed: number, duration: number): void;
   public startZoom(x: number, y: number, scale: number, duration: number): void;
   public setZoom(x: number, y: number, scale: number): void;
@@ -81,7 +81,7 @@ export declare class Game_Screen {
   public _brightness: number;
   public _fadeInDuration: number;
   public _fadeOutDuration: number;
-  public _flashColor: BlendColor;
+  public _flashColor: ColorTone;
   public _flashDuration: number;
   public _pictures: Game_Picture[];
   public _shake: number;

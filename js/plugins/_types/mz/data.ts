@@ -26,7 +26,7 @@ type DBList<T> = [null, ...T[]];
 
 /* 共通 */
 
-export type ColorTone = Array4<number>;
+export type ColorTone = [r: number, g: number, b: number, gray_a: number];
 export type Equips = Array5<number>;
 export type StateChangeParams = Array8<number>;
 export interface Event {

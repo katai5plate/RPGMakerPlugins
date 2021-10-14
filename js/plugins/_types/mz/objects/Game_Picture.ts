@@ -1,4 +1,4 @@
-import { ColorTone } from "../other";
+import { ColorTone } from "../data";
 
 export declare class Game_Picture {
   constructor();

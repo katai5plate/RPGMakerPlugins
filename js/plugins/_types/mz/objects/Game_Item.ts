@@ -1,4 +1,4 @@
-import { DataClass, ItemObject } from "../other";
+import { Class, Item } from "../data";
 
 export declare class Game_Item {
   constructor(item?: unknown); // FIXME: 引数使ってる？
@@ -10,10 +10,10 @@ export declare class Game_Item {
   public isEquipItem(): boolean;
   public isNull(): boolean;
   public itemId(): boolean;
-  public object(): ItemObject;
-  public setObject(item: ItemObject): void;
+  public object(): Item;
+  public setObject(item: Item): void;
   public setEquip(isWeapon: boolean, itemId: number): void;
 
-  public _dataClass: DataClass;
+  public _dataClass: Class;
   public _itemId: number;
 }

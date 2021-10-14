@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { BlendColor, ColorTone } from "../other";
+import { ColorTone } from "../data";
 import { Bitmap, ColorFilter } from "..";
 
 export declare class Sprite extends PIXI.Sprite {
@@ -13,7 +13,7 @@ export declare class Sprite extends PIXI.Sprite {
   public setFrame(x: number, y: number, width: number, height: number): void;
   public setHue(hue: number): void;
   public getBlendColor(): void;
-  public setBlendColor(color: BlendColor): void;
+  public setBlendColor(color: ColorTone): void;
   public getColorTone(): ColorTone;
   public setColorTone(tone: ColorTone): void;
   public _onBitmapChange(): void;
@@ -28,7 +28,7 @@ export declare class Sprite extends PIXI.Sprite {
   public set opacity(value: number);
 
   public _bitmap: Bitmap;
-  public _blendColor: BlendColor;
+  public _blendColor: ColorTone;
   public _blendMode: PIXI.BLEND_MODES;
   public _colorFilter: ColorFilter;
   public _colorTone: ColorTone;

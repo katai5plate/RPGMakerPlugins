@@ -1,4 +1,5 @@
-import { Buffs, DataState } from "../other";
+import { State } from "../data";
+import { Buffs } from "../other";
 
 export declare class Game_BattlerBase {
   constructor();
@@ -164,6 +165,6 @@ export declare class Game_BattlerBase {
   public _hp: number;
   public _mp: number;
   public _stateTurns: { [stateId: number]: number };
-  public _states: DataState[];
+  public _states: State[];
   public _tp: number;
 }

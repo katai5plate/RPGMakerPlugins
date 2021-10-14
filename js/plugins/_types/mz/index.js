@@ -85,9 +85,20 @@ export {
   Game_System,
   Game_Variables,
 };
-globalThis.$gameScreen = new Game_Screen();
+
+// globalThis.$gameTemp = new Game_Temp();
 globalThis.$gameSystem = new Game_System();
+globalThis.$gameScreen = new Game_Screen();
+// globalThis.$gameTimer = new Game_Timer();
+// globalThis.$gameMessage = new Game_Message();
+// globalThis.$gameSwitches = new Game_Switches();
 globalThis.$gameVariables = new Game_Variables();
+// globalThis.$gameSelfSwitches = new Game_SelfSwitches();
+// globalThis.$gameActors = new Game_Actors();
+// globalThis.$gameParty = new Game_Party();
+// globalThis.$gameTroop = new Game_Troop();
+// globalThis.$gameMap = new Game_Map();
+// globalThis.$gamePlayer = new Game_Player();
 
 // scenes
 const { Scene_Base } = require("./scenes/Scene_Base");
@@ -161,3 +172,38 @@ export {
   Window_Status,
   Window_StatusBase,
 };
+
+// $data
+/** @type {import("./data").Actors} */
+globalThis.$dataActors = [];
+/** @type {import("./data").Classes} */
+globalThis.$dataClasses = [];
+/** @type {import("./data").Skills} */
+globalThis.$dataSkills = [];
+/** @type {import("./data").Items} */
+globalThis.$dataItems = [];
+/** @type {import("./data").Weapons} */
+globalThis.$dataWeapons = [];
+/** @type {import("./data").Armores} */
+globalThis.$dataArmors = [];
+/** @type {import("./data").Enemies} */
+globalThis.$dataEnemies = [];
+/** @type {import("./data").Troops} */
+globalThis.$dataTroops = [];
+/** @type {import("./data").States} */
+globalThis.$dataStates = [];
+/** @type {import("./data").Animations} */
+globalThis.$dataAnimations = [];
+/** @type {import("./data").Tilesets} */
+globalThis.$dataTilesets = [];
+/** @type {import("./data").CommonEvents} */
+globalThis.$dataCommonEvents = [];
+/** @type {import("./data").System} */
+globalThis.$dataSystem = {};
+/** @type {import("./data").MapInfo} */
+globalThis.$dataMapInfos = {};
+/** @type {import("./data").Map} */
+globalThis.$dataMap = {};
+
+/** @type {import("./data").EventList} */
+globalThis.$testEvent = [];

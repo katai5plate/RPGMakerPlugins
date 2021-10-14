@@ -1,5 +1,5 @@
 import { MZSynbol } from "../other";
-import { Game_Battler } from "..";
+import { Game_Battler, Game_Item } from "..";
 
 export declare class Game_Actor extends Game_Battler {
   constructor(actorId: number);
