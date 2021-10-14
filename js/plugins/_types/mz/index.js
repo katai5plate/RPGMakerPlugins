@@ -56,6 +56,8 @@ const { Game_Battler } = require("./objects/Game_Battler");
 const { Game_BattlerBase } = require("./objects/Game_BattlerBase");
 const { Game_Character } = require("./objects/Game_Character");
 const { Game_CharacterBase } = require("./objects/Game_CharacterBase");
+const { Game_CommonEvent } = require("./objects/Game_CommonEvent");
+const { Game_Interpreter } = require("./objects/Game_Interpreter");
 const { Game_Item } = require("./objects/Game_Item");
 const { Game_Picture } = require("./objects/Game_Picture");
 const { Game_Screen } = require("./objects/Game_Screen");
@@ -67,6 +69,8 @@ globalThis.Game_Battler = Game_Battler;
 globalThis.Game_BattlerBase = Game_BattlerBase;
 globalThis.Game_Character = Game_Character;
 globalThis.Game_CharacterBase = Game_CharacterBase;
+globalThis.Game_CommonEvent = Game_CommonEvent;
+globalThis.Game_Interpreter = Game_Interpreter;
 globalThis.Game_Item = Game_Item;
 globalThis.Game_Picture = Game_Picture;
 globalThis.Game_Screen = Game_Screen;
@@ -79,6 +83,8 @@ export {
   Game_BattlerBase,
   Game_Character,
   Game_CharacterBase,
+  Game_CommonEvent,
+  Game_Interpreter,
   Game_Item,
   Game_Picture,
   Game_Screen,
