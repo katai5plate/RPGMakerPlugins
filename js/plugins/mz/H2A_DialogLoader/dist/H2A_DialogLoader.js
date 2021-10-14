@@ -151,7 +151,7 @@
  *
  */
 (() => {
-  /*========== ../../../_templates/utils.js ==========*/
+  /*========== ../../../_templates/pluginName.js ==========*/
   const pluginName = document.currentScript.src.match(/^.*\/(.*).js$/)[1];
 
   /*========== ./gameDialog.js ==========*/
