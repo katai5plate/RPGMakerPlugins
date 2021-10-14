@@ -40,12 +40,6 @@
           "type": "struct<ColorConfig>"
         },
         {
-          "arg": "soundConfig",
-          "text": "効果音設定",
-          "desc": "省略・不備の場合は鳴りません",
-          "type": "struct<SoundConfig>"
-        },
-        {
           "arg": "callbackConfig",
           "type": "struct<CallbackConfig>",
           "text": "コールバック設定",

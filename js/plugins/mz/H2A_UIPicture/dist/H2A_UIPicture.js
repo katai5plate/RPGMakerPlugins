@@ -34,11 +34,6 @@
  *   @desc 省略・不備の場合は色調は変化しないか、通常時と同じになります
  *   @type struct<ColorConfig>
  *
- *   @arg soundConfig
- *   @text 効果音設定
- *   @desc 省略・不備の場合は鳴りません
- *   @type struct<SoundConfig>
- *
  *   @arg callbackConfig
  *   @type struct<CallbackConfig>
  *   @text コールバック設定
@@ -523,37 +518,6 @@
       const f = (a, b) =>
         Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
       return new this(f(r, "r"), f(g, "g"), f(b, "b"), f(s, "s"), f(a, "a"));
-    }
-  }
-
-  class Sound {
-    constructor(name = "", volume = 0, pitch = 0, pan = 0) {
-      this.name = name;
-      this.volume = volume;
-      this.pitch = pitch;
-      this.pan = pan;
-    }
-    /**
-     * @param {{name?:string,volume?:number,pitch?:number,pan?:number}} _
-     * @returns
-     */
-    static from({ name, volume, pitch, pan }) {
-      const whenNaN = {
-        volume: 90,
-        pitch: 100,
-        pan: 0,
-      };
-      const f = (a, b) =>
-        Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
-      return new this(
-        name || "",
-        f(volume, "volume"),
-        f(pitch, "pitch"),
-        f(pan, "pan")
-      );
-    }
-    play() {
-      AudioManager.playSe(this);
     }
   }
 

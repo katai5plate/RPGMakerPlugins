@@ -5,7 +5,7 @@ import pluginName from "~templates/pluginName";
 import parsePluginParams from "~templates/parsePluginParams";
 import resolveTypeAs from "~templates/resolveTypeAs";
 
-import { P, R, Color, Sound } from "./calc";
+import { P, R, Color } from "./calc";
 
 import UIPicture from "./components/UISprite";
 import Sprite_UIPicture from "./components/Sprite_UIPicture";

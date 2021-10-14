@@ -1,6 +1,6 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
-import { Color, P, R, Sound } from "../calc";
+import { Color, P, R } from "../calc";
 /***__HIDDEN-END__***/
 
 class Game_UIPicture extends Game_Picture {
