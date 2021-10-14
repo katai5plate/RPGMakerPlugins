@@ -1,6 +1,7 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
 import { Color, P, R } from "../calc";
+import { Game_Interpreter } from "~types/mz";
 /***__HIDDEN-END__***/
 
 class Game_UIPicture extends Game_Picture {
@@ -105,9 +106,7 @@ class Game_UIPicture extends Game_Picture {
   /** @param {"over"|"out"|"press"|"release"} on */
   callback(on) {
     const i = this._callbackInterpreter;
-    //@ts-expect-error
     if (!(i instanceof Game_Interpreter)) return;
-    //@ts-expect-error
     const ce = $dataCommonEvents[this._callbackCommonEventId];
     if (!ce) return;
     let label = "";

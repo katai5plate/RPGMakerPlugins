@@ -32,7 +32,7 @@ export type StateChangeParams = Array8<number>;
 export interface Event {
   code: number;
   indent?: number;
-  parameters: [];
+  parameters: unknown[];
 }
 export type EventList = Event[];
 export interface Effect {

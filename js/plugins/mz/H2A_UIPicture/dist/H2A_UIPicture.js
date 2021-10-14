@@ -1051,9 +1051,7 @@
     /** @param {"over"|"out"|"press"|"release"} on */
     callback(on) {
       const i = this._callbackInterpreter;
-
       if (!(i instanceof Game_Interpreter)) return;
-
       const ce = $dataCommonEvents[this._callbackCommonEventId];
       if (!ce) return;
       let label = "";
