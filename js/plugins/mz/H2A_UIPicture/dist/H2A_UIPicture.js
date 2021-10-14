@@ -39,6 +39,11 @@
  *   @desc 省略・不備の場合は鳴りません
  *   @type struct<SoundConfig>
  *
+ *   @arg callbackConfig
+ *   @type struct<CallbackConfig>
+ *   @text コールバック設定
+ *   @desc 省略・不備の場合は機能しません
+ *
  *   @arg advancedConfig
  *   @text 上級者向け設定
  *   @desc 取り扱い注意
@@ -293,12 +298,12 @@
  *
  * @param onOver
  * @type struct<C>
- * @text マウスオーバー時
+ * @text 接触開始時
  * @desc 省略・不備の場合は通常と同じになります
  *
  * @param onPress
  * @type struct<C>
- * @text 押下時
+ * @text タップ開始時
  * @desc 省略・不備の場合は通常と同じになります
  *
  * @param onDisable
@@ -322,23 +327,50 @@
 /*~struct~SoundConfigDetail:ja
  * @param onOver
  * @type struct<SE>
- * @text マウスオーバー時
+ * @text 接触開始時
  * @desc 省略・不備の場合は鳴りません
  *
  * @param onOut
  * @type struct<SE>
- * @text マウスアウト時
+ * @text 接触終了時
  * @desc 省略・不備の場合は鳴りません
  *
  * @param onPress
  * @type struct<SE>
- * @text 押下時
+ * @text タップ開始時
  * @desc 省略・不備の場合は鳴りません
  *
  * @param onRelease
  * @type struct<SE>
- * @text リリース時
+ * @text タップ終了時
  * @desc 省略・不備の場合は鳴りません
+ *
+ */
+/*~struct~CallbackConfig:ja
+ * @param commonEventId
+ * @type common_event
+ * @text コモンイベントID
+ * @desc 操作時に呼び出されるコモンイベントID。省略・不備の場合は機能しません
+ *
+ * @param onOver
+ * @type string
+ * @text 接触開始時
+ * @desc ラベル名。省略・不備の場合は機能しません
+ *
+ * @param onOut
+ * @type string
+ * @text 接触終了時
+ * @desc ラベル名。省略・不備の場合は機能しません
+ *
+ * @param onPress
+ * @type string
+ * @text タップ開始時
+ * @desc ラベル名。省略・不備の場合は機能しません
+ *
+ * @param onRelease
+ * @type string
+ * @text タップ終了時
+ * @desc ラベル名。省略・不備の場合は機能しません
  *
  */
 /*~struct~AdvancedConfig:ja
@@ -965,9 +997,10 @@
     }
     onMouseOver() {
       console.log("onMouseOver");
+      const picture = this.picture();
       this.triggerColor();
       if (!this.isAutoMoving) {
-        const picture = this.picture();
+        picture.callback("over");
         if (!picture._isDisabled) {
           picture._soundNormalOnOver.play();
         } else {
@@ -977,9 +1010,10 @@
     }
     onMouseOut() {
       console.log("onMouseOut");
+      const picture = this.picture();
       this.triggerColor();
       if (!this.isAutoMoving) {
-        const picture = this.picture();
+        picture.callback("out");
         if (!picture._isDisabled) {
           picture._soundNormalOnOut.play();
         } else {
@@ -989,9 +1023,10 @@
     }
     onMousePress() {
       console.log("onMousePress");
-      this.triggerColor();
       const picture = this.picture();
+      this.triggerColor();
       if (!this.isAutoMoving) {
+        picture.callback("press");
         if (this._isDraggable) {
           if (!(picture._isDisabled && picture._disDraggableWhenDisabled)) {
             this._isDragging = true;
@@ -1010,13 +1045,14 @@
     }
     onMouseRelease() {
       console.log("onMouseRelease");
+      const picture = this.picture();
       this.triggerColor();
       if (!this.isAutoMoving) {
+        picture.callback("release");
         if (this._isDraggable) {
           this._isDragging = false;
           this.onDragEnd();
         }
-        const picture = this.picture();
         if (!picture._isDisabled) {
           picture._soundNormalOnRelease.play();
         } else {
@@ -1091,6 +1127,19 @@
     /** @type {Sound} */
     _soundDisableOnRelease = new Sound();
 
+    /** @type {*} */
+    _callbackInterpreter = null;
+    /** @type {number} */
+    _callbackCommonEventId = NaN;
+    /** @type {string} */
+    _callbackCommonEventLabelOnOver = "";
+    /** @type {string} */
+    _callbackCommonEventLabelOnOut = "";
+    /** @type {string} */
+    _callbackCommonEventLabelOnPress = "";
+    /** @type {string} */
+    _callbackCommonEventLabelOnRelease = "";
+
     /** @param {number} pictureId */
     constructor(pictureId) {
       super();
@@ -1129,6 +1178,29 @@
     }
     get enableDrag() {
       return this._dragRange.isSafe;
+    }
+    /** @param {"over"|"out"|"press"|"release"} on */
+    callback(on) {
+      const i = this._callbackInterpreter;
+
+      if (!(i instanceof Game_Interpreter)) return;
+
+      const ce = $dataCommonEvents[this._callbackCommonEventId];
+      if (!ce) return;
+      let label = "";
+      on === "over" && (label = this._callbackCommonEventLabelOnOver);
+      on === "out" && (label = this._callbackCommonEventLabelOnOut);
+      on === "press" && (label = this._callbackCommonEventLabelOnPress);
+      on === "release" && (label = this._callbackCommonEventLabelOnRelease);
+      if (label !== "") {
+        i.setup(
+          ce.list.slice(
+            ce.list.findIndex(
+              (x) => x.code === 118 && x.parameters?.[0] === label
+            )
+          )
+        );
+      }
     }
     updateOpacity() {
       if (this._opacityDuration > 0) {
@@ -1186,6 +1258,13 @@
      *      onPress: Sound
      *      onRelease: Sound
      *    }
+     *  }
+     *  callbackConfig: {
+     *    commonEventId: number
+     *    onOver: string
+     *    onOut: string
+     *    onPress: string
+     *    onRelease: string
      *  }
      *  advancedConfig: {
      *    forceTransform: R
@@ -1268,6 +1347,15 @@
           $.soundConfig.onDisable.onRelease || {}
         );
       }
+    }
+    if ($.callbackConfig) {
+      picture._callbackInterpreter = this;
+      picture._callbackCommonEventId = $.callbackConfig.commonEventId || NaN;
+      picture._callbackCommonEventLabelOnOver = $.callbackConfig.onOver || "";
+      picture._callbackCommonEventLabelOnOut = $.callbackConfig.onOut || "";
+      picture._callbackCommonEventLabelOnPress = $.callbackConfig.onPress || "";
+      picture._callbackCommonEventLabelOnRelease =
+        $.callbackConfig.onRelease || "";
     }
     if ($?.advancedConfig) {
       /** @type {Bitmap | null} */

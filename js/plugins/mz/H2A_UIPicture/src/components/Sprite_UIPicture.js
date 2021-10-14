@@ -232,9 +232,10 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
   onMouseOver() {
     console.log("onMouseOver");
+    const picture = this.picture();
     this.triggerColor();
     if (!this.isAutoMoving) {
-      const picture = this.picture();
+      picture.callback("over");
       if (!picture._isDisabled) {
         picture._soundNormalOnOver.play();
       } else {
@@ -244,9 +245,10 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
   onMouseOut() {
     console.log("onMouseOut");
+    const picture = this.picture();
     this.triggerColor();
     if (!this.isAutoMoving) {
-      const picture = this.picture();
+      picture.callback("out");
       if (!picture._isDisabled) {
         picture._soundNormalOnOut.play();
       } else {
@@ -256,9 +258,10 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
   onMousePress() {
     console.log("onMousePress");
-    this.triggerColor();
     const picture = this.picture();
+    this.triggerColor();
     if (!this.isAutoMoving) {
+      picture.callback("press");
       if (this._isDraggable) {
         if (!(picture._isDisabled && picture._disDraggableWhenDisabled)) {
           this._isDragging = true;
@@ -277,13 +280,14 @@ class Sprite_UIPicture extends Sprite_Picture {
   }
   onMouseRelease() {
     console.log("onMouseRelease");
+    const picture = this.picture();
     this.triggerColor();
     if (!this.isAutoMoving) {
+      picture.callback("release");
       if (this._isDraggable) {
         this._isDragging = false;
         this.onDragEnd();
       }
-      const picture = this.picture();
       if (!picture._isDisabled) {
         picture._soundNormalOnRelease.play();
       } else {

@@ -51,6 +51,13 @@ PluginManager.registerCommand(pluginName, "setup", function (params) {
    *      onRelease: Sound
    *    }
    *  }
+   *  callbackConfig: {
+   *    commonEventId: number
+   *    onOver: string
+   *    onOut: string
+   *    onPress: string
+   *    onRelease: string
+   *  }
    *  advancedConfig: {
    *    forceTransform: R
    *  }
@@ -129,6 +136,15 @@ PluginManager.registerCommand(pluginName, "setup", function (params) {
         $.soundConfig.onDisable.onRelease || {}
       );
     }
+  }
+  if ($.callbackConfig) {
+    picture._callbackInterpreter = this;
+    picture._callbackCommonEventId = $.callbackConfig.commonEventId || NaN;
+    picture._callbackCommonEventLabelOnOver = $.callbackConfig.onOver || "";
+    picture._callbackCommonEventLabelOnOut = $.callbackConfig.onOut || "";
+    picture._callbackCommonEventLabelOnPress = $.callbackConfig.onPress || "";
+    picture._callbackCommonEventLabelOnRelease =
+      $.callbackConfig.onRelease || "";
   }
   if ($?.advancedConfig) {
     /** @type {Bitmap | null} */

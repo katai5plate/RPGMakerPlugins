@@ -66,6 +66,19 @@ class Game_UIPicture extends Game_Picture {
   /** @type {Sound} */
   _soundDisableOnRelease = new Sound();
 
+  /** @type {*} */
+  _callbackInterpreter = null;
+  /** @type {number} */
+  _callbackCommonEventId = NaN;
+  /** @type {string} */
+  _callbackCommonEventLabelOnOver = "";
+  /** @type {string} */
+  _callbackCommonEventLabelOnOut = "";
+  /** @type {string} */
+  _callbackCommonEventLabelOnPress = "";
+  /** @type {string} */
+  _callbackCommonEventLabelOnRelease = "";
+
   /** @param {number} pictureId */
   constructor(pictureId) {
     super();
@@ -104,6 +117,29 @@ class Game_UIPicture extends Game_Picture {
   }
   get enableDrag() {
     return this._dragRange.isSafe;
+  }
+  /** @param {"over"|"out"|"press"|"release"} on */
+  callback(on) {
+    const i = this._callbackInterpreter;
+    //@ts-expect-error
+    if (!(i instanceof Game_Interpreter)) return;
+    //@ts-expect-error
+    const ce = $dataCommonEvents[this._callbackCommonEventId];
+    if (!ce) return;
+    let label = "";
+    on === "over" && (label = this._callbackCommonEventLabelOnOver);
+    on === "out" && (label = this._callbackCommonEventLabelOnOut);
+    on === "press" && (label = this._callbackCommonEventLabelOnPress);
+    on === "release" && (label = this._callbackCommonEventLabelOnRelease);
+    if (label !== "") {
+      i.setup(
+        ce.list.slice(
+          ce.list.findIndex(
+            (x) => x.code === 118 && x.parameters?.[0] === label
+          )
+        )
+      );
+    }
   }
   updateOpacity() {
     if (this._opacityDuration > 0) {
