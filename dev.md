@@ -196,3 +196,8 @@ This software is released under the {LICENSE_NAME} License.
 \* @(.*?) (.*?)$
 "$1": "$2",
 ```
+
+## 俺用 LINK
+
+- [型コンバーター](https://katai5plate.github.io/RPGMakerPlugins/tools/conv.html)
+
