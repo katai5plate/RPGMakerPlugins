@@ -5,44 +5,11 @@
  * @author Had2Apps
  * @url https://github.com/katai5plate/RPGMakerPlugins
  *
- * @command setup
- * @text 設定
+ * @command setupPictures
+ * @text UIピクチャ設定
  *
- *   @arg pictureId
- *   @text ピクチャID
- *   @type number
- *   @min 1
- *   @max 100
- *
- *   @arg collision
- *   @text 当たり判定
- *   @desc 省略・不備の場合は画像サイズがそのまま設定されます
- *   @type struct<R>
- *
- *   @arg dragConfig
- *   @text ドラッグ設定
- *   @desc 省略・不備の場合はドラッグ無効になります
- *   @type struct<DragConfig>
- *
- *   @arg textConfig
- *   @text 文字列設定
- *   @desc 省略・不備の場合は文字列は表示されません
- *   @type struct<TextConfig>
- *
- *   @arg colorConfig
- *   @text 色調設定
- *   @desc 省略・不備の場合は色調は変化しないか、通常時と同じになります
- *   @type struct<ColorConfig>
- *
- *   @arg callbackConfig
- *   @type struct<CallbackConfig>
- *   @text コールバック設定
- *   @desc 省略・不備の場合は機能しません
- *
- *   @arg advancedConfig
- *   @text 上級者向け設定
- *   @desc 取り扱い注意
- *   @type struct<AdvancedConfig>
+ *   @arg list
+ *   @type struct<Setup>[]
  *
  * @command disable
  * @text 無効化
@@ -176,6 +143,44 @@
  * @min 0
  * @max 255
  * @default 255
+ *
+ */
+/*~struct~Setup:ja
+ * @param pictureId
+ * @text ピクチャID
+ * @type number
+ * @min 1
+ * @max 100
+ *
+ * @param collision
+ * @text 当たり判定
+ * @desc 省略・不備の場合は画像サイズがそのまま設定されます
+ * @type struct<R>
+ *
+ * @param callbackConfig
+ * @type struct<CallbackConfig>
+ * @text コールバック設定
+ * @desc 省略・不備の場合は機能しません
+ *
+ * @param textConfig
+ * @text 文字列設定
+ * @desc 省略・不備の場合は文字列は表示されません
+ * @type struct<TextConfig>
+ *
+ * @param colorConfig
+ * @text 色調設定
+ * @desc 省略・不備の場合は色調は変化しないか、通常時と同じになります
+ * @type struct<ColorConfig>
+ *
+ * @param dragConfig
+ * @text ドラッグ設定
+ * @desc 省略・不備の場合はドラッグ無効になります
+ * @type struct<DragConfig>
+ *
+ * @param advancedConfig
+ * @text 上級者向け設定
+ * @desc 取り扱い注意
+ * @type struct<AdvancedConfig>
  *
  */
 /*~struct~DragConfig:ja
@@ -1087,120 +1092,84 @@
 
   /*========== ./main.js ==========*/
 
-  PluginManager.registerCommand(pluginName, "setup", function (params) {
-    /**
-     * @type {Partial<{
-     *  pictureId: number
-     *  collision: R
-     *  dragConfig: {
-     *    range: R,
-     *    move: "horizontal"|"vertical"
-     *    type: "perint"|"perflo"|"local"|"global"
-     *    variableX: number
-     *    variableY: number
-     *    disDraggableWhenDisabled: boolean
-     *  }
-     *  textConfig: {
-     *    text: string,
-     *    align: "left"|"right"
-     *    offset: P
-     *  }
-     *  colorConfig: {
-     *    duration:number
-     *    off: Color
-     *    onOver: Color
-     *    onPress: Color
-     *    onDisable: Color
-     *  }
-     *  callbackConfig: {
-     *    commonEventId: number
-     *    onOver: string
-     *    onOut: string
-     *    onPress: string
-     *    onRelease: string
-     *  }
-     *  advancedConfig: {
-     *    forceTransform: R
-     *  }
-     * }>}
-     */
-    const $ = parsePluginParams(params);
-    console.log({ $ }, this);
-    const picture = UIPicture.picture($.pictureId);
-    const sprite = UIPicture.sprite($.pictureId);
-    picture._isUI = true;
-    picture.collision = R.from($?.collision || {});
-    if ($?.dragConfig) {
-      const dragRange = R.from($.dragConfig.range || {});
-      picture._dragRange = dragRange;
-      picture._movableDirection = $.dragConfig.move
-        ? new P(
-            +($.dragConfig.move === "horizontal"),
-            +($.dragConfig.move === "vertical")
-          )
-        : new P(1, 1);
-      picture._variableType = $.dragConfig.type;
-      picture._variableIds = new P(
-        $.dragConfig.variableX || 0,
-        $.dragConfig.variableY || 0
-      );
-      picture._disDraggableWhenDisabled =
-        !!$.dragConfig.disDraggableWhenDisabled;
-    }
-    if ($?.textConfig) {
-      picture._labelText = $.textConfig.text || "";
-      picture._textAlign = $.textConfig.align || "center";
-      picture._textOffset = P.from($.textConfig.offset || {}, { x: 0, y: 0 });
-    }
-    if ($?.colorConfig) {
-      picture._colorDuration = $.colorConfig.duration || 1;
-      picture._colorNormal = Color.from(
-        $.colorConfig.off || {},
-        new Color(0, 0, 0, 0, 255)
-      );
-      picture._colorOnOver = Color.from(
-        $.colorConfig.onOver || {},
-        picture._colorNormal
-      );
-      picture._colorOnPress = Color.from(
-        $.colorConfig.onPress || {},
-        picture._colorNormal
-      );
-      picture._colorOnDisable = Color.from(
-        $.colorConfig.onDisable || {},
-        picture._colorNormal
-      );
-    }
-    if ($.callbackConfig) {
-      picture._callbackInterpreter = this;
-      picture._callbackCommonEventId = $.callbackConfig.commonEventId || NaN;
-      picture._callbackCommonEventLabelOnOver = $.callbackConfig.onOver || "";
-      picture._callbackCommonEventLabelOnOut = $.callbackConfig.onOut || "";
-      picture._callbackCommonEventLabelOnPress = $.callbackConfig.onPress || "";
-      picture._callbackCommonEventLabelOnRelease =
-        $.callbackConfig.onRelease || "";
-    }
-    if ($?.advancedConfig) {
-      /** @type {Bitmap | null} */
-      let bitmap = null;
-      if ($.advancedConfig.forceTransform) {
-        picture._x = $.advancedConfig.forceTransform.x;
-        picture._y = $.advancedConfig.forceTransform.y;
-        bitmap = new Bitmap(
-          $.advancedConfig.forceTransform.width,
-          $.advancedConfig.forceTransform.height
+  PluginManager.registerCommand(pluginName, "setupPictures", function (params) {
+    /** @type {Command_SetupPictures} */
+    const $a = parsePluginParams(params);
+    console.log({ $a }, this);
+    $a.list.map(($) => {
+      const picture = UIPicture.picture($.pictureId);
+      const sprite = UIPicture.sprite($.pictureId);
+      picture._isUI = true;
+      picture.collision = R.from($?.collision || {});
+      if ($?.dragConfig) {
+        const dragRange = R.from($.dragConfig.range || {});
+        picture._dragRange = dragRange;
+        picture._movableDirection = $.dragConfig.move
+          ? new P(
+              +($.dragConfig.move === "horizontal"),
+              +($.dragConfig.move === "vertical")
+            )
+          : new P(1, 1);
+        picture._variableType = $.dragConfig.type;
+        picture._variableIds = new P(
+          $.dragConfig.variableX || 0,
+          $.dragConfig.variableY || 0
+        );
+        picture._disDraggableWhenDisabled =
+          !!$.dragConfig.disDraggableWhenDisabled;
+      }
+      if ($?.textConfig) {
+        picture._labelText = $.textConfig.text || "";
+        picture._textAlign = $.textConfig.align || "center";
+        picture._textOffset = P.from($.textConfig.offset || {}, { x: 0, y: 0 });
+      }
+      if ($?.colorConfig) {
+        picture._colorDuration = $.colorConfig.duration || 1;
+        picture._colorNormal = Color.from(
+          $.colorConfig.off || {},
+          new Color(0, 0, 0, 0, 255)
+        );
+        picture._colorOnOver = Color.from(
+          $.colorConfig.onOver || {},
+          picture._colorNormal
+        );
+        picture._colorOnPress = Color.from(
+          $.colorConfig.onPress || {},
+          picture._colorNormal
+        );
+        picture._colorOnDisable = Color.from(
+          $.colorConfig.onDisable || {},
+          picture._colorNormal
         );
       }
-      if (bitmap) sprite._onBitmapLoad(bitmap);
-    }
+      if ($.callbackConfig) {
+        picture._callbackInterpreter = this;
+        picture._callbackCommonEventId = $.callbackConfig.commonEventId || NaN;
+        picture._callbackCommonEventLabelOnOver = $.callbackConfig.onOver || "";
+        picture._callbackCommonEventLabelOnOut = $.callbackConfig.onOut || "";
+        picture._callbackCommonEventLabelOnPress =
+          $.callbackConfig.onPress || "";
+        picture._callbackCommonEventLabelOnRelease =
+          $.callbackConfig.onRelease || "";
+      }
+      if ($?.advancedConfig) {
+        /** @type {Bitmap | null} */
+        let bitmap = null;
+        if ($.advancedConfig.forceTransform) {
+          picture._x = $.advancedConfig.forceTransform.x;
+          picture._y = $.advancedConfig.forceTransform.y;
+          bitmap = new Bitmap(
+            $.advancedConfig.forceTransform.width,
+            $.advancedConfig.forceTransform.height
+          );
+        }
+        if (bitmap) sprite._onBitmapLoad(bitmap);
+      }
+    });
   });
 
   PluginManager.registerCommand(pluginName, "disable", (params) => {
-    /**
-     * @type {Partial<{
-     *  pictureIds: number[]
-     * }>}
-     */
+    /** @type {Command_ToggleDisable} */
     const $ = parsePluginParams(params);
     $?.pictureIds?.forEach((id) => {
       const picture = UIPicture.picture(id);
@@ -1209,11 +1178,7 @@
   });
 
   PluginManager.registerCommand(pluginName, "enable", (params) => {
-    /**
-     * @type {Partial<{
-     *  pictureIds: number[]
-     * }>}
-     */
+    /** @type {Command_ToggleDisable} */
     const $ = parsePluginParams(params);
     $?.pictureIds?.forEach((id) => {
       const picture = UIPicture.picture(id);

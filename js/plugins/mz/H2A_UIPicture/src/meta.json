@@ -5,51 +5,12 @@
   "plugindesc": "",
   "commands": [
     {
-      "command": "setup",
-      "text": "設定",
+      "command": "setupPictures",
+      "text": "UIピクチャ設定",
       "...": [
         {
-          "arg": "pictureId",
-          "text": "ピクチャID",
-          "type": "number",
-          "min": 1,
-          "max": 100
-        },
-        {
-          "arg": "collision",
-          "text": "当たり判定",
-          "desc": "省略・不備の場合は画像サイズがそのまま設定されます",
-          "type": "struct<R>"
-        },
-        {
-          "arg": "dragConfig",
-          "text": "ドラッグ設定",
-          "desc": "省略・不備の場合はドラッグ無効になります",
-          "type": "struct<DragConfig>"
-        },
-        {
-          "arg": "textConfig",
-          "text": "文字列設定",
-          "desc": "省略・不備の場合は文字列は表示されません",
-          "type": "struct<TextConfig>"
-        },
-        {
-          "arg": "colorConfig",
-          "text": "色調設定",
-          "desc": "省略・不備の場合は色調は変化しないか、通常時と同じになります",
-          "type": "struct<ColorConfig>"
-        },
-        {
-          "arg": "callbackConfig",
-          "type": "struct<CallbackConfig>",
-          "text": "コールバック設定",
-          "desc": "省略・不備の場合は機能しません"
-        },
-        {
-          "arg": "advancedConfig",
-          "text": "上級者向け設定",
-          "desc": "取り扱い注意",
-          "type": "struct<AdvancedConfig>"
+          "arg": "list",
+          "type": "struct<Setup>[]"
         }
       ]
     },
@@ -153,6 +114,51 @@
         "min": 0,
         "max": 255,
         "default": 255
+      }
+    ],
+    "Setup": [
+      {
+        "param": "pictureId",
+        "text": "ピクチャID",
+        "type": "number",
+        "min": 1,
+        "max": 100
+      },
+      {
+        "param": "collision",
+        "text": "当たり判定",
+        "desc": "省略・不備の場合は画像サイズがそのまま設定されます",
+        "type": "struct<R>"
+      },
+      {
+        "param": "callbackConfig",
+        "type": "struct<CallbackConfig>",
+        "text": "コールバック設定",
+        "desc": "省略・不備の場合は機能しません"
+      },
+      {
+        "param": "textConfig",
+        "text": "文字列設定",
+        "desc": "省略・不備の場合は文字列は表示されません",
+        "type": "struct<TextConfig>"
+      },
+      {
+        "param": "colorConfig",
+        "text": "色調設定",
+        "desc": "省略・不備の場合は色調は変化しないか、通常時と同じになります",
+        "type": "struct<ColorConfig>"
+      },
+      {
+        "param": "dragConfig",
+        "text": "ドラッグ設定",
+        "desc": "省略・不備の場合はドラッグ無効になります",
+        "type": "struct<DragConfig>"
+      },
+      {
+        "param": "advancedConfig",
+        "text": "上級者向け設定",
+        "desc": "取り扱い注意",
+        "type": "struct<AdvancedConfig>"
       }
     ],
     "DragConfig": [
