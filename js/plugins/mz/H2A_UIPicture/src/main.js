@@ -72,6 +72,10 @@ PluginManager.registerCommand(pluginName, "setupPictures", function (params) {
       picture._callbackCommonEventLabelOnRelease =
         $.callbackConfig.onRelease || "";
     }
+    if ($?.position) {
+      picture._x = $.position.x;
+      picture._y = $.position.y;
+    }
     if ($?.advancedConfig) {
       /** @type {Bitmap | null} */
       let bitmap = null;

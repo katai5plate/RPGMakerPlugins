@@ -177,6 +177,11 @@
  * @desc 省略・不備の場合はドラッグ無効になります
  * @type struct<DragConfig>
  *
+ * @param pisition
+ * @text 座標上書き
+ * @desc 設定すると表示座標を上書きできます
+ * @type struct<P>
+ *
  * @param advancedConfig
  * @text 上級者向け設定
  * @desc 取り扱い注意
@@ -1151,6 +1156,10 @@
           $.callbackConfig.onPress || "";
         picture._callbackCommonEventLabelOnRelease =
           $.callbackConfig.onRelease || "";
+      }
+      if ($?.position) {
+        picture._x = $.position.x;
+        picture._y = $.position.y;
       }
       if ($?.advancedConfig) {
         /** @type {Bitmap | null} */

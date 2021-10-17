@@ -7,6 +7,7 @@ interface Struct_Setup {
   textConfig?: Struct_textConfig;
   colorConfig?: ColorConfig;
   callbackConfig?: CallbackConfig;
+  position?: P;
   advancedConfig?: AdvancedConfig;
 }
 
