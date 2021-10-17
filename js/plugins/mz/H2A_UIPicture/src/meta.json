@@ -304,12 +304,12 @@
         "desc": "ラベル名。省略・不備の場合は機能しません"
       }
     ],
-    "AdvancedConfig": [
+    "debugConfig": [
       {
         "param": "forceTransform",
         "type": "struct<R>",
-        "text": "座標と画像サイズの強制変更",
-        "desc": "XYで初期座標、WHで画像サイズを別個設定。画像なしで使用する時など向け"
+        "text": "画像サイズの強制変更",
+        "desc": "WHで画像サイズを別個設定。画像なしで使用する時など向け"
       }
     ]
   }

@@ -76,15 +76,13 @@ PluginManager.registerCommand(pluginName, "setupPictures", function (params) {
       picture._x = $.position.x;
       picture._y = $.position.y;
     }
-    if ($?.advancedConfig) {
+    if ($?.debugConfig) {
       /** @type {Bitmap | null} */
       let bitmap = null;
-      if ($.advancedConfig.forceTransform) {
-        picture._x = $.advancedConfig.forceTransform.x;
-        picture._y = $.advancedConfig.forceTransform.y;
+      if ($.debugConfig.forceTransform) {
         bitmap = new Bitmap(
-          $.advancedConfig.forceTransform.width,
-          $.advancedConfig.forceTransform.height
+          $.debugConfig.forceTransform.width,
+          $.debugConfig.forceTransform.height
         );
       }
       if (bitmap) sprite._onBitmapLoad(bitmap);

@@ -316,11 +316,11 @@
  * @desc ラベル名。省略・不備の場合は機能しません
  *
  */
-/*~struct~AdvancedConfig:ja
+/*~struct~debugConfig:ja
  * @param forceTransform
  * @type struct<R>
- * @text 座標と画像サイズの強制変更
- * @desc XYで初期座標、WHで画像サイズを別個設定。画像なしで使用する時など向け
+ * @text 画像サイズの強制変更
+ * @desc WHで画像サイズを別個設定。画像なしで使用する時など向け
  *
  */
 (() => {
@@ -1161,15 +1161,13 @@
         picture._x = $.position.x;
         picture._y = $.position.y;
       }
-      if ($?.advancedConfig) {
+      if ($?.debugConfig) {
         /** @type {Bitmap | null} */
         let bitmap = null;
-        if ($.advancedConfig.forceTransform) {
-          picture._x = $.advancedConfig.forceTransform.x;
-          picture._y = $.advancedConfig.forceTransform.y;
+        if ($.debugConfig.forceTransform) {
           bitmap = new Bitmap(
-            $.advancedConfig.forceTransform.width,
-            $.advancedConfig.forceTransform.height
+            $.debugConfig.forceTransform.width,
+            $.debugConfig.forceTransform.height
           );
         }
         if (bitmap) sprite._onBitmapLoad(bitmap);

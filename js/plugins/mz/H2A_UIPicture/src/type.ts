@@ -8,7 +8,7 @@ interface Struct_Setup {
   colorConfig?: ColorConfig;
   callbackConfig?: CallbackConfig;
   position?: P;
-  advancedConfig?: AdvancedConfig;
+  debugConfig?: DebugConfig;
 }
 
 interface Struct_DragConfig {
@@ -42,7 +42,7 @@ interface CallbackConfig {
   onRelease?: string;
 }
 
-interface AdvancedConfig {
+interface DebugConfig {
   forceTransform?: R;
 }
 
