@@ -15,12 +15,14 @@ import { Command_SetupPictures, Command_ToggleDisable } from "./type";
 
 PluginManager.registerCommand(pluginName, "setupPictures", function (params) {
   /** @type {Command_SetupPictures} */
-  const $a = parsePluginParams(params);
-  console.log({ $a }, this);
-  $a.list.map(($) => {
+  const { list, enableLoadingWait } = parsePluginParams(params);
+  console.log({ list, enableLoadingWait }, this);
+  (list || []).map(($) => {
     const picture = UIPicture.picture($.pictureId);
     const sprite = UIPicture.sprite($.pictureId);
     picture._isUI = true;
+    picture._enableLoadingWait = !!enableLoadingWait;
+    picture._callbackInterpreter = this;
     picture.collision = R.from($?.collision || {});
     if ($?.dragConfig) {
       const dragRange = R.from($.dragConfig.range || {});
@@ -64,7 +66,6 @@ PluginManager.registerCommand(pluginName, "setupPictures", function (params) {
       );
     }
     if ($.callbackConfig) {
-      picture._callbackInterpreter = this;
       picture._callbackCommonEventId = $.callbackConfig.commonEventId || NaN;
       picture._callbackCommonEventLabelOnOver = $.callbackConfig.onOver || "";
       picture._callbackCommonEventLabelOnOut = $.callbackConfig.onOut || "";
@@ -145,4 +146,9 @@ Game_Screen.prototype.showPicture = function (
   const picture = new Game_UIPicture(pictureId);
   picture.show(name, origin, x, y, scaleX, scaleY, opacity, blendMode);
   this._pictures[realPictureId] = picture;
+};
+
+const updateWait = Game_Interpreter.prototype.updateWait;
+Game_Interpreter.prototype.updateWait = function () {
+  return UIPicture._updateWait() || updateWait.apply(this, arguments);
 };

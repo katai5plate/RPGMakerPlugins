@@ -55,6 +55,19 @@ class UIPicture {
   static isDisabled(pictureId) {
     return this.picture(pictureId)._isDisabled;
   }
+  static _updateWait() {
+    const pictures = resolveTypeAs(
+      /** @param {Game_UIPicture[] | null} _ */ (_) => _,
+      $gameScreen._pictures
+    );
+    let waiting = false;
+    for (let pic of pictures.slice(1)) {
+      if (pic._enableLoadingWait && !pic._loaded) {
+        waiting = true;
+      }
+    }
+    return waiting;
+  }
 }
 globalThis.UIPicture = UIPicture;
 

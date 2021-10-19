@@ -52,6 +52,8 @@ class Sprite_UIPicture extends Sprite_Picture {
     const picture = this.picture();
     picture._width = bitmapLoaded.width;
     picture._height = bitmapLoaded.height;
+    picture._loaded = true;
+    console.log("_onBitmapLoad", picture._pictureId, bitmapLoaded);
     this._labelSprite = new Sprite_UIPictureLabel(this._pictureId);
     this.addChild(
       resolveTypeAs(

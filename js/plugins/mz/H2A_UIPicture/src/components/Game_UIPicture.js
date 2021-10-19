@@ -9,9 +9,16 @@ class Game_UIPicture extends Game_Picture {
   _width;
   /** @type {number} */
   _height;
+  /** @type {boolean} */
+  _loaded = false;
 
   /** @type {boolean} */
   _isUI = false;
+  /** @type {boolean} */
+  _enableLoadingWait = false;
+  /** @type {*} */
+  _callbackInterpreter = null;
+
   /** @type {number} */
   _pictureId;
   /** @type {R} */
@@ -51,8 +58,6 @@ class Game_UIPicture extends Game_Picture {
   /** @type {boolean} */
   _isDisabled = false;
 
-  /** @type {*} */
-  _callbackInterpreter = null;
   /** @type {number} */
   _callbackCommonEventId = NaN;
   /** @type {string} */

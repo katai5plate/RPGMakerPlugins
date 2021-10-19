@@ -47,7 +47,8 @@ interface DebugConfig {
 }
 
 export interface Command_SetupPictures {
-  list: Struct_Setup[];
+  list?: Struct_Setup[];
+  enableLoadingWait?: boolean;
 }
 
 export interface Command_ToggleDisable {

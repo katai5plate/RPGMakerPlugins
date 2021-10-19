@@ -11,6 +11,12 @@
  *   @arg list
  *   @type struct<Setup>[]
  *
+ *   @arg enableLoadingWait
+ *   @text 画像をロードするまで待つ
+ *   @desc 省略・不備の場合はOFFになります
+ *   @type boolean
+ *   @default false
+ *
  * @command disable
  * @text 無効化
  *
@@ -581,6 +587,19 @@
     static isDisabled(pictureId) {
       return this.picture(pictureId)._isDisabled;
     }
+    static _updateWait() {
+      const pictures = resolveTypeAs(
+        /** @param {Game_UIPicture[] | null} _ */ (_) => _,
+        $gameScreen._pictures
+      );
+      let waiting = false;
+      for (let pic of pictures.slice(1)) {
+        if (pic._enableLoadingWait && !pic._loaded) {
+          waiting = true;
+        }
+      }
+      return waiting;
+    }
   }
   globalThis.UIPicture = UIPicture;
 
@@ -732,6 +751,8 @@
       const picture = this.picture();
       picture._width = bitmapLoaded.width;
       picture._height = bitmapLoaded.height;
+      picture._loaded = true;
+      console.log("_onBitmapLoad", picture._pictureId, bitmapLoaded);
       this._labelSprite = new Sprite_UIPictureLabel(this._pictureId);
       this.addChild(
         resolveTypeAs(
@@ -964,9 +985,16 @@
     _width;
     /** @type {number} */
     _height;
+    /** @type {boolean} */
+    _loaded = false;
 
     /** @type {boolean} */
     _isUI = false;
+    /** @type {boolean} */
+    _enableLoadingWait = false;
+    /** @type {*} */
+    _callbackInterpreter = null;
+
     /** @type {number} */
     _pictureId;
     /** @type {R} */
@@ -1006,8 +1034,6 @@
     /** @type {boolean} */
     _isDisabled = false;
 
-    /** @type {*} */
-    _callbackInterpreter = null;
     /** @type {number} */
     _callbackCommonEventId = NaN;
     /** @type {string} */
@@ -1099,12 +1125,14 @@
 
   PluginManager.registerCommand(pluginName, "setupPictures", function (params) {
     /** @type {Command_SetupPictures} */
-    const $a = parsePluginParams(params);
-    console.log({ $a }, this);
-    $a.list.map(($) => {
+    const { list, enableLoadingWait } = parsePluginParams(params);
+    console.log({ list, enableLoadingWait }, this);
+    (list || []).map(($) => {
       const picture = UIPicture.picture($.pictureId);
       const sprite = UIPicture.sprite($.pictureId);
       picture._isUI = true;
+      picture._enableLoadingWait = !!enableLoadingWait;
+      picture._callbackInterpreter = this;
       picture.collision = R.from($?.collision || {});
       if ($?.dragConfig) {
         const dragRange = R.from($.dragConfig.range || {});
@@ -1148,7 +1176,6 @@
         );
       }
       if ($.callbackConfig) {
-        picture._callbackInterpreter = this;
         picture._callbackCommonEventId = $.callbackConfig.commonEventId || NaN;
         picture._callbackCommonEventLabelOnOver = $.callbackConfig.onOver || "";
         picture._callbackCommonEventLabelOnOut = $.callbackConfig.onOut || "";
@@ -1230,5 +1257,10 @@
     const picture = new Game_UIPicture(pictureId);
     picture.show(name, origin, x, y, scaleX, scaleY, opacity, blendMode);
     this._pictures[realPictureId] = picture;
+  };
+
+  const updateWait = Game_Interpreter.prototype.updateWait;
+  Game_Interpreter.prototype.updateWait = function () {
+    return UIPicture._updateWait() || updateWait.apply(this, arguments);
   };
 })();

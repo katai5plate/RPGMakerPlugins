@@ -11,6 +11,13 @@
         {
           "arg": "list",
           "type": "struct<Setup>[]"
+        },
+        {
+          "arg": "enableLoadingWait",
+          "text": "画像をロードするまで待つ",
+          "desc": "省略・不備の場合はOFFになります",
+          "type": "boolean",
+          "default": false
         }
       ]
     },
