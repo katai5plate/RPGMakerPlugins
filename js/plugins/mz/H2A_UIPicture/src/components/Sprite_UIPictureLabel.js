@@ -6,7 +6,7 @@ import { P } from "../calc";
 
 import CanvasSprite from "./CanvasSprite";
 import Game_UIPicture from "./Game_UIPicture";
-import UIPicture from "./UISprite";
+import UIPicture from "./UIPicture";
 /***__HIDDEN-END__***/
 
 class Sprite_UIPictureLabel extends CanvasSprite {
