@@ -236,23 +236,22 @@ class Sprite_UIPicture extends Sprite_Picture {
   onMouseOver() {
     console.log("onMouseOver");
     const picture = this.picture();
-    this.triggerColor();
     if (!this.isAutoMoving) {
       picture.callback("over");
     }
+    this.triggerColor();
   }
   onMouseOut() {
     console.log("onMouseOut");
     const picture = this.picture();
-    this.triggerColor();
     if (!this.isAutoMoving) {
       picture.callback("out");
     }
+    this.triggerColor();
   }
   onMousePress() {
     console.log("onMousePress");
     const picture = this.picture();
-    this.triggerColor();
     if (!this.isAutoMoving) {
       picture.callback("press");
       if (this._isDraggable) {
@@ -265,11 +264,11 @@ class Sprite_UIPicture extends Sprite_Picture {
         }
       }
     }
+    this.triggerColor();
   }
   onMouseRelease() {
     console.log("onMouseRelease");
     const picture = this.picture();
-    this.triggerColor();
     if (!this.isAutoMoving) {
       picture.callback("release");
       if (this._isDraggable) {
@@ -277,6 +276,7 @@ class Sprite_UIPicture extends Sprite_Picture {
         this.onDragEnd();
       }
     }
+    this.triggerColor();
   }
 }
 
