@@ -5,6 +5,11 @@
  * @author Had2Apps
  * @url https://github.com/katai5plate/RPGMakerPlugins
  *
+ * @param debugMode
+ * @text デバッグモード
+ * @desc テストプレイ中はデバッグモードにする
+ * @type boolean
+ *
  * @command setupPictures
  * @text UIピクチャ設定
  *
@@ -356,6 +361,23 @@
    */
   const resolveTypeAs = (def, from) => from;
 
+  /*========== ../../../_templates/waitUntil.js ==========*/
+  /**
+   * @param {() => boolean} cond
+   * @param {() => void} then
+   * @param {{ms?:number, delay?:number}} [config]
+   */
+  const waitUntil = (cond, then, config = {}) => {
+    let i = setInterval(() => {
+      if (cond()) {
+        config.delay && !Number.isNaN(config.delay)
+          ? setTimeout(then, config.delay)
+          : then();
+        clearInterval(i);
+      }
+    }, config.ms || 100);
+  };
+
   /*========== ./calc.js ==========*/
 
   class P extends PIXI.Point {
@@ -417,7 +439,7 @@
     }
     /**
      * @param {Parameters<typeof this.calc>[0]} op
-     * @param {P} p
+     * @param {P|{x:number,y:number}} p
      */
     calcP(op, p) {
       return this.calc(op, p.x, p.y);
@@ -431,6 +453,10 @@
       const s = (a, b) =>
         Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
       return new this(s(x, "x"), s(y, "y"));
+    }
+    toString() {
+      const [x, y] = [this.x, this.y].map(Math.floor);
+      return `P(${x}, ${y})`;
     }
   }
 
@@ -467,12 +493,12 @@
      * @param {number} [w]
      * @param {number} [h]
      */
-    calc(op, x, y, w, h) {
+    calc(op, x, y = NaN, w = NaN, h = NaN) {
       let _y = y,
         _w = w,
         _h = h;
-      !y && (_y = x);
-      !w && !h && (_w = x), (_h = _y);
+      Number.isNaN(y) && (_y = x);
+      Number.isNaN(w) && Number.isNaN(h) && ((_w = x), (_h = _y));
       if (op === "add") {
         (this.x += x), (this.y += _y), (this.width += _w), (this.height += _h);
       } else if (op === "sub") {
@@ -485,6 +511,20 @@
         (this.x %= x), (this.y %= _y), (this.width %= _w), (this.height %= _h);
       }
       return this;
+    }
+    /**
+     * @param {Parameters<typeof this.calc>[0]} op
+     * @param {P|{x:number,y:number}} p
+     */
+    calcP(op, p) {
+      return this.calc(op, p.x, p.y);
+    }
+    /**
+     * @param {Parameters<typeof this.calc>[0]} op
+     * @param {R|{x:number,y:number,width:number,height:number}} r
+     */
+    calcR(op, r) {
+      return this.calc(op, r.x, r.y, r.width, r.height);
     }
     /** @param {PIXI.Rectangle} rect */
     containsRect(rect) {
@@ -507,6 +547,25 @@
         s(width, "width"),
         s(height, "height")
       );
+    }
+    /** P(x,y) -> R(x,y,0,0)
+     * @param {P|{x?:number,y?:number}} _
+     * @param {{x?:number,y?:number}} [whenNaN]
+     * @returns
+     */
+    static fromP({ x, y } = {}, whenNaN) {
+      const s = (a, b) =>
+        Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+      return new this(s(x, "x"), s(y, "y"), 0, 0);
+    }
+    toString() {
+      const [x, y, width, height] = [
+        this.x,
+        this.y,
+        this.width,
+        this.height,
+      ].map(Math.floor);
+      return `R(${x}, ${y}, ${width}, ${height})`;
     }
   }
 
@@ -537,9 +596,33 @@
     }
   }
 
-  /*========== ./components/UISprite.js ==========*/
+  globalThis.P = P;
+  globalThis.R = R;
+
+  /*========== ./components/UIPicture.js ==========*/
 
   class UIPicture {
+    /** @type {DebugSprite} */
+    static _debugSprite = null;
+    static initialize() {
+      const isDebugMode =
+        parsePluginParams(PluginManager.parameters(pluginName)).debugMode &&
+        Utils.isOptionValid("test");
+      if (isDebugMode) {
+        waitUntil(
+          () => !!(Graphics?.boxWidth && Graphics?.boxHeight),
+          () => {
+            this._debugSprite = new DebugSprite();
+          }
+        );
+        waitUntil(
+          () => !!SceneManager?._scene?._spriteset,
+          () => {
+            SceneManager._scene._spriteset.addChild(UIPicture._debugSprite);
+          }
+        );
+      }
+    }
     /** convertEscapeCharacters 呼び出し用
      *  @return {Window_Base} */
     static get baseWindow() {
@@ -548,6 +631,18 @@
         SceneManager._scene._windowLayer?.children.find(
           (x) => x instanceof Window_Base
         )
+      );
+    }
+    static pictures() {
+      return resolveTypeAs(
+        /** @param {Game_UIPicture[]} _ */ (_) => _,
+        ($gameScreen?._pictures || []).slice(1)
+      );
+    }
+    static sprites() {
+      return resolveTypeAs(
+        /** @param {Sprite_UIPicture[]} _ */ (_) => _,
+        SceneManager._scene?._spriteset?._pictureContainer?.children || []
       );
     }
     static picture(pictureId) {
@@ -624,14 +719,72 @@
       this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
       this.#context = canvas.getContext("2d");
     }
+    /** @type {CanvasRenderingContext2D} */
     get ctx() {
       return this.#context;
     }
     flip() {
       this.texture.update();
     }
+    /** @param {(ctx:CanvasRenderingContext2D)=>void} fn */
+    draw(fn, refresh = false) {
+      refresh && this.ctx.clearRect(0, 0, this.width, this.height);
+      fn(this.ctx);
+      this.flip();
+    }
     update() {
       //
+    }
+  }
+  globalThis.CanvasSprite = CanvasSprite;
+
+  /*========== ./components/DebugSprite.js ==========*/
+
+  class DebugSprite extends CanvasSprite {
+    constructor() {
+      super(Graphics.boxWidth, Graphics.boxHeight);
+    }
+    update() {
+      this.draw((ctx) => {
+        for (let picture of UIPicture.pictures()) {
+          const sprite = UIPicture.sprite(picture._pictureId);
+          ctx.strokeStyle = ctx.fillStyle = "#ff0000aa";
+          const icol = new R(
+            sprite.x + picture.imageCollision.x,
+            sprite.y + picture.imageCollision.y,
+            picture.imageCollision.width,
+            picture.imageCollision.height
+          );
+          ctx.strokeRect(icol.x, icol.y, icol.width, icol.height);
+          ctx.fillText(icol.toString(), icol.x, icol.y);
+
+          ctx.strokeStyle = ctx.fillStyle = "#ff00ffaa";
+          const col = new R(
+            sprite.x + picture.collision.x,
+            sprite.y + picture.collision.y,
+            picture.collision.width,
+            picture.collision.height
+          );
+          ctx.strokeRect(col.x, col.y, col.width, col.height);
+          ctx.fillText(col.toString(), col.x, col.y);
+
+          ctx.strokeStyle = ctx.fillStyle = "#ffff00aa";
+          const area = new R(
+            picture._dragRange.x,
+            picture._dragRange.y,
+            picture._dragRange.width,
+            picture._dragRange.height
+          );
+          ctx.strokeRect(area.x, area.y, area.width, area.height);
+          ctx.fillText(area.toString(), area.x, area.y);
+        }
+        ctx.fillStyle = "#ffffffaa";
+        ctx.fillText(
+          `(${TouchInput.x}, ${TouchInput.y})`,
+          TouchInput.x,
+          TouchInput.y
+        );
+      }, true);
     }
   }
 
@@ -1051,23 +1204,25 @@
       this._pictureId = pictureId;
       console.log(this);
     }
-    get collision() {
+    get scale() {
+      return new P(this._scaleX, this._scaleY);
+    }
+    get anchoredPosition() {
       // MEMO: anchor が 0.5 の時は xy はマイナスになる
       const anchor = +!!this.origin() * 0.5;
+      return new P(-anchor * this._width, -anchor * this._height);
+    }
+    get imageCollision() {
+      return R.fromP(this.anchoredPosition)
+        .calc("add", 0, 0, this._width, this._height)
+        .calcP("mul", this.scale.calc("div", 100));
+    }
+    get collision() {
       // 判定が壊れている場合は画像サイズを代用する
-      const safeCol = this._collision.isSafe
-        ? this._collision
-        : new R(0, 0, this._width, this._height);
-      const sx = this._scaleX / 100;
-      const sy = this._scaleY / 100;
-      const px = -anchor * this._width;
-      const py = -anchor * this._height;
-      return new R(
-        px + safeCol.x,
-        py + safeCol.y,
-        safeCol.width,
-        safeCol.height
-      ).calc("mul", sx, sy);
+      if (!this._collision.isSafe) return this.imageCollision;
+      return R.fromP(this.anchoredPosition)
+        .calcR("add", this._collision)
+        .calcP("mul", this.scale.calc("div", 100));
     }
     set collision(r) {
       const { x, y, width, height } = r || {
@@ -1263,4 +1418,6 @@
   Game_Interpreter.prototype.updateWait = function () {
     return UIPicture._updateWait() || updateWait.apply(this, arguments);
   };
+
+  UIPicture.initialize();
 })();

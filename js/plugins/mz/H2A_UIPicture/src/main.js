@@ -1,13 +1,13 @@
 //@ts-check
 /***__HIDDEN-BEGIN__***/
-import { Bitmap } from "~types/mz";
+import { Bitmap, Game_Interpreter } from "~types/mz";
 import pluginName from "~templates/pluginName";
 import parsePluginParams from "~templates/parsePluginParams";
 import resolveTypeAs from "~templates/resolveTypeAs";
 
 import { P, R, Color } from "./calc";
 
-import UIPicture from "./components/UISprite";
+import UIPicture from "./components/UIPicture";
 import Sprite_UIPicture from "./components/Sprite_UIPicture";
 import Game_UIPicture from "./components/Game_UIPicture";
 import { Command_SetupPictures, Command_ToggleDisable } from "./type";
@@ -152,3 +152,5 @@ const updateWait = Game_Interpreter.prototype.updateWait;
 Game_Interpreter.prototype.updateWait = function () {
   return UIPicture._updateWait() || updateWait.apply(this, arguments);
 };
+
+UIPicture.initialize();

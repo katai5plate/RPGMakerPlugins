@@ -2,13 +2,14 @@
 /***__HIDDEN-BEGIN__***/
 import * as PIXI from "pixi.js";
 
-import { Bitmap, Sprite_Picture } from "~types/mz";
+import { Bitmap, Sprite_Picture, Utils } from "~types/mz";
 import resolveTypeAs from "~templates/resolveTypeAs";
 
 import { P, R } from "../calc";
 
 import Sprite_UIPictureLabel from "./Sprite_UIPictureLabel";
 import Game_UIPicture from "./Game_UIPicture";
+import CanvasSprite from "./CanvasSprite";
 /***__HIDDEN-END__***/
 
 class Sprite_UIPicture extends Sprite_Picture {

@@ -75,23 +75,25 @@ class Game_UIPicture extends Game_Picture {
     this._pictureId = pictureId;
     console.log(this);
   }
-  get collision() {
+  get scale() {
+    return new P(this._scaleX, this._scaleY);
+  }
+  get anchoredPosition() {
     // MEMO: anchor が 0.5 の時は xy はマイナスになる
     const anchor = +!!this.origin() * 0.5;
+    return new P(-anchor * this._width, -anchor * this._height);
+  }
+  get imageCollision() {
+    return R.fromP(this.anchoredPosition)
+      .calc("add", 0, 0, this._width, this._height)
+      .calcP("mul", this.scale.calc("div", 100));
+  }
+  get collision() {
     // 判定が壊れている場合は画像サイズを代用する
-    const safeCol = this._collision.isSafe
-      ? this._collision
-      : new R(0, 0, this._width, this._height);
-    const sx = this._scaleX / 100;
-    const sy = this._scaleY / 100;
-    const px = -anchor * this._width;
-    const py = -anchor * this._height;
-    return new R(
-      px + safeCol.x,
-      py + safeCol.y,
-      safeCol.width,
-      safeCol.height
-    ).calc("mul", sx, sy);
+    if (!this._collision.isSafe) return this.imageCollision;
+    return R.fromP(this.anchoredPosition)
+      .calcR("add", this._collision)
+      .calcP("mul", this.scale.calc("div", 100));
   }
   set collision(r) {
     const { x, y, width, height } = r || {

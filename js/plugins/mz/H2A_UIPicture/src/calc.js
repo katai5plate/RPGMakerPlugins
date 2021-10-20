@@ -62,7 +62,7 @@ class P extends PIXI.Point {
   }
   /**
    * @param {Parameters<typeof this.calc>[0]} op
-   * @param {P} p
+   * @param {P|{x:number,y:number}} p
    */
   calcP(op, p) {
     return this.calc(op, p.x, p.y);
@@ -76,6 +76,10 @@ class P extends PIXI.Point {
     const s = (a, b) =>
       Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
     return new this(s(x, "x"), s(y, "y"));
+  }
+  toString() {
+    const [x, y] = [this.x, this.y].map(Math.floor);
+    return `P(${x}, ${y})`;
   }
 }
 
@@ -112,12 +116,12 @@ class R extends PIXI.Rectangle {
    * @param {number} [w]
    * @param {number} [h]
    */
-  calc(op, x, y, w, h) {
+  calc(op, x, y = NaN, w = NaN, h = NaN) {
     let _y = y,
       _w = w,
       _h = h;
-    !y && (_y = x);
-    !w && !h && (_w = x), (_h = _y);
+    Number.isNaN(y) && (_y = x);
+    Number.isNaN(w) && Number.isNaN(h) && ((_w = x), (_h = _y));
     if (op === "add") {
       (this.x += x), (this.y += _y), (this.width += _w), (this.height += _h);
     } else if (op === "sub") {
@@ -130,6 +134,20 @@ class R extends PIXI.Rectangle {
       (this.x %= x), (this.y %= _y), (this.width %= _w), (this.height %= _h);
     }
     return this;
+  }
+  /**
+   * @param {Parameters<typeof this.calc>[0]} op
+   * @param {P|{x:number,y:number}} p
+   */
+  calcP(op, p) {
+    return this.calc(op, p.x, p.y);
+  }
+  /**
+   * @param {Parameters<typeof this.calc>[0]} op
+   * @param {R|{x:number,y:number,width:number,height:number}} r
+   */
+  calcR(op, r) {
+    return this.calc(op, r.x, r.y, r.width, r.height);
   }
   /** @param {PIXI.Rectangle} rect */
   containsRect(rect) {
@@ -152,6 +170,22 @@ class R extends PIXI.Rectangle {
       s(width, "width"),
       s(height, "height")
     );
+  }
+  /** P(x,y) -> R(x,y,0,0)
+   * @param {P|{x?:number,y?:number}} _
+   * @param {{x?:number,y?:number}} [whenNaN]
+   * @returns
+   */
+  static fromP({ x, y } = {}, whenNaN) {
+    const s = (a, b) =>
+      Number.isFinite(a) ? a : undefined !== whenNaN?.[b] ? whenNaN[b] : a;
+    return new this(s(x, "x"), s(y, "y"), 0, 0);
+  }
+  toString() {
+    const [x, y, width, height] = [this.x, this.y, this.width, this.height].map(
+      Math.floor
+    );
+    return `R(${x}, ${y}, ${width}, ${height})`;
   }
 }
 
@@ -181,6 +215,9 @@ class Color {
     return new this(f(r, "r"), f(g, "g"), f(b, "b"), f(s, "s"), f(a, "a"));
   }
 }
+
+globalThis.P = P;
+globalThis.R = R;
 
 /***__HIDDEN-BEGIN__***/
 export { P, R, Color };

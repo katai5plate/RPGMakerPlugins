@@ -22,15 +22,23 @@ class CanvasSprite extends PIXI.Sprite {
     this.texture = new PIXI.Texture(PIXI.BaseTexture.from(canvas));
     this.#context = canvas.getContext("2d");
   }
+  /** @type {CanvasRenderingContext2D} */
   get ctx() {
     return this.#context;
   }
   flip() {
     this.texture.update();
   }
+  /** @param {(ctx:CanvasRenderingContext2D)=>void} fn */
+  draw(fn, refresh = false) {
+    refresh && this.ctx.clearRect(0, 0, this.width, this.height);
+    fn(this.ctx);
+    this.flip();
+  }
   update() {
     //
   }
 }
+globalThis.CanvasSprite = CanvasSprite;
 
 export default CanvasSprite; /***__HIDDEN__***/
