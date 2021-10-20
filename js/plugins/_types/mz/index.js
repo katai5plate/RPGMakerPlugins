@@ -13,6 +13,7 @@ const { Sprite } = require("./core/Sprite");
 const { Stage } = require("./core/Stage");
 const { Tilemap } = require("./core/Tilemap");
 const { TouchInput } = require("./core/TouchInput");
+const { Utils } = require("./core/Utils");
 const { Window } = require("./core/Window");
 const { WindowLayer } = require("./core/WindowLayer");
 globalThis.Bitmap = Bitmap;
@@ -23,6 +24,7 @@ globalThis.Sprite = Sprite;
 globalThis.Stage = Stage;
 globalThis.Tilemap = Tilemap;
 globalThis.TouchInput = TouchInput;
+globalThis.Utils = Utils;
 globalThis.Window = Window;
 globalThis.WindowLayer = WindowLayer;
 export {
@@ -34,6 +36,7 @@ export {
   Stage,
   Tilemap,
   TouchInput,
+  Utils,
   Window,
   WindowLayer,
 };
@@ -109,15 +112,18 @@ globalThis.$gameVariables = new Game_Variables();
 // scenes
 const { Scene_Base } = require("./scenes/Scene_Base");
 const { Scene_Battle } = require("./scenes/Scene_Battle");
+const { Scene_Boot } = require("./scenes/Scene_Boot");
 const { Scene_Map } = require("./scenes/Scene_Map");
 const { Scene_Message } = require("./scenes/Scene_Message");
 globalThis.Scene_Base = Scene_Base;
 globalThis.Scene_Battle = Scene_Battle;
+globalThis.Scene_Boot = Scene_Boot;
 globalThis.Scene_Map = Scene_Map;
 globalThis.Scene_Message = Scene_Base;
 export {
   Scene_Base,
   Scene_Battle,
+  Scene_Boot,
   Scene_Map,
   Scene_Message,
   //
