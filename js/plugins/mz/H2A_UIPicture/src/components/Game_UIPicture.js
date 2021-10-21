@@ -79,6 +79,8 @@ class Game_UIPicture extends Game_Picture {
   _callbackCommonEventLabelOnPress = "";
   /** @type {string} */
   _callbackCommonEventLabelOnRelease = "";
+  /** @type {string} */
+  _callbackCommonEventLabelOnDragEnd = "";
 
   /** @param {number} pictureId */
   constructor(pictureId) {
@@ -121,7 +123,7 @@ class Game_UIPicture extends Game_Picture {
   get enableDrag() {
     return this._dragRange.isSafe;
   }
-  /** @param {"over"|"out"|"press"|"release"} on */
+  /** @param {"over"|"out"|"press"|"release"|"drag-end"} on */
   callback(on) {
     const i = this._callbackInterpreter;
     if (!(i instanceof Game_Interpreter)) return;
@@ -132,6 +134,7 @@ class Game_UIPicture extends Game_Picture {
     on === "out" && (label = this._callbackCommonEventLabelOnOut);
     on === "press" && (label = this._callbackCommonEventLabelOnPress);
     on === "release" && (label = this._callbackCommonEventLabelOnRelease);
+    on === "drag-end" && (label = this._callbackCommonEventLabelOnDragEnd);
     if (label !== "") {
       i.setup(
         ce.list.slice(
@@ -166,7 +169,7 @@ class Game_UIPicture extends Game_Picture {
     ).hit(new P(TouchInput.x, TouchInput.y));
   }
   onDragEnd() {
-    //
+    this.callback("drag-end");
   }
   triggerColor() {
     const { _colorDuration, _colorNormal, _colorOnOver, _colorOnPress } = this;

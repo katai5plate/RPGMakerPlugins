@@ -317,6 +317,12 @@
         "type": "string",
         "text": "タップ終了時",
         "desc": "ラベル名。省略・不備の場合は機能しません"
+      },
+      {
+        "param": "onDragEnd",
+        "type": "string",
+        "text": "ドラッグ終了時",
+        "desc": "ラベル名。省略・不備の場合は機能しません"
       }
     ],
     "debugConfig": [

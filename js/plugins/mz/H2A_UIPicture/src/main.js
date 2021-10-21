@@ -69,6 +69,8 @@ PluginManager.registerCommand(pluginName, "setupPictures", function (params) {
       picture._callbackCommonEventLabelOnPress = $.callbackConfig.onPress || "";
       picture._callbackCommonEventLabelOnRelease =
         $.callbackConfig.onRelease || "";
+      picture._callbackCommonEventLabelOnDragEnd =
+        $.callbackConfig.onDragEnd || "";
     }
     if ($?.position) {
       picture._x = $.position.x;

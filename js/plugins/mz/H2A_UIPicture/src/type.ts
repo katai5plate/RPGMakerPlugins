@@ -40,6 +40,7 @@ interface CallbackConfig {
   onOut?: string;
   onPress?: string;
   onRelease?: string;
+  onDragEnd?: string;
 }
 
 interface DebugConfig {

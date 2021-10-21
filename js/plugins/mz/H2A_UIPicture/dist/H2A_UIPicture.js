@@ -326,6 +326,11 @@
  * @text タップ終了時
  * @desc ラベル名。省略・不備の場合は機能しません
  *
+ * @param onDragEnd
+ * @type string
+ * @text ドラッグ終了時
+ * @desc ラベル名。省略・不備の場合は機能しません
+ *
  */
 /*~struct~debugConfig:ja
  * @param forceTransform
@@ -1009,6 +1014,8 @@
     _callbackCommonEventLabelOnPress = "";
     /** @type {string} */
     _callbackCommonEventLabelOnRelease = "";
+    /** @type {string} */
+    _callbackCommonEventLabelOnDragEnd = "";
 
     /** @param {number} pictureId */
     constructor(pictureId) {
@@ -1051,7 +1058,7 @@
     get enableDrag() {
       return this._dragRange.isSafe;
     }
-    /** @param {"over"|"out"|"press"|"release"} on */
+    /** @param {"over"|"out"|"press"|"release"|"drag-end"} on */
     callback(on) {
       const i = this._callbackInterpreter;
       if (!(i instanceof Game_Interpreter)) return;
@@ -1062,6 +1069,7 @@
       on === "out" && (label = this._callbackCommonEventLabelOnOut);
       on === "press" && (label = this._callbackCommonEventLabelOnPress);
       on === "release" && (label = this._callbackCommonEventLabelOnRelease);
+      on === "drag-end" && (label = this._callbackCommonEventLabelOnDragEnd);
       if (label !== "") {
         i.setup(
           ce.list.slice(
@@ -1096,7 +1104,7 @@
       ).hit(new P(TouchInput.x, TouchInput.y));
     }
     onDragEnd() {
-      //
+      this.callback("drag-end");
     }
     triggerColor() {
       const { _colorDuration, _colorNormal, _colorOnOver, _colorOnPress } =
@@ -1361,6 +1369,8 @@
           $.callbackConfig.onPress || "";
         picture._callbackCommonEventLabelOnRelease =
           $.callbackConfig.onRelease || "";
+        picture._callbackCommonEventLabelOnDragEnd =
+          $.callbackConfig.onDragEnd || "";
       }
       if ($?.position) {
         picture._x = $.position.x;
