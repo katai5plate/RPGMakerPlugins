@@ -3,10 +3,12 @@
     "target": "ES6",
     "moduleResolution": "Node",
     "baseUrl": ".",
+    "outDir": "",
     "paths": {
       "~types/*": ["js/plugins/_types/*"],
       "~templates/*": ["js/plugins/_templates/*"]
-    }
+    },
+    "allowJs": true
   },
-  "include": ["js/plugins"]
+  "include": ["js/plugins/**/*"]
 }
