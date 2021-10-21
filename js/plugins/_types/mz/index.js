@@ -42,11 +42,14 @@ export {
 };
 
 // managers
+const { ImageManager } = require("./managers/ImageManager");
 const { SceneManager } = require("./managers/SceneManager");
 const { PluginManager } = require("./managers/PluginManager");
+globalThis.ImageManager = ImageManager;
 globalThis.SceneManager = SceneManager;
 globalThis.PluginManager = PluginManager;
 export {
+  ImageManager,
   SceneManager,
   PluginManager,
   //

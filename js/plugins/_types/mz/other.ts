@@ -40,6 +40,7 @@ export type MotionType =
   | "escape";
 // export type DataClass = "armor" | "item" | "skill" | "weapon";
 export type StatusType = "time" | "tp" | string;
+export type ImageCache = { [path: string]: Bitmap };
 
 // // 型がよくわからないもの
 export type BasicScenes = Scene_Map; //Scene_Gameover | Scene_Title | Scene_Battle
