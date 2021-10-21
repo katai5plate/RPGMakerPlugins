@@ -2,7 +2,6 @@
   /***__INCLUDE="../../../_templates/pluginName.js"__***/
   /***__INCLUDE="../../../_templates/parsePluginParams.js"__***/
   /***__INCLUDE="../../../_templates/resolveTypeAs.js"__***/
-  /***__INCLUDE="../../../_templates/waitUntil.js"__***/
   /***__INCLUDE="./calc.js"__***/
   /***__INCLUDE="./components/UIPicture.js"__***/
   /***__INCLUDE="./components/CanvasSprite.js"__***/

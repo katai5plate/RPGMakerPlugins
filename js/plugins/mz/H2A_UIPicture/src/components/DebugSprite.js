@@ -2,6 +2,7 @@
 /***__HIDDEN-BEGIN__***/
 import { Graphics } from "~types/mz";
 import CanvasSprite from "./CanvasSprite";
+import Game_UIPicture from "./Game_UIPicture";
 import UIPicture from "./UIPicture";
 /***__HIDDEN-END__***/
 
@@ -12,6 +13,7 @@ class DebugSprite extends CanvasSprite {
   update() {
     this.draw((ctx) => {
       for (let picture of UIPicture.pictures()) {
+        if (!(picture instanceof Game_UIPicture)) return;
         const sprite = UIPicture.sprite(picture._pictureId);
         ctx.strokeStyle = ctx.fillStyle = "#ff0000aa";
         const icol = new R(
@@ -52,5 +54,7 @@ class DebugSprite extends CanvasSprite {
     }, true);
   }
 }
+
+globalThis.DebugSprite = DebugSprite;
 
 export default DebugSprite; /***__HIDDEN__***/

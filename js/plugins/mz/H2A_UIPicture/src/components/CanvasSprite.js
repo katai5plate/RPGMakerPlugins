@@ -5,6 +5,7 @@ import * as PIXI from "pixi.js";
 
 class CanvasSprite extends PIXI.Sprite {
   #context;
+  #backupTransform;
   /**
    * @param {number} width
    * @param {number} height

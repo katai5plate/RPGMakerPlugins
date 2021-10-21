@@ -361,23 +361,6 @@
    */
   const resolveTypeAs = (def, from) => from;
 
-  /*========== ../../../_templates/waitUntil.js ==========*/
-  /**
-   * @param {() => boolean} cond
-   * @param {() => void} then
-   * @param {{ms?:number, delay?:number}} [config]
-   */
-  const waitUntil = (cond, then, config = {}) => {
-    let i = setInterval(() => {
-      if (cond()) {
-        config.delay && !Number.isNaN(config.delay)
-          ? setTimeout(then, config.delay)
-          : then();
-        clearInterval(i);
-      }
-    }, config.ms || 100);
-  };
-
   /*========== ./calc.js ==========*/
 
   class P extends PIXI.Point {
@@ -609,18 +592,8 @@
         parsePluginParams(PluginManager.parameters(pluginName)).debugMode &&
         Utils.isOptionValid("test");
       if (isDebugMode) {
-        waitUntil(
-          () => !!(Graphics?.boxWidth && Graphics?.boxHeight),
-          () => {
-            this._debugSprite = new DebugSprite();
-          }
-        );
-        waitUntil(
-          () => !!SceneManager?._scene?._spriteset,
-          () => {
-            SceneManager._scene._spriteset.addChild(UIPicture._debugSprite);
-          }
-        );
+        UIPicture._debugSprite = new DebugSprite();
+        SceneManager._scene._spriteset.addChild(UIPicture._debugSprite);
       }
     }
     /** convertEscapeCharacters 呼び出し用
@@ -645,6 +618,10 @@
         SceneManager._scene?._spriteset?._pictureContainer?.children || []
       );
     }
+    /** @returns {Sprite | null} */
+    static spriteParent() {
+      return SceneManager._scene?._spriteset?._pictureContainer || null;
+    }
     static picture(pictureId) {
       return resolveTypeAs(
         /** @param {Game_UIPicture | null} _ */ (_) => _,
@@ -659,28 +636,64 @@
         ]
       );
     }
+    static spriteIsUI(sprite) {
+      return (
+        sprite instanceof Sprite_UIPicture ||
+        sprite instanceof Sprite_UIPictureLabel
+      );
+    }
+    static spriteIsUIById(pictureId) {
+      /** @type {*} */
+      const sprite = this.sprite(pictureId);
+      return this.spriteIsUI(sprite);
+    }
+    static replaceSprite(pictureId, sprite) {
+      const parent = this.spriteParent();
+      if (!parent) return;
+      const before = parent.children[pictureId - 1];
+      const beforeIndex = parent.getChildIndex(before);
+      parent.removeChild(before);
+      parent.addChild(sprite);
+      parent.setChildIndex(sprite, beforeIndex);
+    }
     static isPressed(pictureId) {
       const picture = this.picture(pictureId);
-      const sprite = this.sprite(pictureId);
       return (
         picture._isUI &&
-        sprite._isPressed &&
-        !sprite.isAutoMoving &&
+        picture._isPressed &&
+        !picture.isAutoMoving &&
         !picture._isDisabled
       );
     }
     static isTriggered(pictureId) {
       const picture = this.picture(pictureId);
-      const sprite = this.sprite(pictureId);
       return (
         picture._isUI &&
-        sprite._pressCount === 0 &&
-        !sprite.isAutoMoving &&
+        picture._pressCount === 0 &&
+        !picture.isAutoMoving &&
         !picture._isDisabled
       );
     }
     static isDisabled(pictureId) {
       return this.picture(pictureId)._isDisabled;
+    }
+    static showPicture(
+      pictureId,
+      name,
+      origin,
+      x,
+      y,
+      scaleX,
+      scaleY,
+      opacity,
+      blendMode
+    ) {
+      this.replaceSprite(pictureId, new Sprite_UIPicture(pictureId));
+      const realPictureId = $gameScreen.realPictureId(pictureId);
+      const picture = new Game_UIPicture(pictureId);
+      picture.show(name, origin, x, y, scaleX, scaleY, opacity, blendMode);
+      $gameScreen._pictures[realPictureId] = picture;
+      console.log("done", picture);
     }
     static _updateWait() {
       const pictures = resolveTypeAs(
@@ -689,7 +702,9 @@
       );
       let waiting = false;
       for (let pic of pictures.slice(1)) {
-        if (pic._enableLoadingWait && !pic._loaded) {
+        if (!this.spriteIsUIById(pic._pictureId)) {
+          waiting = false;
+        } else if (pic._enableLoadingWait && !pic._loaded) {
           waiting = true;
         }
       }
@@ -698,10 +713,34 @@
   }
   globalThis.UIPicture = UIPicture;
 
+  const start = Scene_Map.prototype.start;
+  Scene_Map.prototype.start = function () {
+    start.apply(this, arguments);
+    UIPicture.initialize();
+  };
+
+  const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
+  Scene_Map.prototype.isMapTouchOk = function () {
+    return (
+      isMapTouchOk.apply(this, arguments) &&
+      !UIPicture.pictures().find((b) => {
+        if (UIPicture.spriteIsUI(b)) {
+          return b.isBeingTouched;
+        }
+      })
+    );
+  };
+
+  const updateWait = Game_Interpreter.prototype.updateWait;
+  Game_Interpreter.prototype.updateWait = function () {
+    return UIPicture._updateWait() || updateWait.apply(this, arguments);
+  };
+
   /*========== ./components/CanvasSprite.js ==========*/
 
   class CanvasSprite extends PIXI.Sprite {
     #context;
+    #backupTransform;
     /**
      * @param {number} width
      * @param {number} height
@@ -747,6 +786,7 @@
     update() {
       this.draw((ctx) => {
         for (let picture of UIPicture.pictures()) {
+          if (!(picture instanceof Game_UIPicture)) return;
           const sprite = UIPicture.sprite(picture._pictureId);
           ctx.strokeStyle = ctx.fillStyle = "#ff0000aa";
           const icol = new R(
@@ -787,6 +827,8 @@
       }, true);
     }
   }
+
+  globalThis.DebugSprite = DebugSprite;
 
   /*========== ./components/Sprite_UIPictureLabel.js ==========*/
 
@@ -864,44 +906,15 @@
   /*========== ./components/Sprite_UIPicture.js ==========*/
 
   class Sprite_UIPicture extends Sprite_Picture {
-    /** @type {boolean} */
-    _isDragging = false;
-    /** @type {P} */
-    _dragPosition = new P();
-    /** @type {boolean} */
-    _isDraggable = true;
-    /** @type {Sprite_UIPictureLabel} */
-    _labelSprite;
-    /** @type {number} */
-    _pressCount = 0;
     constructor(pictureId) {
       super(pictureId);
     }
-    /** @override @returns {Game_UIPicture} */
-    picture() {
-      return resolveTypeAs(
-        /** @param {Game_UIPicture} _ */ (_) => _,
-        super.picture()
-      );
-    }
-    get isForeground() {
-      return (
-        Math.max(
-          ...resolveTypeAs(
-            /** @param {Sprite_UIPicture[]} _ */ (_) => _,
-            SceneManager._scene?._spriteset?._pictureContainer?.children || []
-          )
-            ?.filter((x) => x.isBeingTouched())
-            .map((x) => x._pictureId)
-        ) === this._pictureId
-      );
-    }
-    get isAutoMoving() {
-      return this.picture()._duration > 0;
-    }
     /** @param {Bitmap} bitmapLoaded */
     _onBitmapLoad(bitmapLoaded) {
-      const picture = this.picture();
+      const picture = resolveTypeAs(
+        /** @param {Game_UIPicture} _ */ (_) => _,
+        this.picture()
+      );
       picture._width = bitmapLoaded.width;
       picture._height = bitmapLoaded.height;
       picture._loaded = true;
@@ -915,219 +928,8 @@
       );
       return super._onBitmapLoad(bitmapLoaded);
     }
-    isBeingTouched() {
-      const picture = this.picture();
-      if (!picture) return super.isBeingTouched();
-      return new R(
-        this.x + picture.collision.x,
-        this.y + picture.collision.y,
-        picture.collision.width,
-        picture.collision.height
-      ).hit(new P(TouchInput.x, TouchInput.y));
-    }
-    updateTouch() {
-      if (this.worldVisible) {
-        // 画面上
-        if (this.isBeingTouched() && this.isForeground) {
-          // 判定内
-          if (!this._isHovered && TouchInput.isHovered()) {
-            this._isHovered = true;
-            this.onMouseOver();
-          }
-          if (TouchInput.isTriggered()) {
-            this._isPressed = true;
-            this.onMousePress();
-          }
-        } else {
-          // 判定外
-          if (this._isHovered) this.onMouseOut();
-          (this._isPressed = false), (this._isHovered = false);
-        }
-        if (this._isPressed && TouchInput.isReleased()) {
-          this._isPressed = false;
-          this.onMouseRelease();
-        }
-      } else {
-        // 画面外
-        (this._isPressed = false), (this._isHovered = false);
-      }
-      if (this._isPressed) {
-        this._pressCount++;
-      } else {
-        this._pressCount = -1;
-      }
-    }
-    onDragEnd() {
-      //
-    }
-    updateDrag() {
-      const picture = this.picture();
-      if (!picture) return;
-      if (!this._isDraggable || !this._isDragging) return;
-      if (
-        !TouchInput.isPressed() ||
-        (this._isHovered && !this._isPressed) ||
-        this.isAutoMoving ||
-        picture._isDisabled
-      ) {
-        this._isDragging = false;
-        this.onDragEnd();
-      }
-      const z = new P(
-        TouchInput.x - this._dragPosition.x,
-        TouchInput.y - this._dragPosition.y
-      );
-      const area = picture._dragRange;
-      /** @type {R} */
-      const col = picture.collision;
-      if (picture.enableDrag) {
-        if (picture._movableDirection.x > 0) {
-          if (z.x + col.left <= area.left) {
-            picture._x = area.left - col.left;
-          } else if (area.right <= z.x + col.right) {
-            picture._x = area.right - col.right;
-          } else {
-            picture._x = z.x;
-          }
-        }
-        if (picture._movableDirection.y > 0) {
-          if (z.y + col.top <= area.top) {
-            picture._y = area.top - col.top;
-          } else if (area.bottom <= z.y + col.bottom) {
-            picture._y = area.bottom - col.bottom;
-          } else {
-            picture._y = z.y;
-          }
-        }
-      }
-    }
-    triggerColor() {
-      const picture = this.picture();
-      if (!picture) return;
-      const { _colorDuration, _colorNormal, _colorOnOver, _colorOnPress } =
-        picture;
-      if (this.isAutoMoving) {
-        picture._targetOpacity = _colorNormal.opacity;
-        picture.tint(_colorNormal.TintColor, _colorDuration);
-      } else if (this._isDragging || this._isPressed) {
-        picture._targetOpacity = _colorOnPress.opacity;
-        picture.tint(_colorOnPress.TintColor, _colorDuration);
-      } else if (this._isHovered) {
-        picture._targetOpacity = _colorOnOver.opacity;
-        picture.tint(_colorOnOver.TintColor, _colorDuration);
-      } else {
-        picture._targetOpacity = _colorNormal.opacity;
-        picture.tint(_colorNormal.TintColor, _colorDuration);
-      }
-      picture._opacityDuration = _colorDuration;
-    }
-    updateColor() {
-      const picture = this.picture();
-      if (!picture) return;
-      const { _colorDuration, _colorNormal, _colorOnDisable } = picture;
-      picture._opacityDuration = _colorDuration;
-      if (picture._isDisabled) {
-        picture._targetOpacity = _colorOnDisable.opacity;
-        picture.tint(_colorOnDisable.TintColor, _colorDuration);
-        return;
-      }
-      if (!this._isDragging && !this._isPressed && !this._isHovered) {
-        picture._targetOpacity = _colorNormal.opacity;
-        picture.tint(_colorNormal.TintColor, _colorDuration);
-      }
-    }
-    updateVariables() {
-      const picture = this.picture();
-      if (!picture || !picture?._variableIds || !picture?._variableType) return;
-      const { x: idx, y: idy } = picture._variableIds;
-      if (picture._variableType) {
-        const pos = new P(
-          picture._x - picture._dragRange.x + picture.collision.x,
-          picture._y - picture._dragRange.y + picture.collision.y
-        );
-        const max = new P(
-          picture._dragRange.right +
-            (picture.collision.x - picture.collision.width) -
-            (picture._dragRange.x + picture.collision.x),
-          picture._dragRange.bottom +
-            (picture.collision.y - picture.collision.height) -
-            (picture._dragRange.y + picture.collision.y)
-        );
-        const per = new P(pos.x / max.x, pos.y / max.y).mapping(0, 1, 0, 1);
-        switch (picture._variableType) {
-          case "perint":
-            per.calc("mul", 100);
-            idx > 0 && $gameVariables.setValue(idx, per.x);
-            idy > 0 && $gameVariables.setValue(idy, per.y);
-            break;
-          case "perflo":
-            idx > 0 && ($gameVariables._data[idx] = per.x);
-            idy > 0 && ($gameVariables._data[idy] = per.y);
-            break;
-          case "local":
-            idx > 0 && $gameVariables.setValue(idx, pos.x);
-            idy > 0 && $gameVariables.setValue(idy, pos.y);
-            break;
-          case "global":
-            idx > 0 && $gameVariables.setValue(idx, picture._x);
-            idy > 0 && $gameVariables.setValue(idy, picture._y);
-            break;
-        }
-      }
-    }
     update() {
       super.update();
-      if (this.picture()?._isUI) {
-        this.updateTouch();
-        this.updateDrag();
-        this.updateColor();
-        this.updateVariables();
-      }
-    }
-    onMouseOver() {
-      console.log("onMouseOver");
-      const picture = this.picture();
-      if (!this.isAutoMoving) {
-        picture.callback("over");
-      }
-      this.triggerColor();
-    }
-    onMouseOut() {
-      console.log("onMouseOut");
-      const picture = this.picture();
-      if (!this.isAutoMoving) {
-        picture.callback("out");
-      }
-      this.triggerColor();
-    }
-    onMousePress() {
-      console.log("onMousePress");
-      const picture = this.picture();
-      if (!this.isAutoMoving) {
-        picture.callback("press");
-        if (this._isDraggable) {
-          if (!(picture._isDisabled && picture._disDraggableWhenDisabled)) {
-            this._isDragging = true;
-            this._dragPosition = new P(
-              TouchInput.x - this.x,
-              TouchInput.y - this.y
-            );
-          }
-        }
-      }
-      this.triggerColor();
-    }
-    onMouseRelease() {
-      console.log("onMouseRelease");
-      const picture = this.picture();
-      if (!this.isAutoMoving) {
-        picture.callback("release");
-        if (this._isDraggable) {
-          this._isDragging = false;
-          this.onDragEnd();
-        }
-      }
-      this.triggerColor();
     }
   }
 
@@ -1140,6 +942,16 @@
     _height;
     /** @type {boolean} */
     _loaded = false;
+    /** @type {boolean} */
+    _isDragging = false;
+    /** @type {P} */
+    _dragPosition = new P();
+    /** @type {boolean} */
+    _isDraggable = true;
+    /** @type {Sprite_UIPictureLabel} */
+    _labelSprite;
+    /** @type {number} */
+    _pressCount = 0;
 
     /** @type {boolean} */
     _isUI = false;
@@ -1202,7 +1014,7 @@
     constructor(pictureId) {
       super();
       this._pictureId = pictureId;
-      console.log(this);
+      console.log(456, this);
     }
     get scale() {
       return new P(this._scaleX, this._scaleY);
@@ -1260,6 +1072,121 @@
         );
       }
     }
+    get isForeground() {
+      return (
+        Math.max(
+          ...UIPicture.pictures()
+            ?.filter((x) => x.isBeingTouched())
+            .map((x) => x._pictureId)
+        ) === this._pictureId
+      );
+    }
+    get isAutoMoving() {
+      return this._duration > 0;
+    }
+    get sprite() {
+      return UIPicture.sprite(this._pictureId);
+    }
+    isBeingTouched() {
+      return new R(
+        this.sprite.x + this.collision.x,
+        this.sprite.y + this.collision.y,
+        this.collision.width,
+        this.collision.height
+      ).hit(new P(TouchInput.x, TouchInput.y));
+    }
+    onDragEnd() {
+      //
+    }
+    triggerColor() {
+      const { _colorDuration, _colorNormal, _colorOnOver, _colorOnPress } =
+        this;
+      if (this.isAutoMoving) {
+        this._targetOpacity = _colorNormal.opacity;
+        this.tint(_colorNormal.TintColor, _colorDuration);
+      } else if (this._isDragging || this._isPressed) {
+        this._targetOpacity = _colorOnPress.opacity;
+        this.tint(_colorOnPress.TintColor, _colorDuration);
+      } else if (this._isHovered) {
+        this._targetOpacity = _colorOnOver.opacity;
+        this.tint(_colorOnOver.TintColor, _colorDuration);
+      } else {
+        this._targetOpacity = _colorNormal.opacity;
+        this.tint(_colorNormal.TintColor, _colorDuration);
+      }
+      this._opacityDuration = _colorDuration;
+    }
+    updateTouch() {
+      if (this.sprite.worldVisible) {
+        // 画面上
+        if (this.isBeingTouched() && this.isForeground) {
+          // 判定内
+          if (!this._isHovered && TouchInput.isHovered()) {
+            this._isHovered = true;
+            this.onMouseOver();
+          }
+          if (TouchInput.isTriggered()) {
+            this._isPressed = true;
+            this.onMousePress();
+          }
+        } else {
+          // 判定外
+          if (this._isHovered) this.onMouseOut();
+          (this._isPressed = false), (this._isHovered = false);
+        }
+        if (this._isPressed && TouchInput.isReleased()) {
+          this._isPressed = false;
+          this.onMouseRelease();
+        }
+      } else {
+        // 画面外
+        (this._isPressed = false), (this._isHovered = false);
+      }
+      if (this._isPressed) {
+        this._pressCount++;
+      } else {
+        this._pressCount = -1;
+      }
+    }
+    updateDrag() {
+      if (!this._isDraggable || !this._isDragging) return;
+      if (
+        !TouchInput.isPressed() ||
+        (this._isHovered && !this._isPressed) ||
+        this.isAutoMoving ||
+        this._isDisabled
+      ) {
+        this._isDragging = false;
+        this.onDragEnd();
+      }
+      const z = new P(
+        TouchInput.x - this._dragPosition.x,
+        TouchInput.y - this._dragPosition.y
+      );
+      const area = this._dragRange;
+      /** @type {R} */
+      const col = this.collision;
+      if (this.enableDrag) {
+        if (this._movableDirection.x > 0) {
+          if (z.x + col.left <= area.left) {
+            this._x = area.left - col.left;
+          } else if (area.right <= z.x + col.right) {
+            this._x = area.right - col.right;
+          } else {
+            this._x = z.x;
+          }
+        }
+        if (this._movableDirection.y > 0) {
+          if (z.y + col.top <= area.top) {
+            this._y = area.top - col.top;
+          } else if (area.bottom <= z.y + col.bottom) {
+            this._y = area.bottom - col.bottom;
+          } else {
+            this._y = z.y;
+          }
+        }
+      }
+    }
     updateOpacity() {
       if (this._opacityDuration > 0) {
         const d = this._opacityDuration;
@@ -1268,11 +1195,107 @@
         this._opacityDuration--;
       }
     }
+    updateColor() {
+      const { _colorDuration, _colorNormal, _colorOnDisable } = this;
+      this._opacityDuration = _colorDuration;
+      if (this._isDisabled) {
+        this._targetOpacity = _colorOnDisable.opacity;
+        this.tint(_colorOnDisable.TintColor, _colorDuration);
+        return;
+      }
+      if (!this._isDragging && !this._isPressed && !this._isHovered) {
+        this._targetOpacity = _colorNormal.opacity;
+        this.tint(_colorNormal.TintColor, _colorDuration);
+      }
+    }
+    updateVariables() {
+      if (!this?._variableIds || !this?._variableType) return;
+      const { x: idx, y: idy } = this._variableIds;
+      if (this._variableType) {
+        const pos = new P(
+          this._x - this._dragRange.x + this.collision.x,
+          this._y - this._dragRange.y + this.collision.y
+        );
+        const max = new P(
+          this._dragRange.right +
+            (this.collision.x - this.collision.width) -
+            (this._dragRange.x + this.collision.x),
+          this._dragRange.bottom +
+            (this.collision.y - this.collision.height) -
+            (this._dragRange.y + this.collision.y)
+        );
+        const per = new P(pos.x / max.x, pos.y / max.y).mapping(0, 1, 0, 1);
+        switch (this._variableType) {
+          case "perint":
+            per.calc("mul", 100);
+            idx > 0 && $gameVariables.setValue(idx, per.x);
+            idy > 0 && $gameVariables.setValue(idy, per.y);
+            break;
+          case "perflo":
+            idx > 0 && ($gameVariables._data[idx] = per.x);
+            idy > 0 && ($gameVariables._data[idy] = per.y);
+            break;
+          case "local":
+            idx > 0 && $gameVariables.setValue(idx, pos.x);
+            idy > 0 && $gameVariables.setValue(idy, pos.y);
+            break;
+          case "global":
+            idx > 0 && $gameVariables.setValue(idx, this._x);
+            idy > 0 && $gameVariables.setValue(idy, this._y);
+            break;
+        }
+      }
+    }
     update() {
       super.update();
       if (this._isUI) {
+        this.updateTouch();
+        this.updateDrag();
         this.updateOpacity();
+        this.updateColor();
+        this.updateVariables();
       }
+    }
+    onMouseOver() {
+      console.log("onMouseOver");
+      if (!this.isAutoMoving) {
+        this.callback("over");
+      }
+      this.triggerColor();
+    }
+    onMouseOut() {
+      console.log("onMouseOut");
+      if (!this.isAutoMoving) {
+        this.callback("out");
+      }
+      this.triggerColor();
+    }
+    onMousePress() {
+      console.log("onMousePress");
+      if (!this.isAutoMoving) {
+        this.callback("press");
+        if (this._isDraggable) {
+          if (!(this._isDisabled && this._disDraggableWhenDisabled)) {
+            this._isDragging = true;
+            this._dragPosition = new P(
+              TouchInput.x - this.sprite.x,
+              TouchInput.y - this.sprite.y
+            );
+          }
+        }
+      }
+      this.triggerColor();
+    }
+    onMouseRelease() {
+      console.log("onMouseRelease");
+      if (!this.isAutoMoving) {
+        this.callback("release");
+        if (this._isDraggable) {
+          this._isDragging = false;
+          this.onDragEnd();
+        }
+      }
+      this.triggerColor();
     }
   }
 
@@ -1374,50 +1397,4 @@
       picture._isDisabled = false;
     });
   });
-
-  const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
-  Scene_Map.prototype.isMapTouchOk = function () {
-    const children = resolveTypeAs(
-      /** @param {Sprite_UIPicture[] | null} _ */ (_) => _,
-      SceneManager._scene?._spriteset?._pictureContainer?.children
-    );
-    return (
-      isMapTouchOk.apply(this, arguments) &&
-      !children.find((b) => b.isBeingTouched())
-    );
-  };
-
-  Spriteset_Base.prototype.createPictures = function () {
-    const rect = this.pictureContainerRect();
-    this._pictureContainer = new Sprite();
-    this._pictureContainer.setFrame(rect.x, rect.y, rect.width, rect.height);
-    for (let i = 1; i <= $gameScreen.maxPictures(); i++) {
-      this._pictureContainer.addChild(new Sprite_UIPicture(i));
-    }
-    this.addChild(this._pictureContainer);
-  };
-
-  Game_Screen.prototype.showPicture = function (
-    pictureId,
-    name,
-    origin,
-    x,
-    y,
-    scaleX,
-    scaleY,
-    opacity,
-    blendMode
-  ) {
-    const realPictureId = this.realPictureId(pictureId);
-    const picture = new Game_UIPicture(pictureId);
-    picture.show(name, origin, x, y, scaleX, scaleY, opacity, blendMode);
-    this._pictures[realPictureId] = picture;
-  };
-
-  const updateWait = Game_Interpreter.prototype.updateWait;
-  Game_Interpreter.prototype.updateWait = function () {
-    return UIPicture._updateWait() || updateWait.apply(this, arguments);
-  };
-
-  UIPicture.initialize();
 })();

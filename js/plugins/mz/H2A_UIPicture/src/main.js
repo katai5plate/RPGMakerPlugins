@@ -3,13 +3,10 @@
 import { Bitmap, Game_Interpreter } from "~types/mz";
 import pluginName from "~templates/pluginName";
 import parsePluginParams from "~templates/parsePluginParams";
-import resolveTypeAs from "~templates/resolveTypeAs";
 
 import { P, R, Color } from "./calc";
 
 import UIPicture from "./components/UIPicture";
-import Sprite_UIPicture from "./components/Sprite_UIPicture";
-import Game_UIPicture from "./components/Game_UIPicture";
 import { Command_SetupPictures, Command_ToggleDisable } from "./type";
 /***__HIDDEN-END__***/
 
@@ -108,49 +105,3 @@ PluginManager.registerCommand(pluginName, "enable", (params) => {
     picture._isDisabled = false;
   });
 });
-
-const isMapTouchOk = Scene_Map.prototype.isMapTouchOk;
-Scene_Map.prototype.isMapTouchOk = function () {
-  const children = resolveTypeAs(
-    /** @param {Sprite_UIPicture[] | null} _ */ (_) => _,
-    SceneManager._scene?._spriteset?._pictureContainer?.children
-  );
-  return (
-    isMapTouchOk.apply(this, arguments) &&
-    !children.find((b) => b.isBeingTouched())
-  );
-};
-
-Spriteset_Base.prototype.createPictures = function () {
-  const rect = this.pictureContainerRect();
-  this._pictureContainer = new Sprite();
-  this._pictureContainer.setFrame(rect.x, rect.y, rect.width, rect.height);
-  for (let i = 1; i <= $gameScreen.maxPictures(); i++) {
-    this._pictureContainer.addChild(new Sprite_UIPicture(i));
-  }
-  this.addChild(this._pictureContainer);
-};
-
-Game_Screen.prototype.showPicture = function (
-  pictureId,
-  name,
-  origin,
-  x,
-  y,
-  scaleX,
-  scaleY,
-  opacity,
-  blendMode
-) {
-  const realPictureId = this.realPictureId(pictureId);
-  const picture = new Game_UIPicture(pictureId);
-  picture.show(name, origin, x, y, scaleX, scaleY, opacity, blendMode);
-  this._pictures[realPictureId] = picture;
-};
-
-const updateWait = Game_Interpreter.prototype.updateWait;
-Game_Interpreter.prototype.updateWait = function () {
-  return UIPicture._updateWait() || updateWait.apply(this, arguments);
-};
-
-UIPicture.initialize();
