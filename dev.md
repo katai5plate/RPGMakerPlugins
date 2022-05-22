@@ -4,6 +4,14 @@
 
 ### コマンド
 
+#### 久々に着手するときにとりあえず使っとけばいいもの
+
+1. `npm run dev-init`
+2. `npm run create mz H2A_Hoge`
+3. `npm run dev-mz H2A_Hoge`
+
+### 一覧
+
 - `npm run create [mv|mz] [pluginName]`: プラグインの新規作成
 - `npm run watch [mv|mz] [pluginName]`: プラグイン開発モード
   - ファイルが保存されると自動でビルドが走る。
@@ -200,4 +208,3 @@ This software is released under the {LICENSE_NAME} License.
 ## 俺用 LINK
 
 - [型コンバーター](https://katai5plate.github.io/RPGMakerPlugins/tools/conv.html)
-

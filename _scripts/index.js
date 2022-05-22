@@ -74,6 +74,7 @@ const protect = () => {
     const path = `./js/plugins/${args[0]}/${args[1]}`;
     fs.copySync("./_empty", resolve(path, "./src"));
     fs.mkdirp(resolve(path, "./dist"));
+    fs.writeFileSync(resolve(path, `./dist/${args[1]}.js`), "// Not yet built");
   }
   if (name === "build") {
     if (!args[0]) {
