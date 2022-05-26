@@ -50,6 +50,8 @@ module.exports = {
             s(y, i + 1);
           }
           r = r[r.length - 1].i === undefined ? r : [...r, {}];
+        } else if (/^\?rem/.test(k)) {
+          r = r; // コメント扱い
         } else {
           r = [...r, { k, v, i }];
         }

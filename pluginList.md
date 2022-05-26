@@ -216,3 +216,11 @@ Error を実行するとスタックトレースの先頭行に
 
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_SkipTitle/dist/H2A_SkipTitle.js)
+
+### H2A_UIPicture
+
+```
+
+
+```
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_UIPicture/dist/H2A_UIPicture.js)

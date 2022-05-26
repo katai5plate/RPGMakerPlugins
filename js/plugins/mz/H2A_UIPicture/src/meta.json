@@ -1,0 +1,337 @@
+{
+  "_license": "MIT",
+  "_version": "0.0.1",
+  "_support": "1.3.3",
+  "plugindesc": "",
+  "params": [
+    {
+      "param": "debugMode",
+      "text": "デバッグモード",
+      "desc": "テストプレイ中はデバッグモードにする",
+      "type": "boolean"
+    }
+  ],
+  "commands": [
+    {
+      "command": "setupPictures",
+      "text": "UIピクチャ設定",
+      "...": [
+        {
+          "arg": "list",
+          "type": "struct<Setup>[]"
+        },
+        {
+          "arg": "enableLoadingWait",
+          "text": "画像をロードするまで待つ",
+          "desc": "省略・不備の場合はOFFになります",
+          "type": "boolean",
+          "default": false
+        }
+      ]
+    },
+    {
+      "command": "disable",
+      "text": "無効化",
+      "...": [
+        {
+          "arg": "pictureIds",
+          "text": "ピクチャID",
+          "type": "number[]",
+          "min": 1,
+          "max": 100
+        }
+      ]
+    },
+    {
+      "command": "enable",
+      "text": "有効化",
+      "...": [
+        {
+          "arg": "pictureIds",
+          "text": "ピクチャID",
+          "type": "number[]",
+          "min": 1,
+          "max": 100
+        }
+      ]
+    }
+  ],
+  "structs": {
+    "P": [
+      {
+        "param": "x",
+        "text": "横軸座標",
+        "type": "number",
+        "max": 9007199254740991,
+        "min": -9007199254740991
+      },
+      {
+        "param": "y",
+        "text": "縦軸座標",
+        "type": "number",
+        "max": 9007199254740991,
+        "min": -9007199254740991
+      }
+    ],
+    "R": [
+      { "param": "x", "text": "左上X", "type": "number", "min": 0 },
+      { "param": "y", "text": "左上Y", "type": "number", "min": 0 },
+      { "param": "width", "text": "幅", "type": "number", "min": 1 },
+      { "param": "height", "text": "高さ", "type": "number", "min": 1 }
+    ],
+    "WH": [
+      { "param": "width", "text": "幅", "type": "number", "min": 1 },
+      { "param": "height", "text": "高さ", "type": "number", "min": 1 }
+    ],
+    "M": [
+      { "param": "left", "text": "左から", "type": "number", "min": 0 },
+      { "param": "right", "text": "右から", "type": "number", "min": 0 },
+      { "param": "top", "text": "上から", "type": "number", "min": 1 },
+      { "param": "bottom", "text": "下から", "type": "number", "min": 1 }
+    ],
+    "C": [
+      {
+        "param": "r",
+        "type": "number",
+        "text": "赤",
+        "min": -255,
+        "max": 255,
+        "default": 0
+      },
+      {
+        "param": "g",
+        "type": "number",
+        "text": "緑",
+        "min": -255,
+        "max": 255,
+        "default": 0
+      },
+      {
+        "param": "b",
+        "type": "number",
+        "text": "青",
+        "min": -255,
+        "max": 255,
+        "default": 0
+      },
+      {
+        "param": "s",
+        "type": "number",
+        "text": "グレー",
+        "min": 0,
+        "max": 255,
+        "default": 0
+      },
+      {
+        "param": "a",
+        "type": "number",
+        "text": "不透明度",
+        "min": 0,
+        "max": 255,
+        "default": 255
+      }
+    ],
+    "Setup": [
+      {
+        "param": "pictureId",
+        "text": "ピクチャID",
+        "type": "number",
+        "min": 1,
+        "max": 100
+      },
+      {
+        "param": "collision",
+        "text": "当たり判定",
+        "desc": "省略・不備の場合は画像サイズがそのまま設定されます",
+        "type": "struct<R>"
+      },
+      {
+        "param": "callbackConfig",
+        "type": "struct<CallbackConfig>",
+        "text": "コールバック設定",
+        "desc": "省略・不備の場合は機能しません"
+      },
+      {
+        "param": "textConfig",
+        "text": "文字列設定",
+        "desc": "省略・不備の場合は文字列は表示されません",
+        "type": "struct<TextConfig>"
+      },
+      {
+        "param": "colorConfig",
+        "text": "色調設定",
+        "desc": "省略・不備の場合は色調は変化しないか、通常時と同じになります",
+        "type": "struct<ColorConfig>"
+      },
+      {
+        "param": "dragConfig",
+        "text": "ドラッグ設定",
+        "desc": "省略・不備の場合はドラッグ無効になります",
+        "type": "struct<DragConfig>"
+      },
+      {
+        "param": "pisition",
+        "text": "座標上書き",
+        "desc": "設定すると表示座標を上書きできます",
+        "type": "struct<P>"
+      },
+      {
+        "param": "advancedConfig",
+        "text": "上級者向け設定",
+        "desc": "取り扱い注意",
+        "type": "struct<AdvancedConfig>"
+      }
+    ],
+    "DragConfig": [
+      {
+        "param": "range",
+        "type": "struct<R>",
+        "text": "ドラッグ範囲",
+        "desc": "ドラッグが可能な範囲。省略・不備の場合はドラッグ無効になります"
+      },
+      {
+        "param": "move",
+        "type": "select",
+        "text": "移動方向",
+        "desc": "移動方向の制限。省略・不備の場合は自由移動になります",
+        "...": [
+          { "option": "横", "value": "horizontal" },
+          { "option": "縦", "value": "vertical" }
+        ]
+      },
+      {
+        "param": "type",
+        "type": "select",
+        "text": "代入設定",
+        "desc": "変数に位置情報を代入するタイプ。省略・不備の場合は代入されません",
+        "...": [
+          { "option": "比率(0 - 100)", "value": "perint" },
+          { "option": "比率(0.0 - 1.0)", "value": "perflo" },
+          { "option": "差分座標", "value": "local" },
+          { "option": "画面座標", "value": "global" }
+        ]
+      },
+      {
+        "param": "variableX",
+        "type": "variable",
+        "text": "X位置代入先",
+        "desc": "横軸の位置情報を代入する変数。省略・不備の場合は代入されません"
+      },
+      {
+        "param": "variableY",
+        "type": "variable",
+        "text": "Y位置代入先",
+        "desc": "縦軸の位置情報を代入する変数。省略・不備の場合は代入されません"
+      },
+      {
+        "param": "disDraggableWhenDisabled",
+        "type": "boolean",
+        "text": "無効中は移動しない",
+        "desc": "省略・不備の場合はOFF扱いです"
+      }
+    ],
+    "TextConfig": [
+      {
+        "param": "text",
+        "type": "multiline_string",
+        "text": "文字列",
+        "desc": "\\v[] などの文字列が使用できます。文字列が長すぎるとはみ出ます"
+      },
+      {
+        "param": "align",
+        "type": "select",
+        "text": "文字揃え",
+        "desc": "省略・不備の場合は中央になります",
+        "...": [
+          { "option": "左揃え", "value": "left" },
+          { "option": "右揃え", "value": "right" }
+        ]
+      },
+      {
+        "param": "offset",
+        "type": "struct<P>",
+        "text": "オフセット",
+        "desc": "省略・不備の場合は(0,0)にします"
+      }
+    ],
+    "ColorConfig": [
+      {
+        "param": "duration",
+        "type": "number",
+        "text": "時間",
+        "desc": "フレーム指定(1/60秒)。省略・不備の場合は一瞬で変化します",
+        "min": 1
+      },
+      {
+        "param": "off",
+        "type": "struct<C>",
+        "text": "通常",
+        "desc": "省略・不備の場合は変化しません"
+      },
+      {
+        "param": "onOver",
+        "type": "struct<C>",
+        "text": "接触開始時",
+        "desc": "省略・不備の場合は通常と同じになります"
+      },
+      {
+        "param": "onPress",
+        "type": "struct<C>",
+        "text": "タップ開始時",
+        "desc": "省略・不備の場合は通常と同じになります"
+      },
+      {
+        "param": "onDisable",
+        "type": "struct<C>",
+        "text": "無効時",
+        "desc": "省略・不備の場合は通常と同じになります"
+      }
+    ],
+    "CallbackConfig": [
+      {
+        "param": "commonEventId",
+        "type": "common_event",
+        "text": "コモンイベントID",
+        "desc": "操作時に呼び出されるコモンイベントID。省略・不備の場合は機能しません"
+      },
+      {
+        "param": "onOver",
+        "type": "string",
+        "text": "接触開始時",
+        "desc": "ラベル名。省略・不備の場合は機能しません"
+      },
+      {
+        "param": "onOut",
+        "type": "string",
+        "text": "接触終了時",
+        "desc": "ラベル名。省略・不備の場合は機能しません"
+      },
+      {
+        "param": "onPress",
+        "type": "string",
+        "text": "タップ開始時",
+        "desc": "ラベル名。省略・不備の場合は機能しません"
+      },
+      {
+        "param": "onRelease",
+        "type": "string",
+        "text": "タップ終了時",
+        "desc": "ラベル名。省略・不備の場合は機能しません"
+      },
+      {
+        "param": "onDragEnd",
+        "type": "string",
+        "text": "ドラッグ終了時",
+        "desc": "ラベル名。省略・不備の場合は機能しません"
+      }
+    ],
+    "debugConfig": [
+      {
+        "param": "forceTransform",
+        "type": "struct<R>",
+        "text": "画像サイズの強制変更",
+        "desc": "WHで画像サイズを別個設定。画像なしで使用する時など向け"
+      }
+    ]
+  }
+}
