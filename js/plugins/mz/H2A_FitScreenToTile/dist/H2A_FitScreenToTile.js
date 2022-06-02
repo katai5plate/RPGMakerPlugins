@@ -11,6 +11,8 @@
  * そのままだと広大なマップにポツンと小さいマップが存在するような見た目になってしまい、
  * なんかコレジャナイ感があります。それを解決するプラグインです。
  *
+ * 現在、17 x 13 のマップのみ対応しています。
+ *
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *

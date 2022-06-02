@@ -113,6 +113,8 @@ v2.0.0 から、VSCode 拡張の Live Server に対応しました。
 そのままだと広大なマップにポツンと小さいマップが存在するような見た目になってしまい、
 なんかコレジャナイ感があります。それを解決するプラグインです。
 
+現在、17 x 13 のマップのみ対応しています。
+
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_FitScreenToTile/dist/H2A_FitScreenToTile.js)
 
