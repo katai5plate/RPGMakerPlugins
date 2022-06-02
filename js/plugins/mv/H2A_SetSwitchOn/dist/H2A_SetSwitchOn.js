@@ -40,7 +40,7 @@
  * トリアコンタン氏の AutoLoad.js を使ったほうがいいかもしれません。
  *
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v2.0.3

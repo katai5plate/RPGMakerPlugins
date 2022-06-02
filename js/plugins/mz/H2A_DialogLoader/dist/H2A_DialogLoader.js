@@ -57,7 +57,7 @@
  * より詳しい使い方とリファレンス:
  * https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_DialogLoader/README.md
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v1.0.2
@@ -133,7 +133,7 @@
  * For more detailed usage and reference:
  * https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_DialogLoader/README.md
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v1.0.2

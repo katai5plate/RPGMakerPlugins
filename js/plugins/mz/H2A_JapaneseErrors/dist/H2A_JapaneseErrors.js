@@ -11,7 +11,7 @@
  * このプラグインが占有するのでご注意ください。
  * また、pixi.js などのコアスクリプト以外のエラーメッセージは翻訳されません。
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v2.0.0

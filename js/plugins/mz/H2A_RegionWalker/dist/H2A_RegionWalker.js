@@ -223,7 +223,7 @@
  * 　経路の途中に通行を妨げるキャライベント等があると、
  * 　そのままゲームが先に進まなくなる可能性があります。
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v1.3.3

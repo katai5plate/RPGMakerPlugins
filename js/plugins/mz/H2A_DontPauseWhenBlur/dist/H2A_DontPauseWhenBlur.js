@@ -20,7 +20,7 @@
  *
  * v2.0.0 から、VSCode 拡張の Live Server に対応しました。
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v2.0.0
