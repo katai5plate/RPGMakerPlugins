@@ -1,5 +1,5 @@
 /*:ja
- * @plugindesc 画面をタイルサイズに合わせて拡大します
+ * @plugindesc [開発中] 画面をタイルサイズに合わせて拡大します
  *
  * @target MZ
  * @author Had2Apps
