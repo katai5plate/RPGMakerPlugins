@@ -25,7 +25,8 @@
     "init:mv-rename": "shx mv ./data ./data_mv && shx mv ./img/system/ButtonSet.png ./img/system/ButtonSet_mv.png && shx mv ./js/main.js ./js/main_mv.js && shx mv ./js/plugins.js ./js/plugins_mv.js && shx mv ./js/libs/pixi.js ./js/libs/pixi_mv.js",
     "init:mz-copy": "cpx \"./_init/mz/{audio,css,data,effects,fonts,icon,img,js,movies}/**/*.*\" ./ && cpx \"./_init/mv/game.rmmzproject\" ./",
     "init:mz-rename": "shx mv ./data ./data_mz && shx mv ./js/plugins.js ./js/plugins_mz.js",
-    "init:run-scripts": "npm run core-split"
+    "init:run-scripts": "npm run core-split",
+    "gen-all": "npm run build-all && npm run gen-list && npm run gen-api"
   },
   "repository": {
     "type": "git",
