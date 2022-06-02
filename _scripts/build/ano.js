@@ -17,7 +17,7 @@ const f = (config) => {
   const defaultAno = {
     author: "Had2Apps",
     url: "https://github.com/katai5plate/RPGMakerPlugins",
-    year: 2021,
+    year: 2022,
   };
   const elementToAno = ({ k, v, i }) =>
     i !== undefined

@@ -55,7 +55,7 @@
  * 禁止スイッチが ON の状態でもコモンイベントからオートセーブが可能で、
  * 禁止スイッチが ON だとオートセーブ設定が all でもセーブされません。
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v3.0.0

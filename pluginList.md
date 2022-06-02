@@ -105,6 +105,17 @@ v2.0.0 から、VSCode 拡張の Live Server に対応しました。
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_ErrorWhenSlowNet/dist/H2A_ErrorWhenSlowNet.js)
 
+### H2A_FitScreenToTile
+
+```
+1.5.0 から、タイルサイズを変更できるようになりましたが、
+画面のズーム率までは変わらないため、
+そのままだと広大なマップにポツンと小さいマップが存在するような見た目になってしまい、
+なんかコレジャナイ感があります。それを解決するプラグインです。
+
+```
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_FitScreenToTile/dist/H2A_FitScreenToTile.js)
+
 ### H2A_ImageToPicture
 
 ```

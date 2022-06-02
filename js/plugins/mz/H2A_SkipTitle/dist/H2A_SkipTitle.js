@@ -75,7 +75,7 @@
  * オートセーブされたデータがあればそれがロードされます。
  * 存在しない場合、エラーになります。
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v2.0.0

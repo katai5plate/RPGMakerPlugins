@@ -43,7 +43,7 @@
  * 特に大きな問題なく快適にプレイすることができるはずです。
  * 光ファイバー等の高速回線であれば 500 ミリ秒も可能だと思います。
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v3.0.0

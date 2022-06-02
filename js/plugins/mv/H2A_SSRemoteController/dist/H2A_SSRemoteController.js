@@ -14,7 +14,7 @@
  * このようにすると自分のセルフスイッチを操作できます。
  * H2APG.SSRemote(this._eventId,"A/B/C/D",true/false/null);
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v1.2.0
