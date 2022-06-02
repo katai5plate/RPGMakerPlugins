@@ -3,4 +3,20 @@
 そのままだと広大なマップにポツンと小さいマップが存在するような見た目になってしまい、
 なんかコレジャナイ感があります。それを解決するプラグインです。
 
-現在、17 x 13 のマップのみ対応しています。
+【使い方】
+1. 以下 URL から DP_MapZoom.js をダウンロードする
+https://raw.githubusercontent.com/drowsepost/rpgmaker-mv-plugins/488e875ff8ea3e515f3a043c395c2895e3b6786e/DP_MapZoom.js
+
+2. 落としてきた DP_MapZoom.js の 20 行目に以下を追加し「＠」を半角にする
+ * ＠target MZ
+
+3. プラグイン設定でこのプラグインの上に DP_MapZoom が来るように配置する
+設定はデフォルトのままでOK
+
+【代わりに MNKR_DP_MapZoomMZ を使いたい場合】
+1. このプラグインのソースコードから以下の内容が書かれた行を削除する
+ * @base DP_MapZoom
+ * @orderAfter DP_MapZoom
+
+2. プラグイン設定でこのプラグインの上に MNKR_DP_MapZoomMZ が来るように配置する
+設定はデフォルトのままでOK
