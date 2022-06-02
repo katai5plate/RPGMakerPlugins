@@ -11,7 +11,7 @@
  * そのままだと広大なマップにポツンと小さいマップが存在するような見た目になってしまい、
  * なんかコレジャナイ感があります。それを解決するプラグインです。
  *
- * Copyright (c) 2021 Had2Apps
+ * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
  * Version: v1.0.0
