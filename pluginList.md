@@ -105,35 +105,6 @@ v2.0.0 から、VSCode 拡張の Live Server に対応しました。
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_ErrorWhenSlowNet/dist/H2A_ErrorWhenSlowNet.js)
 
-### H2A_FitScreenToTile
-
-```
-1.5.0 から、タイルサイズを変更できるようになりましたが、
-画面のズーム率までは変わらないため、
-そのままだと広大なマップにポツンと小さいマップが存在するような見た目になってしまい、
-なんかコレジャナイ感があります。それを解決するプラグインです。
-
-【使い方】
-1. 以下 URL から DP_MapZoom.js をダウンロードする
-https://raw.githubusercontent.com/drowsepost/rpgmaker-mv-plugins/488e875ff8ea3e515f3a043c395c2895e3b6786e/DP_MapZoom.js
-
-2. 落としてきた DP_MapZoom.js の 20 行目に以下を追加し「＠」を半角にする
- * ＠target MZ
-
-3. プラグイン設定でこのプラグインの上に DP_MapZoom が来るように配置する
-設定はデフォルトのままでOK
-
-【代わりに MNKR_DP_MapZoomMZ を使いたい場合】
-1. このプラグインのソースコードから以下の内容が書かれた行を削除する
- * @base DP_MapZoom
- * @orderAfter DP_MapZoom
-
-2. プラグイン設定でこのプラグインの上に MNKR_DP_MapZoomMZ が来るように配置する
-設定はデフォルトのままでOK
-
-```
-- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_FitScreenToTile/dist/H2A_FitScreenToTile.js)
-
 ### H2A_ImageToPicture
 
 ```
@@ -245,3 +216,21 @@ Error を実行するとスタックトレースの先頭行に
 
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_SkipTitle/dist/H2A_SkipTitle.js)
+
+### H2A_TileOptimizedScreen
+
+```
+1.5.0 から、タイルサイズを変更できるようになりましたが、
+画面のズーム率までは変わらないため、
+そのままだと広大なマップにポツンと小さいマップが存在するような見た目になってしまい、
+なんかコレジャナイ感がありますよね。
+
+このプラグインでは、データベースの「システム2」→「タイルサイズ」設定に合わせて、
+マップの解像度を自動的に調整します。
+
+[仕組みと注意]
+バッファ内で素材画像を48x48に変換し、48x48で表示する体にして描画しています。
+その関係上、素材の読み込みに通常より時間がかかることがあります。
+
+```
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_TileOptimizedScreen/dist/H2A_TileOptimizedScreen.js)

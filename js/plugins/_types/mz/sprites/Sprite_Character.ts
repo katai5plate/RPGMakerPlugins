@@ -2,6 +2,7 @@ import { Sprite, Bitmap, Game_CharacterBase } from "..";
 
 export declare class Sprite_Character extends Sprite {
   constructor(character: Game_CharacterBase);
+  public initialize(character: Game_CharacterBase): void;
   public initMembers(): void;
   public setCharacter(character: Game_CharacterBase): void;
   public checkCharacter(character: Game_CharacterBase): boolean;

@@ -1,8 +1,0 @@
-{
-  "_license": "MIT",
-  "_version": "1.0.0",
-  "_support": "1.5.0",
-  "plugindesc": "[開発中] 画面をタイルサイズに合わせて拡大します",
-  "base": "DP_MapZoom",
-  "orderAfter": "DP_MapZoom"
-}
