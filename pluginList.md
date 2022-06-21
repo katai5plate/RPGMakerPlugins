@@ -172,9 +172,21 @@ https://github.com/denemo/denemo/tree/master/soundfonts
 
 プラグインコマンドを使ってください。
 
+スクリプトやプラグインから実行したい場合は、
+$midi というグローバル変数が用意されているので、
+そこからアクセスしてください。
+
+例:
+$midi.play(
+  "戦闘1", // 戦闘1.mid
+  0.5 // 音量 50%
+);
+$midi.stop();
+
 [注意]
 
 - MIDIを都度読み込んでから再生するため、MIDIの容量に応じて再生に時間がかかります。
+- メモリリーク対策で次の再生まで 1 秒経ってない場合は再生させない仕様にしてます。
 
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_MIDIPlayer/dist/H2A_MIDIPlayer.js)

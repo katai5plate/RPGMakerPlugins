@@ -1,6 +1,10 @@
 /*:ja
  * @plugindesc [実験作] MIDI を再生できるようにします
  *
+ *   @base smfplayer.min
+ *
+ *   @base sf2synth.min
+ *
  * @target MZ
  * @author Had2Apps
  * @url https://github.com/katai5plate/RPGMakerPlugins
@@ -58,14 +62,26 @@
  *
  * プラグインコマンドを使ってください。
  *
+ * スクリプトやプラグインから実行したい場合は、
+ * $midi というグローバル変数が用意されているので、
+ * そこからアクセスしてください。
+ *
+ * 例:
+ * $midi.play(
+ *   "戦闘1", // 戦闘1.mid
+ *   0.5 // 音量 50%
+ * );
+ * $midi.stop();
+ *
  * [注意]
  *
  * - MIDIを都度読み込んでから再生するため、MIDIの容量に応じて再生に時間がかかります。
+ * - メモリリーク対策で次の再生まで 1 秒経ってない場合は再生させない仕様にしてます。
  *
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: vEXP-0.1.0
+ * Version: vEXP-0.1.1
  * RPG Maker MZ Version: v1.5.0
  */
 
