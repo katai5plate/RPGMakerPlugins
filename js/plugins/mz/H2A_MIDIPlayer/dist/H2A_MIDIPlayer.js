@@ -26,7 +26,7 @@
  *   @type number
  *   @min 0
  *   @max 100
- *   @default 50
+ *   @default 90
  *
  * @command stop
  * @text 停止
@@ -81,7 +81,7 @@
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: vEXP-0.1.2
+ * Version: vEXP-0.1.3
  * RPG Maker MZ Version: v1.5.0
  */
 
@@ -160,7 +160,9 @@
       );
       this.player.loadMidiFile(midifile);
       console.debug("LOADED", midiname);
-      this.player.setMasterVolume(Math.floor(volume * 16383));
+      this.player.setMasterVolume(
+        Math.floor(volume * 16383 * (AudioManager.bgmVolume / 100))
+      );
       this.player.play();
       // this.isPlaying = true;
       this.playingMIDIName = midiname;

@@ -71,7 +71,9 @@ class H2A_MidiPlayer {
     );
     this.player.loadMidiFile(midifile);
     console.debug("LOADED", midiname);
-    this.player.setMasterVolume(Math.floor(volume * 16383));
+    this.player.setMasterVolume(
+      Math.floor(volume * 16383 * (AudioManager.bgmVolume / 100))
+    );
     this.player.play();
     // this.isPlaying = true;
     this.playingMIDIName = midiname;
