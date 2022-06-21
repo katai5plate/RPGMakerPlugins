@@ -81,7 +81,7 @@
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: vEXP-0.1.1
+ * Version: vEXP-0.1.2
  * RPG Maker MZ Version: v1.5.0
  */
 
@@ -128,9 +128,6 @@
       this.link.setLoadCallback(console.log);
       this.loadSF2(sf2name).then(() => this.setPlayerReady(true));
     }
-    test() {
-      return this.link.w;
-    }
     setPlayerReady(isReady) {
       // .ready
       this.player.h = isReady;
@@ -140,28 +137,39 @@
         await (await fetch("./fonts/" + sf2name + ".sf2")).arrayBuffer()
       );
       this.link.loadSoundFont(sf2file);
-      console.log("LOADED", sf2name);
+      console.debug("LOADED", sf2name);
       $midi.link.w.a.style.display = "none";
     }
     async play(midiname, volume = 0.5) {
       if (volume < 0 || volume > 1) {
-        throw new Error("volume is 0-1 range float.");
+        throw new Error("音量は 0.0 ～ 1.0 の実数で指定してください");
+      }
+      if (this.playingMIDIName === midiname) {
+        console.debug("同じBGMが指定されました");
+        return;
       }
       if (Date.now() - this.prevPlayTime < 1000) {
         console.warn("呼び出し感覚が短すぎます");
         return;
       }
+      if (AudioManager._bgmBuffer) {
+        AudioManager.stopBgm();
+      }
       const midifile = new Uint8Array(
         await (await fetch("./audio/midi/" + midiname + ".mid")).arrayBuffer()
       );
       this.player.loadMidiFile(midifile);
-      console.log("LOADED", midiname);
+      console.debug("LOADED", midiname);
       this.player.setMasterVolume(Math.floor(volume * 16383));
       this.player.play();
+      // this.isPlaying = true;
+      this.playingMIDIName = midiname;
       this.prevPlayTime = Date.now();
     }
     stop() {
       this.player.stop();
+      this.playingMIDIName = undefined;
+      // this.isPlaying = false;
     }
     setMidiMessage(message) {
       this.link.onmessage({ data: message });
@@ -180,4 +188,17 @@
   PluginManager.registerCommand(pluginName, "stop", function () {
     window.$midi.stop();
   });
+
+  // BGMをオフったら、こっちもオフるようにする
+  const stopBgm = AudioManager.stopBgm;
+  AudioManager.stopBgm = function () {
+    stopBgm.apply(this);
+    $midi.stop();
+  };
+  // BGMが設定されたら、こっちを消すようにする
+  const playBgm = AudioManager.playBgm;
+  AudioManager.playBgm = function () {
+    $midi.stop();
+    playBgm.apply(this, arguments);
+  };
 })();
