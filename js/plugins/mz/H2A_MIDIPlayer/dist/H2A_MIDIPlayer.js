@@ -56,7 +56,9 @@
  * A320U.sf2 がおすすめ。
  * https://github.com/denemo/denemo/tree/master/soundfonts
  *
- * 4. audio/midi/ に使いたい MIDI 素材を置く
+ * 4. midi/ に使いたい MIDI 素材を置く
+ * index.html と同じフォルダに midi/ を追加してその中に入れる。
+ * 未使用素材削除機能は使えないので注意。
  *
  * [使い方]
  *
@@ -81,7 +83,7 @@
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: vEXP-0.1.3
+ * Version: vEXP-0.1.4
  * RPG Maker MZ Version: v1.5.0
  */
 
@@ -156,7 +158,7 @@
         AudioManager.stopBgm();
       }
       const midifile = new Uint8Array(
-        await (await fetch("./audio/midi/" + midiname + ".mid")).arrayBuffer()
+        await (await fetch("./midi/" + midiname + ".mid")).arrayBuffer()
       );
       this.player.loadMidiFile(midifile);
       console.debug("LOADED", midiname);

@@ -67,7 +67,7 @@ class H2A_MidiPlayer {
       AudioManager.stopBgm();
     }
     const midifile = new Uint8Array(
-      await (await fetch("./audio/midi/" + midiname + ".mid")).arrayBuffer()
+      await (await fetch("./midi/" + midiname + ".mid")).arrayBuffer()
     );
     this.player.loadMidiFile(midifile);
     console.debug("LOADED", midiname);

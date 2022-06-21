@@ -1,6 +1,6 @@
 {
   "_license": "MIT",
-  "_version": "EXP-0.1.3",
+  "_version": "EXP-0.1.4",
   "_support": "1.5.0",
   "plugindesc": "[実験作] MIDI を再生できるようにします",
   "...": [{ "base": "smfplayer.min" }, { "base": "sf2synth.min" }],

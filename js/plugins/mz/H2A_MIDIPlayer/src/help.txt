@@ -22,7 +22,9 @@ https://raw.githubusercontent.com/gree/sf2synth.js/3c792f42aded69560c0bac8679718
 A320U.sf2 がおすすめ。
 https://github.com/denemo/denemo/tree/master/soundfonts
 
-4. audio/midi/ に使いたい MIDI 素材を置く
+4. midi/ に使いたい MIDI 素材を置く
+index.html と同じフォルダに midi/ を追加してその中に入れる。
+未使用素材削除機能は使えないので注意。
 
 [使い方]
 
