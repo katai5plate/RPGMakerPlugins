@@ -1,0 +1,39 @@
+{
+  "_license": "MIT",
+  "_version": "EXP-0.1.0",
+  "_support": "1.5.0",
+  "plugindesc": "[実験作] MIDI を再生できるようにします",
+  "params": [
+    {
+      "param": "_fontName",
+      "text": "使用するサウンドフォント名",
+      "type": "string",
+      "default": "A320U"
+    }
+  ],
+  "commands": [
+    {
+      "command": "play",
+      "text": "再生",
+      "...": [
+        {
+          "arg": "_name",
+          "text": "使用する MIDI ファイル名",
+          "type": "string"
+        },
+        {
+          "arg": "_volume",
+          "text": "音量",
+          "type": "number",
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
+      ]
+    },
+    {
+      "command": "stop",
+      "text": "停止"
+    }
+  ]
+}

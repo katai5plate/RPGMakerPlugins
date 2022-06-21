@@ -139,6 +139,46 @@ Error を実行するとスタックトレースの先頭行に
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_JapaneseErrors/dist/H2A_JapaneseErrors.js)
 
+### H2A_MIDIPlayer
+
+```
+※このプラグインは実験的なものです。
+　メモリリークやクラッシュなど、何か問題が発生しても、一切責任を取りません。
+　自己責任で使用してください。
+
+[使う準備]
+1. 前提ライブラリをダウンロードし、js/plugins/ に追加する
+
+smfplayer.min.js
+https://raw.githubusercontent.com/gree/smfplayer.js/5a1124afcf93a65e1e3f5ad9b7d8531a57a895c2/bin/smfplayer.min.js
+sf2synth.min.js
+https://raw.githubusercontent.com/gree/sf2synth.js/3c792f42aded69560c0bac8679718ff059e000d7/bin/sf2synth.min.js
+
+2. プラグイン設定で、このプラグインの上に2つの前提ライブラリを設置する
+
+例:
+[ON] smfplayer.min
+[ON] sf2synth.min
+[ON] H2A_MIDIPlayer
+
+3. fonts/ に使いたいサウンドフォントを置く
+
+A320U.sf2 がおすすめ。
+https://github.com/denemo/denemo/tree/master/soundfonts
+
+4. audio/midi/ に使いたい MIDI 素材を置く
+
+[使い方]
+
+プラグインコマンドを使ってください。
+
+[注意]
+
+- MIDIを都度読み込んでから再生するため、MIDIの容量に応じて再生に時間がかかります。
+
+```
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_MIDIPlayer/dist/H2A_MIDIPlayer.js)
+
 ### H2A_RegionWalker
 
 ```
