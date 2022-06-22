@@ -80,10 +80,13 @@
  * - MIDIを都度読み込んでから再生するため、MIDIの容量に応じて再生に時間がかかります。
  * - メモリリーク対策で次の再生まで 1 秒経ってない場合は再生させない仕様にしてます。
  *
+ * [動作サンプル]
+ * https://game.nicovideo.jp/atsumaru/games/gm26154
+ *
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: vEXP-0.1.4
+ * Version: vEXP-0.1.5
  * RPG Maker MZ Version: v1.5.0
  */
 
