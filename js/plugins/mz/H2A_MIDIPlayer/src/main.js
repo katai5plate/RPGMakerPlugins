@@ -52,6 +52,9 @@ class H2A_MidiPlayer {
     // .ready
     this.player.h = isReady;
   }
+  getPlayerReady() {
+    return this.player.h;
+  }
   async loadSF2(sf2name) {
     const sf2file = new Uint8Array(
       await (await fetch("./fonts/" + sf2name + ".sf2")).arrayBuffer()
@@ -94,17 +97,19 @@ class H2A_MidiPlayer {
     this.link.onmessage({ data: message });
   }
   setVolume(volume) {
+    if (!this.getPlayerReady()) return;
+    const setMasterVolume = (v) => {
+      const audioVolume =
+        (AudioManager.bgmVolume / 100) * WebAudio._masterVolume;
+      this.player.setMasterVolume(Math.floor(v * audioVolume * 16383));
+    };
     if (volume === undefined) {
-      this.player.setMasterVolume(
-        Math.floor(this.localVolume * 16383 * (AudioManager.bgmVolume / 100))
-      );
+      setMasterVolume(this.localVolume);
     } else {
       if (volume < 0 || volume > 1) {
         throw new Error("音量は 0.0 ～ 1.0 の実数で指定してください");
       }
-      this.player.setMasterVolume(
-        Math.floor(volume * 16383 * (AudioManager.bgmVolume / 100))
-      );
+      setMasterVolume(volume);
     }
   }
 }
@@ -135,6 +140,11 @@ AudioManager.playBgm = function () {
   playBgm.apply(this, arguments);
 };
 // BGM音量が変更されたらMIDI側も更新する
+const resetWebAudioVolume = WebAudio._resetVolume;
+WebAudio._resetVolume = function () {
+  resetWebAudioVolume.apply(this);
+  $midi.setVolume();
+};
 const updateBgmParameters = AudioManager.updateBgmParameters;
 AudioManager.updateBgmParameters = function (bgm) {
   updateBgmParameters.apply(this, arguments);
