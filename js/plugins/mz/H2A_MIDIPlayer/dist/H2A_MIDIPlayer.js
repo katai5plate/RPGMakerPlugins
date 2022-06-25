@@ -86,7 +86,7 @@
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: vEXP-0.1.5
+ * Version: vEXP-0.2.0
  * RPG Maker MZ Version: v1.5.0
  */
 
@@ -120,18 +120,27 @@
   // メイン処理
   class H2A_MidiPlayer {
     constructor(sf2name) {
-      this.player = new SMF.Player();
-      this.player.setLoop(true);
-      this.player.setCC111Loop(true);
-      // .webMidiLink
-      this.player.b = {
-        contentWindow: {
-          postMessage: this.setMidiMessage.bind(this),
-        },
-      };
-      this.link = new SoundFont.WebMidiLink();
-      this.link.setLoadCallback(console.log);
-      this.loadSF2(sf2name).then(() => this.setPlayerReady(true));
+      try {
+        this.player = new SMF.Player();
+        this.player.setLoop(true);
+        this.player.setCC111Loop(true);
+        // .webMidiLink
+        this.player.b = {
+          contentWindow: {
+            postMessage: this.setMidiMessage.bind(this),
+          },
+        };
+        this.link = new SoundFont.WebMidiLink();
+        this.link.setLoadCallback(console.log);
+        this.loadSF2(sf2name).then(() => this.setPlayerReady(true));
+      } catch (error) {
+        SceneManager.onError(
+          new Error(
+            "H2A_MidiPlayer の初期化に失敗しました。あなたの環境は対応していない可能性があります。" +
+              navigator.userAgent
+          )
+        );
+      }
     }
     setPlayerReady(isReady) {
       // .ready
@@ -160,26 +169,37 @@
       if (AudioManager._bgmBuffer) {
         AudioManager.stopBgm();
       }
+      this.localVolume = volume;
       const midifile = new Uint8Array(
         await (await fetch("./midi/" + midiname + ".mid")).arrayBuffer()
       );
       this.player.loadMidiFile(midifile);
       console.debug("LOADED", midiname);
-      this.player.setMasterVolume(
-        Math.floor(volume * 16383 * (AudioManager.bgmVolume / 100))
-      );
+      this.setVolume(this.localVolume);
       this.player.play();
-      // this.isPlaying = true;
       this.playingMIDIName = midiname;
       this.prevPlayTime = Date.now();
     }
     stop() {
       this.player.stop();
       this.playingMIDIName = undefined;
-      // this.isPlaying = false;
     }
     setMidiMessage(message) {
       this.link.onmessage({ data: message });
+    }
+    setVolume(volume) {
+      if (volume === undefined) {
+        this.player.setMasterVolume(
+          Math.floor(this.localVolume * 16383 * (AudioManager.bgmVolume / 100))
+        );
+      } else {
+        if (volume < 0 || volume > 1) {
+          throw new Error("音量は 0.0 ～ 1.0 の実数で指定してください");
+        }
+        this.player.setMasterVolume(
+          Math.floor(volume * 16383 * (AudioManager.bgmVolume / 100))
+        );
+      }
     }
   }
   window.$midi = new H2A_MidiPlayer(_fontName);
@@ -207,5 +227,11 @@
   AudioManager.playBgm = function () {
     $midi.stop();
     playBgm.apply(this, arguments);
+  };
+  // BGM音量が変更されたらMIDI側も更新する
+  const updateBgmParameters = AudioManager.updateBgmParameters;
+  AudioManager.updateBgmParameters = function (bgm) {
+    updateBgmParameters.apply(this, arguments);
+    $midi.setVolume();
   };
 })();
