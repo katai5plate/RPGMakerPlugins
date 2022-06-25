@@ -74,6 +74,9 @@ class H2A_ZzFX {
     this.soundGainNode.gain.value = -1 + this.getCalculatedSoundVolume() * 2;
   }
   playSong(songData, isLoop, volume = this.songVolume || window.zzfxV) {
+    if (this.bgmBuffer) {
+      this.stopSong();
+    }
     this.setSongVolume(volume);
     this.bgmBuffer = window.zzfxM(...songData);
     this.bgmNode = window.zzfxP(...this.bgmBuffer);
@@ -179,6 +182,6 @@ PluginManager.registerCommand(
   pluginName,
   "playSoundFromFile",
   function ({ _name, _volume }) {
-    $zfx.playSongFromFile(_name, +_volume / 100);
+    $zfx.playSoundFromFile(_name, +_volume / 100);
   }
 );

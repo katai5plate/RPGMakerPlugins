@@ -135,7 +135,7 @@
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: v0.0.1-EXP
+ * Version: v0.1.0-EXP
  * RPG Maker MZ Version: v1.5.0
  */
 /*~struct~ss:ja
@@ -292,6 +292,9 @@
       this.soundGainNode.gain.value = -1 + this.getCalculatedSoundVolume() * 2;
     }
     playSong(songData, isLoop, volume = this.songVolume || window.zzfxV) {
+      if (this.bgmBuffer) {
+        this.stopSong();
+      }
       this.setSongVolume(volume);
       this.bgmBuffer = window.zzfxM(...songData);
       this.bgmNode = window.zzfxP(...this.bgmBuffer);
@@ -397,7 +400,7 @@
     pluginName,
     "playSoundFromFile",
     function ({ _name, _volume }) {
-      $zfx.playSongFromFile(_name, +_volume / 100);
+      $zfx.playSoundFromFile(_name, +_volume / 100);
     }
   );
 })();
