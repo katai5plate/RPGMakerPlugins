@@ -291,3 +291,93 @@ https://game.nicovideo.jp/atsumaru/games/gm26154
 
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_TileOptimizedScreen/dist/H2A_TileOptimizedScreen.js)
+
+### H2A_ZzFXPlayer
+
+```
+※このプラグインは実験的なものです。
+　メモリリークやクラッシュなど、何か問題が発生しても、一切責任を取りません。
+　自己責任で使用してください。
+
+[使う準備]
+1. 前提ライブラリをダウンロードし、js/plugins/ に追加する
+
+zzfx.js
+https://raw.githubusercontent.com/keithclark/ZzFXM/cb07fa9ca36aefd67a0c8c656d2958b62f8ed9fe/zzfx.js
+zzfxm.min.js
+https://raw.githubusercontent.com/keithclark/ZzFXM/cb07fa9ca36aefd67a0c8c656d2958b62f8ed9fe/zzfxm.min.js
+
+2. プラグイン設定で、このプラグインの上に2つの前提ライブラリを設置する
+
+例:
+[ON] zzfx
+[ON] zzfxm.min
+[ON] H2A_ZzFXPlayer
+
+3. 音楽作りと音作りをする
+
+音楽作りはこのサイトで行う
+https://keithclark.github.io/ZzFXM/tracker/
+作った音楽は左上の File -> Save にて JS ファイルでダウンロードできる。
+
+音作りはこのサイトで行う。
+https://killedbyapixel.github.io/ZzFX/
+作った音は画面下部の「ZzFX JavaScript (Use this code to play the sound)」の部分に
+コードが生成されるので、[] で囲まれた部分を使用する。
+
+4. zzfx/ に ZzFXM Tracker で作った曲の JS ファイルを置く
+index.html と同じフォルダに zzfx/ を追加してその中に入れる。
+未使用素材削除機能は使えないので注意。
+
+5. zzfx/sound.json にサウンドボードを置く
+zzfx/ フォルダの中に JSON ファイルを置き、以下のように書く。
+{
+  "音の名前1": "[,,126,,.05,.08,1,.07,-13,-2.6,,,,,,,,.73,.06]",
+  "音の名前2": "[1.32,,118,.11,.18,.02,3,.41,25,40,,,.09,,,,.19,,.03]",
+  "音の名前3": "[,,441,.02,.14,.3,,.47,,.6,-195,.05,.09,,,.1,,.66,.1]"
+}
+
+[使い方]
+
+プラグインコマンドを使ってください。
+曲を止めたい時は BGM の時と同様に BGM を無音にしてください。
+
+スクリプトやプラグインから実行したい場合は、
+$zfx というグローバル変数が用意されているので、
+そこからアクセスしてください。
+
+例:
+$zfx.playSound(
+  // 音データ
+  [,,126,,.05,.08,1,.07,-13,-2.6,,,,,,,,.73,.06],
+  // 音量 50%
+  0.5
+)
+$zfx.playSoundFromFile(
+  // zzfx/sounds.json の音名
+  "音の名前1",
+  // 音量 50%
+  0.5
+)
+$zfx.stopSound()
+$zfx.playSong(
+  // 譜面データ
+  songData,
+  // ループするか
+  true,
+  // 音量 50%
+  0.5
+)
+$zfx.playSongFromFile(
+  // ファイル名(拡張子抜き)
+  "MyNewSong",
+  // ループするか
+  true,
+  // 音量 50%
+  0.5
+)
+$zfx.stopSong()
+
+
+```
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_ZzFXPlayer/dist/H2A_ZzFXPlayer.js)
