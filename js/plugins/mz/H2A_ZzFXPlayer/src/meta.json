@@ -1,10 +1,19 @@
 {
   "_license": "MIT",
-  "_version": "0.1.0-EXP",
+  "_version": "0.2.0-EXP",
   "_support": "1.5.0",
   "plugindesc": "[実験作] 音楽と効果音を ZzFX で鳴らします",
   "...": [{ "base": "zzfx" }, { "base": "zzfxm.min" }],
   "params": [
+    {
+      "param": "_volumeBoost",
+      "text": "音量ブースト",
+      "desc": "音量が全体的に小さい時や大きい時に調節する％",
+      "type": "number",
+      "min": 0,
+      "max": 500,
+      "default": 100
+    },
     {
       "param": "_staticSe",
       "text": "システムSE設定",

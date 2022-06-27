@@ -1,6 +1,6 @@
 /// <reference path="../../../_templates/pluginName.js"/>
 
-const { _staticSe } = PluginManager.parameters(pluginName);
+const { _staticSe, _volumeBoost } = PluginManager.parameters(pluginName);
 
 const STATICS_KEYS = [
   "_cursor",
@@ -40,6 +40,7 @@ class H2A_ZzFX {
       return value;
     });
     this.soundboard = {};
+    this.volumeBoost = (+_volumeBoost || 100) / 100;
   }
   checkSoundText(code) {
     return !/^\[[\d.,]+$\]/.test(code);
@@ -69,9 +70,11 @@ class H2A_ZzFX {
     );
   }
   updateGain() {
-    // 元の音量値が 0 のため、-1 が消音値, 2 が最大
-    this.songGainNode.gain.value = -1 + this.getCalculatedSongVolume() * 2;
-    this.soundGainNode.gain.value = -1 + this.getCalculatedSoundVolume() * 2;
+    // 元の音量値が 0 のため、-1 が消音値, this.volumeBoost が最大
+    this.songGainNode.gain.value =
+      -1 + this.getCalculatedSongVolume() * this.volumeBoost;
+    this.soundGainNode.gain.value =
+      -1 + this.getCalculatedSoundVolume() * this.volumeBoost;
   }
   playSong(songData, isLoop, volume = this.songVolume || window.zzfxV) {
     if (this.bgmBuffer) {
@@ -96,10 +99,10 @@ class H2A_ZzFX {
   }
   playSound(soundData, volume = this.soundVolume || window.zzfxV) {
     if (soundData === null) return;
-    const [_, ...rest] = soundData;
-    this.setSoundVolume(volume);
+    const [dataVolume = 1, ...rest] = soundData;
+    this.setSoundVolume((dataVolume * volume) / dataVolume);
     this.seBuffer = window.zzfxG(
-      ...[this.getCalculatedSoundVolume() * 2, ...rest]
+      ...[this.getCalculatedSoundVolume() * this.volumeBoost, ...rest]
     );
     this.seNode = window.zzfxP(this.seBuffer);
     this.seNode.connect(this.soundGainNode);

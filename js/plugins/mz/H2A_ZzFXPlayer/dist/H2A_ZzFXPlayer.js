@@ -9,6 +9,14 @@
  * @author Had2Apps
  * @url https://github.com/katai5plate/RPGMakerPlugins
  *
+ * @param _volumeBoost
+ * @text 音量ブースト
+ * @desc 音量が全体的に小さい時や大きい時に調節する％
+ * @type number
+ * @min 0
+ * @max 500
+ * @default 100
+ *
  * @param _staticSe
  * @text システムSE設定
  * @type struct<ss>
@@ -131,11 +139,25 @@
  * )
  * $zfx.stopSong()
  *
+ * [プラグインパラメーター:システムSE設定]
+ *
+ * データベース -> システム1 -> 効果音 にて設定が OFF になっている効果音は、
+ * ここで設定した音に置き換わります。
+ *
+ * [Tips]
+ *
+ * - 音データ単体で音量を変更したい場合は、配列の最初の値を変更すれば変えられます。
+ * 例1: [1.23,,107,,.01,.01,3,.21,,,,,.18,,390,,.36,.61,.01]
+ *        ↓
+ *      [2.34,,107,,.01,.01,3,.21,,,,,.18,,390,,.36,.61,.01]
+ * 例2: [,,107,,.01,.01,3,.21,,,,,.18,,390,,.36,.61,.01]
+ *        ↓
+ *      [1.23,,107,,.01,.01,3,.21,,,,,.18,,390,,.36,.61,.01]
  *
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: v0.1.0-EXP
+ * Version: v0.2.0-EXP
  * RPG Maker MZ Version: v1.5.0
  */
 /*~struct~ss:ja
@@ -214,7 +236,7 @@
 
   /*========== ./main.js ==========*/
 
-  const { _staticSe } = PluginManager.parameters(pluginName);
+  const { _staticSe, _volumeBoost } = PluginManager.parameters(pluginName);
 
   const STATICS_KEYS = [
     "_cursor",
@@ -254,6 +276,7 @@
         return value;
       });
       this.soundboard = {};
+      this.volumeBoost = (+_volumeBoost || 100) / 100;
     }
     checkSoundText(code) {
       return !/^\[[\d.,]+$\]/.test(code);
@@ -287,9 +310,11 @@
       );
     }
     updateGain() {
-      // 元の音量値が 0 のため、-1 が消音値, 2 が最大
-      this.songGainNode.gain.value = -1 + this.getCalculatedSongVolume() * 2;
-      this.soundGainNode.gain.value = -1 + this.getCalculatedSoundVolume() * 2;
+      // 元の音量値が 0 のため、-1 が消音値, this.volumeBoost が最大
+      this.songGainNode.gain.value =
+        -1 + this.getCalculatedSongVolume() * this.volumeBoost;
+      this.soundGainNode.gain.value =
+        -1 + this.getCalculatedSoundVolume() * this.volumeBoost;
     }
     playSong(songData, isLoop, volume = this.songVolume || window.zzfxV) {
       if (this.bgmBuffer) {
@@ -314,10 +339,10 @@
     }
     playSound(soundData, volume = this.soundVolume || window.zzfxV) {
       if (soundData === null) return;
-      const [_, ...rest] = soundData;
-      this.setSoundVolume(volume);
+      const [dataVolume = 1, ...rest] = soundData;
+      this.setSoundVolume((dataVolume * volume) / dataVolume);
       this.seBuffer = window.zzfxG(
-        ...[this.getCalculatedSoundVolume() * 2, ...rest]
+        ...[this.getCalculatedSoundVolume() * this.volumeBoost, ...rest]
       );
       this.seNode = window.zzfxP(this.seBuffer);
       this.seNode.connect(this.soundGainNode);
