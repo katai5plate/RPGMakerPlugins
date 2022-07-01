@@ -9,7 +9,7 @@
  * スクリプト内で await を使用できるようになります。
  * 完了するまでウェイト状態になるので、
  * イベントコマンドで非同期処理を組み込みやすくなります。
- * 歩行ルートの指定でも使用可能です。
+ * 移動ルートの指定でも使用可能です。
  *
  * たとえばこんなふうに書けます。
  *
@@ -17,10 +17,13 @@
  * const data = await request.text();
  * $gameVariables.setValue(1, data.match(/title>(.+)</)[1]);
  *
+ * [注意]
+ * - 対応しているのはスクリプトと移動ルートの指定のみです。変数の操作、条件分岐では使用できません。
+ *
  * Copyright (c) 2022 Had2Apps
  * This software is released under the MIT License.
  *
- * Version: v1.0.0
+ * Version: v1.1.1
  * RPG Maker MZ Version: v1.5.0
  */
 
