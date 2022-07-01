@@ -292,6 +292,23 @@ https://game.nicovideo.jp/atsumaru/games/gm26154
 ```
 - [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_TileOptimizedScreen/dist/H2A_TileOptimizedScreen.js)
 
+### H2A_TopLevelAwait
+
+```
+スクリプト内で await を使用できるようになります。
+完了するまでウェイト状態になるので、
+イベントコマンドで非同期処理を組み込みやすくなります。
+歩行ルートの指定でも使用可能です。
+
+たとえばこんなふうに書けます。
+
+const request = await fetch("./index.html");
+const data = await request.text();
+$gameVariables.setValue(1, data.match(/title>(.+)</)[1]);
+
+```
+- [ダウンロードはこちら(Rawボタンを右クリックして保存)](https://github.com/katai5plate/RPGMakerPlugins/blob/main/js/plugins/mz/H2A_TopLevelAwait/dist/H2A_TopLevelAwait.js)
+
 ### H2A_ZzFXPlayer
 
 ```
